@@ -9,8 +9,62 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SkillsRouteImport } from './routes/skills'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as OpportunitiesRouteImport } from './routes/opportunities'
+import { Route as MatchRouteImport } from './routes/match'
+import { Route as InstitutionsRouteImport } from './routes/institutions'
+import { Route as GuidesRouteImport } from './routes/guides'
+import { Route as FundingRouteImport } from './routes/funding'
+import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as CareersRouteImport } from './routes/careers'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SkillsRoute = SkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesRoute = OpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MatchRoute = MatchRouteImport.update({
+  id: '/match',
+  path: '/match',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstitutionsRoute = InstitutionsRouteImport.update({
+  id: '/institutions',
+  path: '/institutions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuidesRoute = GuidesRouteImport.update({
+  id: '/guides',
+  path: '/guides',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FundingRoute = FundingRouteImport.update({
+  id: '/funding',
+  path: '/funding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +73,158 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/careers': typeof CareersRoute
+  '/courses': typeof CoursesRoute
+  '/funding': typeof FundingRoute
+  '/guides': typeof GuidesRoute
+  '/institutions': typeof InstitutionsRoute
+  '/match': typeof MatchRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/careers': typeof CareersRoute
+  '/courses': typeof CoursesRoute
+  '/funding': typeof FundingRoute
+  '/guides': typeof GuidesRoute
+  '/institutions': typeof InstitutionsRoute
+  '/match': typeof MatchRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/careers': typeof CareersRoute
+  '/courses': typeof CoursesRoute
+  '/funding': typeof FundingRoute
+  '/guides': typeof GuidesRoute
+  '/institutions': typeof InstitutionsRoute
+  '/match': typeof MatchRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/careers'
+    | '/courses'
+    | '/funding'
+    | '/guides'
+    | '/institutions'
+    | '/match'
+    | '/opportunities'
+    | '/sitemap.xml'
+    | '/skills'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/careers'
+    | '/courses'
+    | '/funding'
+    | '/guides'
+    | '/institutions'
+    | '/match'
+    | '/opportunities'
+    | '/sitemap.xml'
+    | '/skills'
+  id:
+    | '__root__'
+    | '/'
+    | '/careers'
+    | '/courses'
+    | '/funding'
+    | '/guides'
+    | '/institutions'
+    | '/match'
+    | '/opportunities'
+    | '/sitemap.xml'
+    | '/skills'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CareersRoute: typeof CareersRoute
+  CoursesRoute: typeof CoursesRoute
+  FundingRoute: typeof FundingRoute
+  GuidesRoute: typeof GuidesRoute
+  InstitutionsRoute: typeof InstitutionsRoute
+  MatchRoute: typeof MatchRoute
+  OpportunitiesRoute: typeof OpportunitiesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SkillsRoute: typeof SkillsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/skills': {
+      id: '/skills'
+      path: '/skills'
+      fullPath: '/skills'
+      preLoaderRoute: typeof SkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/match': {
+      id: '/match'
+      path: '/match'
+      fullPath: '/match'
+      preLoaderRoute: typeof MatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institutions': {
+      id: '/institutions'
+      path: '/institutions'
+      fullPath: '/institutions'
+      preLoaderRoute: typeof InstitutionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides': {
+      id: '/guides'
+      path: '/guides'
+      fullPath: '/guides'
+      preLoaderRoute: typeof GuidesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/funding': {
+      id: '/funding'
+      path: '/funding'
+      fullPath: '/funding'
+      preLoaderRoute: typeof FundingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +237,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CareersRoute: CareersRoute,
+  CoursesRoute: CoursesRoute,
+  FundingRoute: FundingRoute,
+  GuidesRoute: GuidesRoute,
+  InstitutionsRoute: InstitutionsRoute,
+  MatchRoute: MatchRoute,
+  OpportunitiesRoute: OpportunitiesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SkillsRoute: SkillsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
