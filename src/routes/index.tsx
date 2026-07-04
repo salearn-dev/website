@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, GraduationCap, HelpCircle, Landmark, Sparkles, Target, Wallet } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, HelpCircle, Landmark, Compass, Target, Wallet } from "lucide-react";
 import { CAREERS, COURSES } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
@@ -16,7 +16,7 @@ const QUICK = [
   { q: "What can I study?", to: "/courses", icon: BookOpen },
   { q: "What do I qualify for?", to: "/match", icon: Target },
   { q: "How will I pay?", to: "/funding", icon: Wallet },
-  { q: "What can I apply for now?", to: "/opportunities", icon: Sparkles },
+  { q: "What can I apply for now?", to: "/opportunities", icon: Compass },
 ];
 
 function Landing() {

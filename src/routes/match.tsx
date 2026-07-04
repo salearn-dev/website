@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle, XCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle, XCircle, Compass } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 
 export const Route = createFileRoute("/match")({
@@ -222,7 +222,7 @@ function Results({ aps, interest }: { aps: number; interest: string }) {
         />
       </Group>
 
-      <Group tone="growth" icon={Sparkles} title="Alternative pathways">
+      <Group tone="growth" icon={Compass} title="Alternative pathways">
         <ResultCard
           title="Learnership: Health Promotion"
           institution="HWSETA partner"
