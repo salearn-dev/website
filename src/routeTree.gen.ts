@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ProdReadinessRouteImport } from './routes/prod-readiness'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as MatchRouteImport } from './routes/match'
 import { Route as InstitutionsRouteImport } from './routes/institutions'
@@ -28,6 +29,11 @@ const SkillsRoute = SkillsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProdReadinessRoute = ProdReadinessRouteImport.update({
+  id: '/prod-readiness',
+  path: '/prod-readiness',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OpportunitiesRoute = OpportunitiesRouteImport.update({
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/institutions': typeof InstitutionsRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
+  '/prod-readiness': typeof ProdReadinessRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/institutions': typeof InstitutionsRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
+  '/prod-readiness': typeof ProdReadinessRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/institutions': typeof InstitutionsRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
+  '/prod-readiness': typeof ProdReadinessRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/institutions'
     | '/match'
     | '/opportunities'
+    | '/prod-readiness'
     | '/sitemap.xml'
     | '/skills'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/institutions'
     | '/match'
     | '/opportunities'
+    | '/prod-readiness'
     | '/sitemap.xml'
     | '/skills'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/institutions'
     | '/match'
     | '/opportunities'
+    | '/prod-readiness'
     | '/sitemap.xml'
     | '/skills'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,7 @@ export interface RootRouteChildren {
   InstitutionsRoute: typeof InstitutionsRoute
   MatchRoute: typeof MatchRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
+  ProdReadinessRoute: typeof ProdReadinessRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SkillsRoute: typeof SkillsRoute
 }
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prod-readiness': {
+      id: '/prod-readiness'
+      path: '/prod-readiness'
+      fullPath: '/prod-readiness'
+      preLoaderRoute: typeof ProdReadinessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/opportunities': {
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstitutionsRoute: InstitutionsRoute,
   MatchRoute: MatchRoute,
   OpportunitiesRoute: OpportunitiesRoute,
+  ProdReadinessRoute: ProdReadinessRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SkillsRoute: SkillsRoute,
 }
