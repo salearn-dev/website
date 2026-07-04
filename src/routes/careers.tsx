@@ -6,7 +6,7 @@ import { CAREERS } from "@/lib/data";
 export const Route = createFileRoute("/careers")({
   head: () => ({
     meta: [
-      { title: "Careers — SA Learn" },
+      { title: "Careers - SA Learn" },
       { name: "description", content: "Explore careers and the study routes that get you there. Skills, subjects, salary and demand." },
     ],
   }),

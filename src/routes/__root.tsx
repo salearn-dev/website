@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  ScriptOnce,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -13,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { ThemeProvider } from "../components/theme-provider";
 
 function NotFoundComponent() {
   return (
@@ -66,11 +68,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SA Learn — Gain skills. Get qualified. Get hired." },
-      { name: "description", content: "SA Learn helps South African students discover accredited courses, funding, careers and skills — all in one calm, modern platform." },
+      { title: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
+      { name: "description", content: "SA Learn helps South African students discover accredited courses, funding, careers and skills - all in one calm, modern platform." },
       { name: "author", content: "SA Learn" },
-      { property: "og:title", content: "SA Learn — Gain skills. Get qualified. Get hired." },
-      { property: "og:description", content: "Discover accredited South African courses, funding, careers and skills — all in one place." },
+      { property: "og:title", content: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
+      { property: "og:description", content: "Discover accredited South African courses, funding, careers and skills - all in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -90,11 +92,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
+        <ScriptOnce>
+          {`(function(){try{var t=localStorage.getItem('sa-learn-theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;r.classList.toggle('dark',d);r.style.colorScheme=d?'dark':'light';}catch(e){}})();`}
+        </ScriptOnce>
         {children}
         <Scripts />
       </body>
@@ -107,13 +112,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col bg-background">
-        <SiteHeader />
-        <div className="flex-1">
-          <Outlet />
+      <ThemeProvider>
+        <div className="flex min-h-screen flex-col bg-background">
+          <SiteHeader />
+          <div className="flex-1">
+            <Outlet />
+          </div>
+          <SiteFooter />
         </div>
-        <SiteFooter />
-      </div>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

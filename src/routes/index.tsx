@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, GraduationCap, HelpCircle, Landmark, Sparkles, Target, Wallet } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, HelpCircle, Landmark, Compass, Target, Wallet } from "lucide-react";
 import { CAREERS, COURSES } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SA Learn — Gain skills. Get qualified. Get hired." },
+      { title: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
       { name: "description", content: "Find courses, careers, funding and skills paths that match your results and goals." },
     ],
   }),
@@ -16,7 +16,7 @@ const QUICK = [
   { q: "What can I study?", to: "/courses", icon: BookOpen },
   { q: "What do I qualify for?", to: "/match", icon: Target },
   { q: "How will I pay?", to: "/funding", icon: Wallet },
-  { q: "What can I apply for now?", to: "/opportunities", icon: Sparkles },
+  { q: "What can I apply for now?", to: "/opportunities", icon: Compass },
 ];
 
 function Landing() {
@@ -32,10 +32,10 @@ function Landing() {
             SA Learn
           </h1>
           <p className="mt-4 text-lg text-foreground md:text-xl">
-            Gain skills. Get qualified. Get hired.
+            Gain Skills. Get Qualifications. Get Hired.
           </p>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-            Find courses, careers, funding and skills paths that match your results and your goals — all in one calm, verified place.
+            Find courses, careers, funding and skills paths that match your results and your goals - all in one calm, verified place.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link to="/match" className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90">
@@ -71,7 +71,7 @@ function Landing() {
       <Section title="Our mission" eyebrow="Why SA Learn">
         <div className="grid gap-8 md:grid-cols-2">
           <p className="text-lg leading-relaxed text-foreground">
-            To become South Africa's most trusted education discovery platform — making post-school opportunities simple, transparent and accessible.
+            To become South Africa's most trusted education discovery platform - making post-school opportunities simple, transparent and accessible.
           </p>
           <p className="text-base leading-relaxed text-muted-foreground">
             We don't just help you pick a course. We help you build a realistic path towards employment: study routes, funding, live opportunities and job-ready skills, all connected.
@@ -169,7 +169,7 @@ function Landing() {
             Ready to see your options?
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-base text-muted-foreground">
-            Enter your subjects and marks. See what you qualify for — and what to do next.
+            Enter your subjects and marks. See what you qualify for - and what to do next.
           </p>
           <Link to="/match" className="mt-6 inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90">
             Check My Options <ArrowRight className="h-4 w-4" />

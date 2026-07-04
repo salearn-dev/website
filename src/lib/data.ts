@@ -163,8 +163,8 @@ export const INSTITUTIONS: Institution[] = [
 ];
 
 export const FUNDING = [
-  { slug: "nsfas", name: "NSFAS", short: "National Student Financial Aid Scheme", eligibility: "SA citizens with combined household income under R350,000/year (R600,000 for students with disabilities).", coverage: "Tuition, accommodation, allowances at public universities and TVET colleges.", best: "Students needing full financial support.", deadline: "Annual — see nsfas.org.za" },
-  { slug: "funza-lushaka", name: "Funza Lushaka Bursary", short: "For future teachers", eligibility: "Studying a BEd or PGCE in priority subjects.", coverage: "Full tuition, accommodation, meals, stipend.", best: "Aspiring teachers.", deadline: "Annual — see funzalushaka.doe.gov.za" },
+  { slug: "nsfas", name: "NSFAS", short: "National Student Financial Aid Scheme", eligibility: "SA citizens with combined household income under R350,000/year (R600,000 for students with disabilities).", coverage: "Tuition, accommodation, allowances at public universities and TVET colleges.", best: "Students needing full financial support.", deadline: "Annual - see nsfas.org.za" },
+  { slug: "funza-lushaka", name: "Funza Lushaka Bursary", short: "For future teachers", eligibility: "Studying a BEd or PGCE in priority subjects.", coverage: "Full tuition, accommodation, meals, stipend.", best: "Aspiring teachers.", deadline: "Annual - see funzalushaka.doe.gov.za" },
   { slug: "sasol", name: "Sasol Bursary", short: "Engineering and sciences", eligibility: "Grade 12 or first-year students in engineering/science with strong marks.", coverage: "Tuition, accommodation, laptop, stipend.", best: "STEM students.", deadline: "March/April annually" },
   { slug: "eskom", name: "Eskom Bursary", short: "Energy and engineering", eligibility: "Engineering and technical fields with strong maths and science.", coverage: "Full study costs plus vacation work.", best: "Engineering students.", deadline: "Annual" },
   { slug: "seta-learnership", name: "SETA Learnerships", short: "Earn while you learn", eligibility: "Unemployed youth, matric usually required.", coverage: "Stipend during learnership.", best: "School-leavers seeking workplace experience.", deadline: "Rolling per SETA" },
@@ -185,8 +185,8 @@ export const SKILLS = [
 ];
 
 export const OPPORTUNITIES = [
-  { id: "op1", title: "University of Cape Town — 2027 Undergraduate Applications", category: "University Applications", province: "Western Cape", closes: "30 September", paid: false },
-  { id: "op2", title: "False Bay TVET College — Trimester Intake", category: "TVET Applications", province: "Western Cape", closes: "Rolling", paid: false },
+  { id: "op1", title: "University of Cape Town - 2027 Undergraduate Applications", category: "University Applications", province: "Western Cape", closes: "30 September", paid: false },
+  { id: "op2", title: "False Bay TVET College - Trimester Intake", category: "TVET Applications", province: "Western Cape", closes: "Rolling", paid: false },
   { id: "op3", title: "MerSETA Plumbing Learnership", category: "Learnerships", province: "Gauteng", closes: "15 August", paid: true },
   { id: "op4", title: "Standard Bank Graduate Programme", category: "Graduate Programmes", province: "Nationwide", closes: "31 July", paid: true },
   { id: "op5", title: "Investec IT Internship", category: "Internships", province: "Western Cape", closes: "10 August", paid: true },
@@ -201,7 +201,7 @@ export const GUIDES = [
   { slug: "saqa-explained", title: "SAQA Explained", summary: "The role of the South African Qualifications Authority." },
   { slug: "dhet-explained", title: "DHET Explained", summary: "What the Department of Higher Education and Training does." },
   { slug: "nsfas-explained", title: "NSFAS Explained", summary: "Who qualifies, what's covered, and how to apply." },
-  { slug: "university-vs-tvet", title: "University vs TVET", summary: "Two valid routes — how to choose based on your goals." },
+  { slug: "university-vs-tvet", title: "University vs TVET", summary: "Two valid routes - how to choose based on your goals." },
   { slug: "diploma-vs-degree", title: "Diploma vs Degree", summary: "The real differences in duration, cost and career outcomes." },
   { slug: "how-applications-work", title: "How Applications Work", summary: "Documents, deadlines and what to expect." },
   { slug: "avoiding-fake-colleges", title: "Avoiding Fake Colleges", summary: "How to verify accreditation before you pay." },

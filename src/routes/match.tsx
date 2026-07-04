@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle, XCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle, XCircle, Compass } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 
 export const Route = createFileRoute("/match")({
   head: () => ({
     meta: [
-      { title: "Match — SA Learn" },
+      { title: "Match - SA Learn" },
       { name: "description", content: "Enter your subjects and marks to see what you qualify for, and what to do if you almost qualify." },
     ],
   }),
@@ -76,7 +76,7 @@ function MatchPage() {
       <div className="rounded-3xl border border-border bg-card p-6 md:p-10">
         {step === 1 && (
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 1 — Pick your subjects</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 1 - Pick your subjects</h2>
             <p className="mt-1 text-sm text-muted-foreground">Add or remove the subjects that appear on your report.</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {SUBJECT_OPTIONS.map((s) => {
@@ -101,7 +101,7 @@ function MatchPage() {
 
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 2 — Enter your marks</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 2 - Enter your marks</h2>
             <p className="mt-1 text-sm text-muted-foreground">Type the percentage for each subject.</p>
             <div className="mt-6 divide-y divide-border rounded-xl border border-border">
               {subjects.map((s, i) => (
@@ -133,7 +133,7 @@ function MatchPage() {
 
         {step === 3 && (
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 3 — Choose an interest</h2>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 3 - Choose an interest</h2>
             <p className="mt-1 text-sm text-muted-foreground">Pick the field that interests you most. You can change this later.</p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
               {["Health", "Technology", "Business", "Engineering", "Education", "Creative"].map((f) => (
@@ -222,7 +222,7 @@ function Results({ aps, interest }: { aps: number; interest: string }) {
         />
       </Group>
 
-      <Group tone="growth" icon={Sparkles} title="Alternative pathways">
+      <Group tone="growth" icon={Compass} title="Alternative pathways">
         <ResultCard
           title="Learnership: Health Promotion"
           institution="HWSETA partner"
