@@ -6,8 +6,8 @@ import { GUIDES } from "@/lib/data";
 export const Route = createFileRoute("/guides")({
   head: () => ({
     meta: [
-      { title: "Guides — SA Learn" },
-      { name: "description", content: "Confusing education terms — APS, NQF, SAQA, NSFAS — explained in plain English." },
+      { title: "Guides - SA Learn" },
+      { name: "description", content: "Confusing education terms - APS, NQF, SAQA, NSFAS - explained in plain English." },
     ],
   }),
   component: GuidesPage,
@@ -18,7 +18,7 @@ function GuidesPage() {
     <PageShell
       eyebrow="Understand the system"
       title="Plain-English guides"
-      description="Every confusing acronym, process and decision — explained simply. No jargon, no fluff."
+      description="Every confusing acronym, process and decision - explained simply. No jargon, no fluff."
     >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {GUIDES.map((g) => (

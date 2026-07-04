@@ -25,7 +25,7 @@ export function SiteFooter() {
           ]} />
         </div>
         <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} SA Learn. Prototype — information not yet verified.</p>
+          <p>© {new Date().getFullYear()} SA Learn. Prototype - information not yet verified.</p>
           <p>Sources: SAQA, DHET, NSFAS, SETAs and institutional publications.</p>
         </div>
       </div>

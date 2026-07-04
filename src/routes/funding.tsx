@@ -6,8 +6,8 @@ import { FUNDING } from "@/lib/data";
 export const Route = createFileRoute("/funding")({
   head: () => ({
     meta: [
-      { title: "Funding — SA Learn" },
-      { name: "description", content: "NSFAS, bursaries, scholarships and learnership funding — eligibility, coverage and deadlines in one place." },
+      { title: "Funding - SA Learn" },
+      { name: "description", content: "NSFAS, bursaries, scholarships and learnership funding - eligibility, coverage and deadlines in one place." },
     ],
   }),
   component: FundingPage,
@@ -18,7 +18,7 @@ function FundingPage() {
     <PageShell
       eyebrow="How will I pay?"
       title="Funding your studies"
-      description="Clear, calm information about NSFAS, bursaries, scholarships and learnership funding — so cost is never the reason you don't apply."
+      description="Clear, calm information about NSFAS, bursaries, scholarships and learnership funding - so cost is never the reason you don't apply."
     >
       <div className="grid gap-4 md:grid-cols-2">
         {FUNDING.map((f) => (

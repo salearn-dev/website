@@ -6,7 +6,7 @@ import { INSTITUTIONS } from "@/lib/data";
 export const Route = createFileRoute("/institutions")({
   head: () => ({
     meta: [
-      { title: "Institutions — SA Learn" },
+      { title: "Institutions - SA Learn" },
       { name: "description", content: "Verified South African universities, TVET colleges and private institutions." },
     ],
   }),

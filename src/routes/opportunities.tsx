@@ -6,7 +6,7 @@ import { OPPORTUNITIES } from "@/lib/data";
 export const Route = createFileRoute("/opportunities")({
   head: () => ({
     meta: [
-      { title: "Opportunities — SA Learn" },
+      { title: "Opportunities - SA Learn" },
       { name: "description", content: "Real, open opportunities: applications, learnerships, internships, bursaries and entry-level jobs across South Africa." },
     ],
   }),

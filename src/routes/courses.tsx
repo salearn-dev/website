@@ -7,7 +7,7 @@ import { COURSES, COURSE_CATEGORIES } from "@/lib/data";
 export const Route = createFileRoute("/courses")({
   head: () => ({
     meta: [
-      { title: "Courses — SA Learn" },
+      { title: "Courses - SA Learn" },
       { name: "description", content: "Browse every learning opportunity: universities, TVET, learnerships, short courses and more." },
     ],
   }),
@@ -28,7 +28,7 @@ function CoursesPage() {
     <PageShell
       eyebrow="What can I study?"
       title="Explore every learning opportunity"
-      description="Universities, TVET colleges, private colleges, learnerships and short courses — filter by what matters to you."
+      description="Universities, TVET colleges, private colleges, learnerships and short courses - filter by what matters to you."
     >
       {/* Search */}
       <div className="mb-10 flex items-center gap-3 rounded-2xl border border-border bg-card p-2 pl-4 shadow-[var(--shadow-card)]">
@@ -97,7 +97,7 @@ function CoursesPage() {
             <h3 className="mt-3 text-lg font-semibold tracking-tight text-foreground">{c.title}</h3>
             <div className="mt-4 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
               <Info label="Qualification" value={c.qualification} />
-              <Info label="NQF Level" value={c.nqf ? String(c.nqf) : "—"} />
+              <Info label="NQF Level" value={c.nqf ? String(c.nqf) : "-"} />
               <Info label="Duration" value={c.duration} />
               <Info label="Estimated Cost" value={c.cost} />
             </div>

@@ -6,8 +6,8 @@ import { SKILLS } from "@/lib/data";
 export const Route = createFileRoute("/skills")({
   head: () => ({
     meta: [
-      { title: "Skills — SA Learn" },
-      { name: "description", content: "Job-ready skills you can start learning today — free and paid resources for programming, design, business and more." },
+      { title: "Skills - SA Learn" },
+      { name: "description", content: "Job-ready skills you can start learning today - free and paid resources for programming, design, business and more." },
     ],
   }),
   component: SkillsPage,
@@ -18,7 +18,7 @@ function SkillsPage() {
     <PageShell
       eyebrow="What can I learn today?"
       title="Job-ready skills"
-      description="Practical skills that make you employable — start now, mostly free, no matric required."
+      description="Practical skills that make you employable - start now, mostly free, no matric required."
     >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {SKILLS.map((s) => (
