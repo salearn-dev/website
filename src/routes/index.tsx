@@ -5,7 +5,7 @@ import { CAREERS, COURSES } from "@/lib/data";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SA Learn - Gain skills. Get qualified. Get hired." },
+      { title: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
       { name: "description", content: "Find courses, careers, funding and skills paths that match your results and goals." },
     ],
   }),
@@ -32,7 +32,7 @@ function Landing() {
             SA Learn
           </h1>
           <p className="mt-4 text-lg text-foreground md:text-xl">
-            Gain skills. Get qualified. Get hired.
+            Gain Skills. Get Qualifications. Get Hired.
           </p>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
             Find courses, careers, funding and skills paths that match your results and your goals - all in one calm, verified place.

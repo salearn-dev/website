@@ -11,7 +11,7 @@ export function SiteFooter() {
               <span className="text-base font-semibold tracking-tight">SA Learn</span>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              Gain skills. Get qualified. Get hired.
+              Gain Skills. Get Qualifications. Get Hired.
             </p>
           </div>
           <FooterCol title="Discover" links={[

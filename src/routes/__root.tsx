@@ -66,10 +66,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SA Learn - Gain skills. Get qualified. Get hired." },
+      { title: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
       { name: "description", content: "SA Learn helps South African students discover accredited courses, funding, careers and skills - all in one calm, modern platform." },
       { name: "author", content: "SA Learn" },
-      { property: "og:title", content: "SA Learn - Gain skills. Get qualified. Get hired." },
+      { property: "og:title", content: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
       { property: "og:description", content: "Discover accredited South African courses, funding, careers and skills - all in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
