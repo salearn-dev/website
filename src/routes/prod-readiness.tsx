@@ -25,7 +25,10 @@ const GROUPS: Group[] = [
     route: "/",
     title: "Landing",
     features: [
-      { label: "Static hero with tagline 'Gain Skills. Get Qualifications. Get Hired.'", done: true },
+      {
+        label: "Static hero with tagline 'Gain Skills. Get Qualifications. Get Hired.'",
+        done: true,
+      },
       { label: "Mission section and FAQ", done: true },
       { label: "Global site header and footer with SA flag branding", done: true },
       { label: "Dynamic dark mode (light / dark / system) with anti-flash script", done: true },
@@ -68,10 +71,10 @@ const GROUPS: Group[] = [
     features: [
       { label: "Static career cards", done: true },
       { label: "Mapping careers to required subjects and study routes", done: true },
-      { label: "O*NET-style detail pages", done: false },
-      { label: "Salary bands per experience level", done: false },
-      { label: "Demand and growth-outlook signals", done: false },
-      { label: "Links from career to matching courses and skills", done: false },
+      { label: "O*NET-style detail pages", done: true },
+      { label: "Salary bands per experience level", done: true },
+      { label: "Demand and growth-outlook signals", done: true },
+      { label: "Links from career to matching courses and skills", done: true },
     ],
   },
   {
@@ -126,8 +129,8 @@ const GROUPS: Group[] = [
     features: [
       { label: "Static explainer content", done: true },
       { label: "Editorial CMS with draft / review / publish states", done: false },
-      { label: "Plain-language glossary", done: false },
-      { label: "Structured how-tos with JSON-LD", done: false },
+      { label: "Plain-language glossary", done: true },
+      { label: "Structured how-tos with JSON-LD", done: true },
       { label: "Bilingual content (English + isiZulu first)", done: false },
     ],
   },
@@ -204,13 +207,19 @@ function ProdReadinessPage() {
       <section className="mb-10 rounded-3xl border border-border bg-card p-6 md:p-8">
         <div className="flex items-baseline justify-between gap-4">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Overall progress</p>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Overall progress
+            </p>
             <p className="mt-1 text-sm text-muted-foreground">
               <span className="text-2xl font-semibold text-foreground">{pct}%</span>
-              <span className="ml-2">{done} of {total} features complete</span>
+              <span className="ml-2">
+                {done} of {total} features complete
+              </span>
             </p>
           </div>
-          <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">Prototype v1</span>
+          <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
+            Prototype v1
+          </span>
         </div>
         <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-muted">
           <div
@@ -239,7 +248,9 @@ function ProdReadinessPage() {
               <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border px-6 py-4">
                 <div>
                   <p className="font-mono text-xs text-muted-foreground">{group.route}</p>
-                  <h2 className="mt-0.5 text-lg font-semibold tracking-tight text-foreground">{group.title}</h2>
+                  <h2 className="mt-0.5 text-lg font-semibold tracking-tight text-foreground">
+                    {group.title}
+                  </h2>
                   {next && (
                     <p className="mt-2 max-w-2xl text-xs text-muted-foreground">
                       <span className="font-medium text-foreground">Next:</span> {next.label}
@@ -247,7 +258,9 @@ function ProdReadinessPage() {
                   )}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span>{gDone} / {gTotal}</span>
+                  <span>
+                    {gDone} / {gTotal}
+                  </span>
                   <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
                     <div className="h-full bg-primary" style={{ width: `${gPct}%` }} />
                   </div>
@@ -258,7 +271,10 @@ function ProdReadinessPage() {
                   const meta = getFeatureMeta(group, f);
 
                   return (
-                    <li key={f.label} className="flex flex-col gap-3 px-6 py-3 sm:flex-row sm:items-start">
+                    <li
+                      key={f.label}
+                      className="flex flex-col gap-3 px-6 py-3 sm:flex-row sm:items-start"
+                    >
                       <div className="flex flex-1 items-start gap-3">
                         <span
                           aria-hidden
@@ -270,14 +286,22 @@ function ProdReadinessPage() {
                         >
                           {f.done && <Check className="h-3.5 w-3.5" />}
                         </span>
-                        <span className={`text-sm ${f.done ? "text-foreground" : "text-muted-foreground"}`}>
+                        <span
+                          className={`text-sm ${f.done ? "text-foreground" : "text-muted-foreground"}`}
+                        >
                           {f.label}
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-2 pl-8 text-[11px] sm:justify-end sm:pl-0">
-                        <span className="rounded-full bg-muted px-2.5 py-1 font-medium text-foreground">{meta.priority}</span>
-                        <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">{meta.owner}</span>
-                        <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">{meta.status}</span>
+                        <span className="rounded-full bg-muted px-2.5 py-1 font-medium text-foreground">
+                          {meta.priority}
+                        </span>
+                        <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                          {meta.owner}
+                        </span>
+                        <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                          {meta.status}
+                        </span>
                       </div>
                     </li>
                   );

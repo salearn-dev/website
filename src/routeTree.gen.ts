@@ -21,7 +21,9 @@ import { Route as FundingRouteImport } from './routes/funding'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
+import { Route as CareersSlugRouteImport } from './routes/careers.$slug'
 
 const UnlockRoute = UnlockRouteImport.update({
   id: '/unlock',
@@ -83,18 +85,28 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => GuidesRoute,
+} as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => CoursesRoute,
 } as any)
+const CareersSlugRoute = CareersSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CareersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/careers': typeof CareersRoute
+  '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
-  '/guides': typeof GuidesRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/institutions': typeof InstitutionsRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
@@ -102,14 +114,16 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/guides/$slug': typeof GuidesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/careers': typeof CareersRoute
+  '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
-  '/guides': typeof GuidesRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/institutions': typeof InstitutionsRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
@@ -117,15 +131,17 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/guides/$slug': typeof GuidesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/careers': typeof CareersRoute
+  '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
-  '/guides': typeof GuidesRoute
+  '/guides': typeof GuidesRouteWithChildren
   '/institutions': typeof InstitutionsRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
@@ -133,7 +149,9 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/guides/$slug': typeof GuidesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,7 +168,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/careers/$slug'
     | '/courses/$slug'
+    | '/guides/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -165,7 +185,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/careers/$slug'
     | '/courses/$slug'
+    | '/guides/$slug'
   id:
     | '__root__'
     | '/'
@@ -180,15 +202,17 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/careers/$slug'
     | '/courses/$slug'
+    | '/guides/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CareersRoute: typeof CareersRoute
+  CareersRoute: typeof CareersRouteWithChildren
   CoursesRoute: typeof CoursesRouteWithChildren
   FundingRoute: typeof FundingRoute
-  GuidesRoute: typeof GuidesRoute
+  GuidesRoute: typeof GuidesRouteWithChildren
   InstitutionsRoute: typeof InstitutionsRoute
   MatchRoute: typeof MatchRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
@@ -284,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/guides/$slug': {
+      id: '/guides/$slug'
+      path: '/$slug'
+      fullPath: '/guides/$slug'
+      preLoaderRoute: typeof GuidesSlugRouteImport
+      parentRoute: typeof GuidesRoute
+    }
     '/courses/$slug': {
       id: '/courses/$slug'
       path: '/$slug'
@@ -291,8 +322,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof CoursesRoute
     }
+    '/careers/$slug': {
+      id: '/careers/$slug'
+      path: '/$slug'
+      fullPath: '/careers/$slug'
+      preLoaderRoute: typeof CareersSlugRouteImport
+      parentRoute: typeof CareersRoute
+    }
   }
 }
+
+interface CareersRouteChildren {
+  CareersSlugRoute: typeof CareersSlugRoute
+}
+
+const CareersRouteChildren: CareersRouteChildren = {
+  CareersSlugRoute: CareersSlugRoute,
+}
+
+const CareersRouteWithChildren =
+  CareersRoute._addFileChildren(CareersRouteChildren)
 
 interface CoursesRouteChildren {
   CoursesSlugRoute: typeof CoursesSlugRoute
@@ -305,12 +354,23 @@ const CoursesRouteChildren: CoursesRouteChildren = {
 const CoursesRouteWithChildren =
   CoursesRoute._addFileChildren(CoursesRouteChildren)
 
+interface GuidesRouteChildren {
+  GuidesSlugRoute: typeof GuidesSlugRoute
+}
+
+const GuidesRouteChildren: GuidesRouteChildren = {
+  GuidesSlugRoute: GuidesSlugRoute,
+}
+
+const GuidesRouteWithChildren =
+  GuidesRoute._addFileChildren(GuidesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CareersRoute: CareersRoute,
+  CareersRoute: CareersRouteWithChildren,
   CoursesRoute: CoursesRouteWithChildren,
   FundingRoute: FundingRoute,
-  GuidesRoute: GuidesRoute,
+  GuidesRoute: GuidesRouteWithChildren,
   InstitutionsRoute: InstitutionsRoute,
   MatchRoute: MatchRoute,
   OpportunitiesRoute: OpportunitiesRoute,
