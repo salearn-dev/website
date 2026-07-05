@@ -1,5 +1,14 @@
 # Codex Model Log
 
+**Model name:** Codex
+**Date:** 2026-07-05 15:13:33 +02:00
+**Assigned role for this task:** Learner-facing course detail pages, course filters, SEO/JSON-LD presentation, and clarity copy.
+**Files or areas expected to touch:** `src/routes/courses.tsx`, `src/routes/courses.$slug.tsx`, `src/routes/sitemap[.]xml.ts`, `src/routes/prod-readiness.tsx`, `models/codex.md`.
+**Files or areas to avoid:** Auth, RLS, secrets, ingestion, cron, backend verification, POPIA enforcement, and Lovable-owned gate logic.
+**Task summary:** Add static-dynamic course detail pages and improve the course explorer without inventing production data.
+**Known risks:** Course requirements, city-level filters, fees, deadlines, and accreditation status still need verified backend/source data.
+**Completion report location:** This file.
+
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus

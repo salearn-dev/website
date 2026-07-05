@@ -1,15 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { getProdReadinessGate } from "@/lib/gate.functions";
 
 export const Route = createFileRoute("/prod-readiness")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Production Readiness - SA Learn" },
-      { name: "description", content: "Live checklist of SA Learn features by route, tracking progress toward a production-ready platform." },
-      { name: "robots", content: "noindex" },
+      { name: "description", content: "Internal SA Learn roadmap. Restricted access." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
+  loader: () => getProdReadinessGate(),
   component: ProdReadinessPage,
 });
 
