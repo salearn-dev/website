@@ -46,9 +46,9 @@ const GROUPS: Group[] = [
       { label: "Grouped results: Qualify, Almost, Do not qualify, Alternatives", done: true },
       { label: "Server-side rules engine per institution and faculty", done: false },
       { label: "Saved learner profiles with subjects and marks", done: false },
-      { label: "Downloadable PDF match report", done: false },
+      { label: "Downloadable PDF match report", done: true },
       { label: "Explanations for every result (why / why not)", done: true },
-      { label: "NBT flags and additional-test awareness", done: false },
+      { label: "NBT flags and additional-test awareness", done: true },
     ],
   },
   {
@@ -120,7 +120,7 @@ const GROUPS: Group[] = [
       { label: "Weekly cron to flag stale records (>90 days)", done: false },
       { label: "Public API for institution partners to push windows", done: false },
       { label: "Reminders for saved opportunity deadlines", done: false },
-      { label: "Filtering by province, sector and type", done: false },
+      { label: "Filtering by province, sector and type", done: true },
     ],
   },
   {

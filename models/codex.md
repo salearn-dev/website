@@ -1,19 +1,34 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-05 18:04:52 +02:00
-**Assigned role for this task:** Learner-facing `/guides` production-readiness improvements.
-**Files or areas expected to touch:** `src/lib/data.ts`, `src/routes/guides.tsx`, `src/routes/guides.$slug.tsx`, `src/routes/sitemap[.]xml.ts`, `src/routes/prod-readiness.tsx`, `models/codex.md`.
-**Files or areas to avoid:** Auth, RLS, ingestion, cron, backend verification, POPIA enforcement, deployment secrets, and unrelated route work.
-**Task summary:** Complete the approved `/guides` glossary and structured how-to JSON-LD items as a separate pass.
-**Known risks:** Guide content is plain-language prototype content and still needs official editorial/source review before production claims.
+**Date:** 2026-07-05 18:35:11 +02:00
+**Assigned role for this task:** Learner-facing `/match` and `/opportunities` production-readiness improvements.
+**Files or areas expected to touch:** `src/routes/match.tsx`, `src/routes/opportunities.tsx`, `src/lib/data.ts`, `src/routes/prod-readiness.tsx`, `models/codex.md`.
+**Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, and deployment secrets.
+**Task summary:** Complete the approved three-item batch to move `/prod-readiness` from 46% to 50%.
+**Known risks:** Match report generation and opportunity filtering are client-side prototype features; official NBT/test rules and live opportunity data still need backend/source verification.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Guide readability and SEO readiness. Current task: complete only the approved `/guides` glossary and structured how-to items.
+Match and opportunity actionability. Current task: complete the approved 50% readiness batch without entering backend-owned work.
+
+## Match Report, NBT Awareness, and Opportunity Filters
+
+**Date/Time:** 2026-07-05 18:35:11 +02:00
+
+**Files Modified:**
+
+- `src/routes/match.tsx`
+- `src/routes/opportunities.tsx`
+- `src/lib/data.ts`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added NBT and additional-test awareness to prototype match results, including clear "needs confirmation" language where official rules are not verified. Added a client-side downloadable match report as a PDF file containing APS, interest, grouped recommendations, reasons, met/missing requirements, additional checks, next steps, and verification warnings. Added province, sector, and type filters to `/opportunities` using static prototype fields, and updated `/prod-readiness` to mark only the three approved items complete, moving readiness to 50%.
 
 ## Guide Glossary and Structured How-To Pages
 

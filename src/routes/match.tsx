@@ -1,24 +1,54 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle, XCircle, Compass } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  Compass,
+  Download,
+} from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 
 export const Route = createFileRoute("/match")({
   head: () => ({
     meta: [
       { title: "Match - SA Learn" },
-      { name: "description", content: "Enter your subjects and marks to see what you qualify for, and what to do if you almost qualify." },
+      {
+        name: "description",
+        content:
+          "Enter your subjects and marks to see what you qualify for, and what to do if you almost qualify.",
+      },
     ],
   }),
   component: MatchPage,
 });
 
 type Subject = { name: string; mark: number };
+type MatchResult = {
+  title: string;
+  institution: string;
+  confidence: "Verified match" | "Partial match" | "Needs confirmation" | "Data outdated";
+  reason: string;
+  requirementsMet: string[];
+  requirementsMissing: string[];
+  additionalChecks: string[];
+  nextStep: string;
+};
 
 const SUBJECT_OPTIONS = [
-  "Mathematics", "Mathematical Literacy", "English HL", "English FAL",
-  "Physical Sciences", "Life Sciences", "Accounting", "Geography",
-  "History", "Business Studies", "Life Orientation",
+  "Mathematics",
+  "Mathematical Literacy",
+  "English HL",
+  "English FAL",
+  "Physical Sciences",
+  "Life Sciences",
+  "Accounting",
+  "Geography",
+  "History",
+  "Business Studies",
+  "Life Orientation",
 ];
 
 function apsPoints(mark: number) {
@@ -29,6 +59,59 @@ function apsPoints(mark: number) {
   if (mark >= 40) return 3;
   if (mark >= 30) return 2;
   return 1;
+}
+
+function makePdfBlob(text: string) {
+  const lines = text.split("\n").flatMap((line) => {
+    if (line.length <= 88) return [line];
+    return line.match(/.{1,88}(\s|$)/g)?.map((part) => part.trim()) ?? [line];
+  });
+  const content = [
+    "BT",
+    "/F1 11 Tf",
+    "50 780 Td",
+    "14 TL",
+    ...lines.flatMap((line) => [`(${escapePdfText(line)}) Tj`, "T*"]),
+    "ET",
+  ].join("\n");
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+  ];
+  const parts = ["%PDF-1.4\n"];
+  const offsets = [0];
+
+  objects.forEach((object, index) => {
+    offsets.push(parts.join("").length);
+    parts.push(`${index + 1} 0 obj\n${object}\nendobj\n`);
+  });
+
+  const xrefOffset = parts.join("").length;
+  parts.push(`xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`);
+  offsets.slice(1).forEach((offset) => {
+    parts.push(`${String(offset).padStart(10, "0")} 00000 n \n`);
+  });
+  parts.push(
+    `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`,
+  );
+
+  return new Blob(parts, { type: "application/pdf" });
+}
+
+function escapePdfText(value: string) {
+  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+
+function saveBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function MatchPage() {
@@ -65,8 +148,13 @@ function MatchPage() {
           const active = step === n;
           const done = step > n;
           return (
-            <li key={label} className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 ${active ? "bg-primary text-primary-foreground" : done ? "bg-muted text-foreground" : "bg-muted/50 text-muted-foreground"}`}>
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-background/20 text-[10px] font-semibold">{n}</span>
+            <li
+              key={label}
+              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 ${active ? "bg-primary text-primary-foreground" : done ? "bg-muted text-foreground" : "bg-muted/50 text-muted-foreground"}`}
+            >
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-background/20 text-[10px] font-semibold">
+                {n}
+              </span>
               {label}
             </li>
           );
@@ -76,8 +164,12 @@ function MatchPage() {
       <div className="rounded-3xl border border-border bg-card p-6 md:p-10">
         {step === 1 && (
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 1 - Pick your subjects</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Add or remove the subjects that appear on your report.</p>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">
+              Step 1 - Pick your subjects
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Add or remove the subjects that appear on your report.
+            </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {SUBJECT_OPTIONS.map((s) => {
                 const on = subjects.some((x) => x.name === s);
@@ -101,8 +193,12 @@ function MatchPage() {
 
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 2 - Enter your marks</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Type the percentage for each subject.</p>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">
+              Step 2 - Enter your marks
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Type the percentage for each subject.
+            </p>
             <div className="mt-6 divide-y divide-border rounded-xl border border-border">
               {subjects.map((s, i) => (
                 <div key={s.name} className="flex items-center justify-between px-4 py-3">
@@ -115,7 +211,9 @@ function MatchPage() {
                       value={s.mark}
                       onChange={(e) => {
                         const v = Math.max(0, Math.min(100, Number(e.target.value) || 0));
-                        setSubjects((prev) => prev.map((x, j) => (j === i ? { ...x, mark: v } : x)));
+                        setSubjects((prev) =>
+                          prev.map((x, j) => (j === i ? { ...x, mark: v } : x)),
+                        );
                       }}
                       className="h-10 w-20 rounded-md border border-input bg-background px-3 text-right text-sm"
                     />
@@ -133,19 +231,27 @@ function MatchPage() {
 
         {step === 3 && (
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Step 3 - Choose an interest</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Pick the field that interests you most. You can change this later.</p>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">
+              Step 3 - Choose an interest
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Pick the field that interests you most. You can change this later.
+            </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-              {["Health", "Technology", "Business", "Engineering", "Education", "Creative"].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setInterest(f)}
-                  className={`rounded-2xl border p-5 text-left transition-all ${interest === f ? "border-foreground/40 bg-muted/60" : "border-border bg-background hover:border-foreground/20"}`}
-                >
-                  <p className="text-base font-medium text-foreground">{f}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">Careers, courses and skills related to {f.toLowerCase()}.</p>
-                </button>
-              ))}
+              {["Health", "Technology", "Business", "Engineering", "Education", "Creative"].map(
+                (f) => (
+                  <button
+                    key={f}
+                    onClick={() => setInterest(f)}
+                    className={`rounded-2xl border p-5 text-left transition-all ${interest === f ? "border-foreground/40 bg-muted/60" : "border-border bg-background hover:border-foreground/20"}`}
+                  >
+                    <p className="text-base font-medium text-foreground">{f}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Careers, courses and skills related to {f.toLowerCase()}.
+                    </p>
+                  </button>
+                ),
+              )}
             </div>
           </div>
         )}
@@ -181,92 +287,219 @@ function MatchPage() {
   );
 }
 
-function Results({ aps, interest, subjects }: { aps: number; interest: string; subjects: Subject[] }) {
+function Results({
+  aps,
+  interest,
+  subjects,
+}: {
+  aps: number;
+  interest: string;
+  subjects: Subject[];
+}) {
   const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
   const mathsMark = markFor("Mathematics") ?? markFor("Mathematical Literacy") ?? 0;
   const englishMark = markFor("English HL") ?? markFor("English FAL") ?? 0;
   const lifeSciencesMark = markFor("Life Sciences") ?? 0;
+  const groups: Array<{
+    title: string;
+    tone: "success" | "warning" | "danger" | "growth";
+    icon: React.ComponentType<{ className?: string }>;
+    results: MatchResult[];
+  }> = [
+    {
+      tone: "success",
+      icon: CheckCircle2,
+      title: "You qualify",
+      results: [
+        {
+          title: "Higher Certificate in Information Technology",
+          institution: "Walter Sisulu University",
+          confidence: "Partial match",
+          reason:
+            "Your current marks appear to meet the prototype APS and English thresholds for this pathway.",
+          requirementsMet: [
+            `Estimated APS is ${aps}, above the prototype minimum of 20.`,
+            `English mark is ${englishMark}%, above the prototype minimum of 50%.`,
+          ],
+          requirementsMissing: ["Official faculty requirements still need source verification."],
+          additionalChecks: [
+            "NBT status: Not flagged in this prototype route.",
+            "Additional tests: No additional-test rule is known yet; confirm with the institution.",
+          ],
+          nextStep:
+            "Confirm the current admission rules on the official institution page before applying.",
+        },
+        {
+          title: "Diploma in Information Technology",
+          institution: "False Bay TVET College",
+          confidence: "Partial match",
+          reason:
+            "Your APS and Mathematics result fit the current prototype rule for this technical route.",
+          requirementsMet: [
+            `Estimated APS is ${aps}, above the prototype minimum of 22.`,
+            `Mathematics-related mark is ${mathsMark}%, above the prototype minimum of 50%.`,
+          ],
+          requirementsMissing: ["Campus-specific intake and subject rules are not verified yet."],
+          additionalChecks: [
+            "NBT status: Usually not part of TVET intake, but this needs official confirmation.",
+            "Additional tests: Placement or campus readiness checks may apply for some intakes.",
+          ],
+          nextStep:
+            "Compare this with related ICT programmes and confirm the latest TVET intake dates.",
+        },
+      ],
+    },
+    {
+      tone: "warning",
+      icon: AlertTriangle,
+      title: "Almost qualify",
+      results: [
+        {
+          title: "Diploma in Nursing",
+          institution: "University of Limpopo",
+          confidence: "Needs confirmation",
+          reason: "You are close, but one listed prototype subject threshold is not met.",
+          requirementsMet: [
+            `Estimated APS is ${aps}, which may be competitive for some diploma routes.`,
+          ],
+          requirementsMissing: [
+            `Life Sciences prototype minimum is 60%; your mark is ${lifeSciencesMark}%.`,
+          ],
+          additionalChecks: [
+            "NBT status: Health programmes may require additional selection steps; no verified NBT rule is stored yet.",
+            "Additional tests: Selection, interview, health clearance or placement checks may apply.",
+          ],
+          nextStep:
+            "Consider rewriting Life Sciences, checking bridging options, or comparing related health programmes.",
+        },
+      ],
+    },
+    {
+      tone: "danger",
+      icon: XCircle,
+      title: "Do not qualify yet",
+      results: [
+        {
+          title: "BSc Engineering (Civil)",
+          institution: "University of Cape Town",
+          confidence: "Needs confirmation",
+          reason:
+            "This path usually has higher Mathematics requirements than your current prototype profile shows.",
+          requirementsMet: [
+            `Estimated APS is ${aps}; some engineering alternatives may still be worth checking.`,
+          ],
+          requirementsMissing: [
+            `Mathematics prototype minimum is 70%; your Mathematics-related mark is ${mathsMark}%.`,
+          ],
+          additionalChecks: [
+            "NBT status: NBTs may be required or recommended for some university engineering routes.",
+            "Additional tests: Faculty selection and placement requirements must be confirmed from the official source.",
+          ],
+          nextStep:
+            "Look at a bridging year, a higher certificate route, or a related TVET engineering pathway.",
+        },
+      ],
+    },
+    {
+      tone: "growth",
+      icon: Compass,
+      title: "Alternative pathways",
+      results: [
+        {
+          title: "Learnership: Health Promotion",
+          institution: "HWSETA partner",
+          confidence: "Needs confirmation",
+          reason:
+            "This alternative is shown because learnership routes may rely less on APS and more on provider requirements.",
+          requirementsMet: [
+            "APS is not used in this prototype alternative-path rule.",
+            `Interest selected: ${interest}.`,
+          ],
+          requirementsMissing: [
+            "Open provider, age, location, and closing-date requirements still need verification.",
+          ],
+          additionalChecks: [
+            "NBT status: Not applicable in this prototype learnership route.",
+            "Additional tests: Provider screening, interviews or workplace checks may apply.",
+          ],
+          nextStep:
+            "Check current HWSETA-linked listings and only apply through official provider links.",
+        },
+        {
+          title: "Short Course: Community Health Worker",
+          institution: "Online / accredited providers",
+          confidence: "Needs confirmation",
+          reason:
+            "This is a lower-barrier skill route that may help you build evidence while comparing formal programmes.",
+          requirementsMet: [
+            `Interest selected: ${interest}.`,
+            "Short courses can be useful while preparing stronger applications.",
+          ],
+          requirementsMissing: [
+            "Provider accreditation and certificate value must be checked before paying.",
+          ],
+          additionalChecks: [
+            "NBT status: Not applicable for most short-course routes.",
+            "Additional tests: Provider onboarding or practical assessments may apply.",
+          ],
+          nextStep: "Choose only providers with visible registration or accreditation evidence.",
+        },
+      ],
+    },
+  ];
+
+  function downloadReport() {
+    const lines = [
+      "SA Learn Match Report",
+      "",
+      `Estimated APS: ${aps}`,
+      `Selected interest: ${interest}`,
+      "",
+      "Important: This is a prototype report. Confirm requirements, deadlines, NBT rules and additional tests with official providers before applying.",
+      "",
+      ...groups.flatMap((group) => [
+        group.title,
+        ...group.results.flatMap((result) => [
+          `- ${result.title} (${result.institution})`,
+          `  Confidence: ${result.confidence}`,
+          `  Why: ${result.reason}`,
+          `  Met: ${result.requirementsMet.join("; ")}`,
+          `  Missing/unverified: ${result.requirementsMissing.join("; ")}`,
+          `  NBT/additional checks: ${result.additionalChecks.join("; ")}`,
+          `  Next step: ${result.nextStep}`,
+          "",
+        ]),
+      ]),
+    ];
+
+    saveBlob(makePdfBlob(lines.join("\n")), "sa-learn-match-report.pdf");
+  }
 
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight text-foreground">Your results</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Based on an APS of <span className="font-medium text-foreground">{aps}</span> and interest in <span className="font-medium text-foreground">{interest}</span>.
-        </p>
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight text-foreground">Your results</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Based on an APS of <span className="font-medium text-foreground">{aps}</span> and
+            interest in <span className="font-medium text-foreground">{interest}</span>.
+          </p>
+        </div>
+        <button
+          onClick={downloadReport}
+          className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          <Download className="h-4 w-4" /> Download report
+        </button>
       </div>
 
-      <Group tone="success" icon={CheckCircle2} title="You qualify">
-        <ResultCard
-          title="Higher Certificate in Information Technology"
-          institution="Walter Sisulu University"
-          confidence="Partial match"
-          reason="Your current marks appear to meet the prototype APS and English thresholds for this pathway."
-          requirementsMet={[
-            `Estimated APS is ${aps}, above the prototype minimum of 20.`,
-            `English mark is ${englishMark}%, above the prototype minimum of 50%.`,
-          ]}
-          requirementsMissing={["Official faculty requirements still need source verification."]}
-          nextStep="Confirm the current admission rules on the official institution page before applying."
-        />
-        <ResultCard
-          title="Diploma in Information Technology"
-          institution="False Bay TVET College"
-          confidence="Partial match"
-          reason="Your APS and Mathematics result fit the current prototype rule for this technical route."
-          requirementsMet={[
-            `Estimated APS is ${aps}, above the prototype minimum of 22.`,
-            `Mathematics-related mark is ${mathsMark}%, above the prototype minimum of 50%.`,
-          ]}
-          requirementsMissing={["Campus-specific intake and subject rules are not verified yet."]}
-          nextStep="Compare this with related ICT programmes and confirm the latest TVET intake dates."
-        />
-      </Group>
-
-      <Group tone="warning" icon={AlertTriangle} title="Almost qualify">
-        <ResultCard
-          title="Diploma in Nursing"
-          institution="University of Limpopo"
-          confidence="Needs confirmation"
-          reason="You are close, but one listed prototype subject threshold is not met."
-          requirementsMet={[`Estimated APS is ${aps}, which may be competitive for some diploma routes.`]}
-          requirementsMissing={[`Life Sciences prototype minimum is 60%; your mark is ${lifeSciencesMark}%.`]}
-          nextStep="Consider rewriting Life Sciences, checking bridging options, or comparing related health programmes."
-        />
-      </Group>
-
-      <Group tone="danger" icon={XCircle} title="Do not qualify yet">
-        <ResultCard
-          title="BSc Engineering (Civil)"
-          institution="University of Cape Town"
-          confidence="Needs confirmation"
-          reason="This path usually has higher Mathematics requirements than your current prototype profile shows."
-          requirementsMet={[`Estimated APS is ${aps}; some engineering alternatives may still be worth checking.`]}
-          requirementsMissing={[`Mathematics prototype minimum is 70%; your Mathematics-related mark is ${mathsMark}%.`]}
-          nextStep="Look at a bridging year, a higher certificate route, or a related TVET engineering pathway."
-        />
-      </Group>
-
-      <Group tone="growth" icon={Compass} title="Alternative pathways">
-        <ResultCard
-          title="Learnership: Health Promotion"
-          institution="HWSETA partner"
-          confidence="Needs confirmation"
-          reason="This alternative is shown because learnership routes may rely less on APS and more on provider requirements."
-          requirementsMet={["APS is not used in this prototype alternative-path rule.", `Interest selected: ${interest}.`]}
-          requirementsMissing={["Open provider, age, location, and closing-date requirements still need verification."]}
-          nextStep="Check current HWSETA-linked listings and only apply through official provider links."
-        />
-        <ResultCard
-          title="Short Course: Community Health Worker"
-          institution="Online / accredited providers"
-          confidence="Needs confirmation"
-          reason="This is a lower-barrier skill route that may help you build evidence while comparing formal programmes."
-          requirementsMet={[`Interest selected: ${interest}.`, "Short courses can be useful while preparing stronger applications."]}
-          requirementsMissing={["Provider accreditation and certificate value must be checked before paying."]}
-          nextStep="Choose only providers with visible registration or accreditation evidence."
-        />
-      </Group>
+      {groups.map((group) => (
+        <Group key={group.title} tone={group.tone} icon={group.icon} title={group.title}>
+          {group.results.map((result) => (
+            <ResultCard key={result.title} {...result} />
+          ))}
+        </Group>
+      ))}
     </div>
   );
 }
@@ -291,7 +524,9 @@ function Group({
   return (
     <section>
       <div className="mb-3 flex items-center gap-2">
-        <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${map[tone]}`}>
+        <span
+          className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${map[tone]}`}
+        >
           <Icon className="h-4 w-4" />
         </span>
         <h3 className="text-base font-semibold text-foreground">{title}</h3>
@@ -308,6 +543,7 @@ function ResultCard({
   reason,
   requirementsMet,
   requirementsMissing,
+  additionalChecks,
   nextStep,
 }: {
   title: string;
@@ -316,6 +552,7 @@ function ResultCard({
   reason: string;
   requirementsMet: string[];
   requirementsMissing: string[];
+  additionalChecks: string[];
   nextStep: string;
 }) {
   return (
@@ -328,10 +565,16 @@ function ResultCard({
       <p className="mt-3 text-sm text-muted-foreground">{reason}</p>
       <div className="mt-4 grid gap-3 text-sm">
         <RequirementList title="Requirements met" items={requirementsMet} tone="success" />
-        <RequirementList title="Still missing or unverified" items={requirementsMissing} tone="warning" />
+        <RequirementList
+          title="Still missing or unverified"
+          items={requirementsMissing}
+          tone="warning"
+        />
+        <RequirementList title="NBT / additional checks" items={additionalChecks} tone="warning" />
       </div>
       <p className="mt-3 rounded-md bg-muted/60 p-3 text-sm text-foreground">
-        <span className="font-medium">Next step: </span>{nextStep}
+        <span className="font-medium">Next step: </span>
+        {nextStep}
       </p>
     </div>
   );

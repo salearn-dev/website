@@ -797,6 +797,8 @@ export const OPPORTUNITIES: Array<{
   id: string;
   title: string;
   category: string;
+  sector: string;
+  type: string;
   province: string;
   closes: string;
   paid: boolean;
@@ -806,6 +808,8 @@ export const OPPORTUNITIES: Array<{
     id: "op1",
     title: "University of Cape Town - 2027 Undergraduate Applications",
     category: "University Applications",
+    sector: "Higher Education",
+    type: "Application",
     province: "Western Cape",
     closes: "30 September",
     paid: false,
@@ -820,6 +824,8 @@ export const OPPORTUNITIES: Array<{
     id: "op2",
     title: "False Bay TVET College - Trimester Intake",
     category: "TVET Applications",
+    sector: "TVET",
+    type: "Application",
     province: "Western Cape",
     closes: "Rolling",
     paid: false,
@@ -834,6 +840,8 @@ export const OPPORTUNITIES: Array<{
     id: "op3",
     title: "MerSETA Plumbing Learnership",
     category: "Learnerships",
+    sector: "Trades",
+    type: "Learnership",
     province: "Gauteng",
     closes: "15 August",
     paid: true,
@@ -848,6 +856,8 @@ export const OPPORTUNITIES: Array<{
     id: "op4",
     title: "Standard Bank Graduate Programme",
     category: "Graduate Programmes",
+    sector: "Finance",
+    type: "Graduate Programme",
     province: "Nationwide",
     closes: "31 July",
     paid: true,
@@ -862,6 +872,8 @@ export const OPPORTUNITIES: Array<{
     id: "op5",
     title: "Investec IT Internship",
     category: "Internships",
+    sector: "Technology",
+    type: "Internship",
     province: "Western Cape",
     closes: "10 August",
     paid: true,
@@ -876,6 +888,8 @@ export const OPPORTUNITIES: Array<{
     id: "op6",
     title: "Sasol Engineering Bursary 2027",
     category: "Scholarships",
+    sector: "Engineering",
+    type: "Bursary",
     province: "Nationwide",
     closes: "30 April",
     paid: false,
@@ -890,6 +904,8 @@ export const OPPORTUNITIES: Array<{
     id: "op7",
     title: "Toyota Apprenticeship Programme",
     category: "Apprenticeships",
+    sector: "Manufacturing",
+    type: "Apprenticeship",
     province: "KwaZulu-Natal",
     closes: "20 September",
     paid: true,
@@ -904,6 +920,8 @@ export const OPPORTUNITIES: Array<{
     id: "op8",
     title: "Shoprite Learner Cashier Programme",
     category: "Entry-Level Jobs",
+    sector: "Retail",
+    type: "Entry-Level Job",
     province: "Nationwide",
     closes: "Rolling",
     paid: true,
