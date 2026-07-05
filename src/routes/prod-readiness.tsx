@@ -4,6 +4,7 @@ import { PageShell } from "@/components/page-shell";
 import { getProdReadinessGate } from "@/lib/gate.functions";
 
 export const Route = createFileRoute("/prod-readiness")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Production Readiness - SA Learn" },
