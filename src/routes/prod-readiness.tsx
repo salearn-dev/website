@@ -15,6 +15,7 @@ export const Route = createFileRoute("/prod-readiness")({
 
 type Feature = { label: string; done: boolean };
 type Group = { route: string; title: string; features: Feature[] };
+type FeatureMeta = { owner: string; priority: "P0" | "P1" | "P2"; status: string };
 
 const GROUPS: Group[] = [
   {
@@ -40,7 +41,7 @@ const GROUPS: Group[] = [
       { label: "Server-side rules engine per institution and faculty", done: false },
       { label: "Saved learner profiles with subjects and marks", done: false },
       { label: "Downloadable PDF match report", done: false },
-      { label: "Explanations for every result (why / why not)", done: false },
+      { label: "Explanations for every result (why / why not)", done: true },
       { label: "NBT flags and additional-test awareness", done: false },
     ],
   },
@@ -54,7 +55,7 @@ const GROUPS: Group[] = [
       { label: "Full catalogue synced from SAQA and DHET", done: false },
       { label: "Filter by NQF level, cost, city, delivery mode", done: false },
       { label: "Per-course detail pages with SEO metadata", done: false },
-      { label: "'Last verified' badges with source URL", done: false },
+      { label: "'Last verified' badges with source URL", done: true },
       { label: "JSON-LD Course structured data", done: false },
     ],
   },
@@ -147,6 +148,44 @@ const GROUPS: Group[] = [
   },
 ];
 
+// Codex: Multi-developer production readiness metadata
+// Status: Route checklist now exposes inferred priority, owner, status, and next incomplete item.
+function getFeatureMeta(group: Group, feature: Feature): FeatureMeta {
+  if (feature.done) {
+    return { owner: "Team", priority: "P2", status: "Built" };
+  }
+
+  const label = feature.label.toLowerCase();
+
+  if (
+    label.includes("source") ||
+    label.includes("verified") ||
+    label.includes("server-side") ||
+    label.includes("popia") ||
+    label.includes("row level security") ||
+    label.includes("auth") ||
+    label.includes("live")
+  ) {
+    return { owner: "Unassigned", priority: "P0", status: "Blocked by backend/data" };
+  }
+
+  if (
+    group.route === "/match" ||
+    label.includes("detail pages") ||
+    label.includes("filters") ||
+    label.includes("deadline") ||
+    label.includes("cms")
+  ) {
+    return { owner: "Unassigned", priority: "P1", status: "Ready for implementation" };
+  }
+
+  return { owner: "Unassigned", priority: "P2", status: "Planned" };
+}
+
+function nextIncomplete(group: Group) {
+  return group.features.find((feature) => !feature.done);
+}
+
 function ProdReadinessPage() {
   const all = GROUPS.flatMap((g) => g.features);
   const done = all.filter((f) => f.done).length;
@@ -191,12 +230,18 @@ function ProdReadinessPage() {
           const gDone = group.features.filter((f) => f.done).length;
           const gTotal = group.features.length;
           const gPct = Math.round((gDone / gTotal) * 100);
+          const next = nextIncomplete(group);
           return (
             <section key={group.route} className="rounded-2xl border border-border bg-card">
               <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-border px-6 py-4">
                 <div>
                   <p className="font-mono text-xs text-muted-foreground">{group.route}</p>
                   <h2 className="mt-0.5 text-lg font-semibold tracking-tight text-foreground">{group.title}</h2>
+                  {next && (
+                    <p className="mt-2 max-w-2xl text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">Next:</span> {next.label}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span>{gDone} / {gTotal}</span>
@@ -206,23 +251,34 @@ function ProdReadinessPage() {
                 </div>
               </header>
               <ul className="divide-y divide-border">
-                {group.features.map((f) => (
-                  <li key={f.label} className="flex items-start gap-3 px-6 py-3">
-                    <span
-                      aria-hidden
-                      className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border ${
-                        f.done
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-background"
-                      }`}
-                    >
-                      {f.done && <Check className="h-3.5 w-3.5" />}
-                    </span>
-                    <span className={`text-sm ${f.done ? "text-foreground" : "text-muted-foreground"}`}>
-                      {f.label}
-                    </span>
-                  </li>
-                ))}
+                {group.features.map((f) => {
+                  const meta = getFeatureMeta(group, f);
+
+                  return (
+                    <li key={f.label} className="flex flex-col gap-3 px-6 py-3 sm:flex-row sm:items-start">
+                      <div className="flex flex-1 items-start gap-3">
+                        <span
+                          aria-hidden
+                          className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-md border ${
+                            f.done
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-background"
+                          }`}
+                        >
+                          {f.done && <Check className="h-3.5 w-3.5" />}
+                        </span>
+                        <span className={`text-sm ${f.done ? "text-foreground" : "text-muted-foreground"}`}>
+                          {f.label}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 pl-8 text-[11px] sm:justify-end sm:pl-0">
+                        <span className="rounded-full bg-muted px-2.5 py-1 font-medium text-foreground">{meta.priority}</span>
+                        <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">{meta.owner}</span>
+                        <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">{meta.status}</span>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           );

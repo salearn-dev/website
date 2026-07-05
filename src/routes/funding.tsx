@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarClock, ArrowRight } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { TrustMetadata } from "@/components/trust-metadata";
 import { FUNDING } from "@/lib/data";
 
 export const Route = createFileRoute("/funding")({
@@ -31,6 +32,8 @@ function FundingPage() {
               <Item label="Covers" value={f.coverage} />
               <Item label="Best for" value={f.best} />
             </dl>
+
+            <TrustMetadata trust={f.trust} />
 
             <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
               <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">

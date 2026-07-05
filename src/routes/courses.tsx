@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { TrustMetadata } from "@/components/trust-metadata";
 import { COURSES, COURSE_CATEGORIES } from "@/lib/data";
 
 export const Route = createFileRoute("/courses")({
@@ -104,6 +105,7 @@ function CoursesPage() {
             <p className="mt-4 text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Careers: </span>{c.careers.join(", ")}
             </p>
+            <TrustMetadata trust={c.trust} />
             <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
               <div className="text-xs text-muted-foreground">
                 <span className="inline-flex items-center rounded-full bg-success-soft px-2.5 py-1 font-medium text-success">

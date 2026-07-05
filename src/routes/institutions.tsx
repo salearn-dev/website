@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS } from "@/lib/data";
 
 export const Route = createFileRoute("/institutions")({
@@ -42,7 +43,7 @@ function InstitutionsPage() {
                 </p>
               </div>
               <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
-                <CheckCircle2 className="h-3 w-3" /> Verified
+                <CheckCircle2 className="h-3 w-3" /> Listed
               </span>
             </div>
 
@@ -56,6 +57,8 @@ function InstitutionsPage() {
                 <p className="font-medium text-foreground">{i.funding}</p>
               </div>
             </div>
+
+            <TrustMetadata trust={i.trust} />
 
             <div className="mt-5 flex items-center justify-between">
               <a href={`https://${i.website}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">

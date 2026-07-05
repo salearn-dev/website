@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarClock, MapPin, Coins } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { TrustMetadata } from "@/components/trust-metadata";
 import { OPPORTUNITIES } from "@/lib/data";
 
 export const Route = createFileRoute("/opportunities")({
@@ -41,6 +42,7 @@ function OpportunitiesPage() {
                 <span className="inline-flex items-center gap-1"><CalendarClock className="h-3.5 w-3.5" /> Closes {o.closes}</span>
                 <span className="inline-flex items-center gap-1"><Coins className="h-3.5 w-3.5" /> {o.paid ? "Paid / stipend" : "No stipend"}</span>
               </div>
+              <TrustMetadata trust={o.trust} />
             </div>
             <button className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
               Apply

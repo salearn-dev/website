@@ -4,6 +4,13 @@
 
 export const LAST_VERIFIED = "Not yet verified";
 
+export type TrustMeta = {
+  sourceName: string;
+  sourceUrl: string;
+  lastVerifiedAt: string;
+  verificationStatus: "Prototype data" | "Needs confirmation" | "Verified";
+};
+
 export type Course = {
   slug: string;
   title: string;
@@ -17,6 +24,7 @@ export type Course = {
   province: string;
   category: string;
   accreditation: string;
+  trust: TrustMeta;
 };
 
 export const COURSE_CATEGORIES = [
@@ -44,6 +52,12 @@ export const COURSES: Course[] = [
     province: "Eastern Cape",
     category: "universities",
     accreditation: "DHET registered",
+    trust: {
+      sourceName: "Prototype seed data",
+      sourceUrl: "https://www.wsu.ac.za/",
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
   },
   {
     slug: "dip-nursing-ul",
@@ -58,6 +72,12 @@ export const COURSES: Course[] = [
     province: "Limpopo",
     category: "universities",
     accreditation: "SANC accredited",
+    trust: {
+      sourceName: "Prototype seed data",
+      sourceUrl: "https://www.ul.ac.za/",
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
   },
   {
     slug: "nc-electrical-tvet",
@@ -72,6 +92,12 @@ export const COURSES: Course[] = [
     province: "Western Cape",
     category: "tvet",
     accreditation: "DHET / QCTO",
+    trust: {
+      sourceName: "Prototype seed data",
+      sourceUrl: "https://www.falsebaycollege.co.za/",
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
   },
   {
     slug: "bcom-accounting-up",
@@ -86,6 +112,12 @@ export const COURSES: Course[] = [
     province: "Gauteng",
     category: "universities",
     accreditation: "SAICA accredited",
+    trust: {
+      sourceName: "Prototype seed data",
+      sourceUrl: "https://www.up.ac.za/",
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
   },
   {
     slug: "short-digital-marketing",
@@ -100,6 +132,12 @@ export const COURSES: Course[] = [
     province: "Online",
     category: "short-courses",
     accreditation: "Google Certificate",
+    trust: {
+      sourceName: "Prototype seed data",
+      sourceUrl: "https://grow.google/",
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
   },
   {
     slug: "learnership-plumbing",
@@ -114,6 +152,12 @@ export const COURSES: Course[] = [
     province: "Nationwide",
     category: "learnerships",
     accreditation: "QCTO registered",
+    trust: {
+      sourceName: "Prototype seed data",
+      sourceUrl: "https://www.merseta.org.za/",
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
   },
 ];
 
@@ -149,26 +193,27 @@ export type Institution = {
   courses: number;
   funding: string;
   website: string;
+  trust: TrustMeta;
 };
 
 export const INSTITUTIONS: Institution[] = [
-  { slug: "uct", name: "University of Cape Town", type: "Public University", province: "Western Cape", courses: 127, funding: "NSFAS supported", website: "uct.ac.za" },
-  { slug: "wits", name: "University of the Witwatersrand", type: "Public University", province: "Gauteng", courses: 140, funding: "NSFAS supported", website: "wits.ac.za" },
-  { slug: "up", name: "University of Pretoria", type: "Public University", province: "Gauteng", courses: 155, funding: "NSFAS supported", website: "up.ac.za" },
-  { slug: "ukzn", name: "University of KwaZulu-Natal", type: "Public University", province: "KwaZulu-Natal", courses: 130, funding: "NSFAS supported", website: "ukzn.ac.za" },
-  { slug: "cput", name: "Cape Peninsula University of Technology", type: "University of Technology", province: "Western Cape", courses: 98, funding: "NSFAS supported", website: "cput.ac.za" },
-  { slug: "false-bay", name: "False Bay TVET College", type: "TVET College", province: "Western Cape", courses: 42, funding: "NSFAS supported", website: "falsebaycollege.co.za" },
-  { slug: "ekurhuleni-east", name: "Ekurhuleni East TVET College", type: "TVET College", province: "Gauteng", courses: 38, funding: "NSFAS supported", website: "eec.edu.za" },
-  { slug: "boston", name: "Boston City Campus", type: "Private College", province: "Nationwide", courses: 60, funding: "Private funding", website: "boston.co.za" },
+  { slug: "uct", name: "University of Cape Town", type: "Public University", province: "Western Cape", courses: 127, funding: "NSFAS supported", website: "uct.ac.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.uct.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "wits", name: "University of the Witwatersrand", type: "Public University", province: "Gauteng", courses: 140, funding: "NSFAS supported", website: "wits.ac.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.wits.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "up", name: "University of Pretoria", type: "Public University", province: "Gauteng", courses: 155, funding: "NSFAS supported", website: "up.ac.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.up.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "ukzn", name: "University of KwaZulu-Natal", type: "Public University", province: "KwaZulu-Natal", courses: 130, funding: "NSFAS supported", website: "ukzn.ac.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.ukzn.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "cput", name: "Cape Peninsula University of Technology", type: "University of Technology", province: "Western Cape", courses: 98, funding: "NSFAS supported", website: "cput.ac.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.cput.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "false-bay", name: "False Bay TVET College", type: "TVET College", province: "Western Cape", courses: 42, funding: "NSFAS supported", website: "falsebaycollege.co.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.falsebaycollege.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "ekurhuleni-east", name: "Ekurhuleni East TVET College", type: "TVET College", province: "Gauteng", courses: 38, funding: "NSFAS supported", website: "eec.edu.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.eec.edu.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "boston", name: "Boston City Campus", type: "Private College", province: "Nationwide", courses: 60, funding: "Private funding", website: "boston.co.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.boston.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
 ];
 
 export const FUNDING = [
-  { slug: "nsfas", name: "NSFAS", short: "National Student Financial Aid Scheme", eligibility: "SA citizens with combined household income under R350,000/year (R600,000 for students with disabilities).", coverage: "Tuition, accommodation, allowances at public universities and TVET colleges.", best: "Students needing full financial support.", deadline: "Annual - see nsfas.org.za" },
-  { slug: "funza-lushaka", name: "Funza Lushaka Bursary", short: "For future teachers", eligibility: "Studying a BEd or PGCE in priority subjects.", coverage: "Full tuition, accommodation, meals, stipend.", best: "Aspiring teachers.", deadline: "Annual - see funzalushaka.doe.gov.za" },
-  { slug: "sasol", name: "Sasol Bursary", short: "Engineering and sciences", eligibility: "Grade 12 or first-year students in engineering/science with strong marks.", coverage: "Tuition, accommodation, laptop, stipend.", best: "STEM students.", deadline: "March/April annually" },
-  { slug: "eskom", name: "Eskom Bursary", short: "Energy and engineering", eligibility: "Engineering and technical fields with strong maths and science.", coverage: "Full study costs plus vacation work.", best: "Engineering students.", deadline: "Annual" },
-  { slug: "seta-learnership", name: "SETA Learnerships", short: "Earn while you learn", eligibility: "Unemployed youth, matric usually required.", coverage: "Stipend during learnership.", best: "School-leavers seeking workplace experience.", deadline: "Rolling per SETA" },
-  { slug: "employer", name: "Employer Bursaries", short: "Company-sponsored study", eligibility: "Varies per employer.", coverage: "Full or partial tuition, often bonded.", best: "Students willing to work back years.", deadline: "Varies" },
+  { slug: "nsfas", name: "NSFAS", short: "National Student Financial Aid Scheme", eligibility: "SA citizens with combined household income under R350,000/year (R600,000 for students with disabilities).", coverage: "Tuition, accommodation, allowances at public universities and TVET colleges.", best: "Students needing full financial support.", deadline: "Annual - see nsfas.org.za", trust: { sourceName: "NSFAS", sourceUrl: "https://www.nsfas.org.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "funza-lushaka", name: "Funza Lushaka Bursary", short: "For future teachers", eligibility: "Studying a BEd or PGCE in priority subjects.", coverage: "Full tuition, accommodation, meals, stipend.", best: "Aspiring teachers.", deadline: "Annual - see funzalushaka.doe.gov.za", trust: { sourceName: "Funza Lushaka", sourceUrl: "https://www.funzalushaka.doe.gov.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "sasol", name: "Sasol Bursary", short: "Engineering and sciences", eligibility: "Grade 12 or first-year students in engineering/science with strong marks.", coverage: "Tuition, accommodation, laptop, stipend.", best: "STEM students.", deadline: "March/April annually", trust: { sourceName: "Sasol", sourceUrl: "https://www.sasolbursaries.com/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "eskom", name: "Eskom Bursary", short: "Energy and engineering", eligibility: "Engineering and technical fields with strong maths and science.", coverage: "Full study costs plus vacation work.", best: "Engineering students.", deadline: "Annual", trust: { sourceName: "Eskom", sourceUrl: "https://www.eskom.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "seta-learnership", name: "SETA Learnerships", short: "Earn while you learn", eligibility: "Unemployed youth, matric usually required.", coverage: "Stipend during learnership.", best: "School-leavers seeking workplace experience.", deadline: "Rolling per SETA", trust: { sourceName: "SETAs", sourceUrl: "https://www.dhet.gov.za/SitePages/SETAlinks.aspx", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { slug: "employer", name: "Employer Bursaries", short: "Company-sponsored study", eligibility: "Varies per employer.", coverage: "Full or partial tuition, often bonded.", best: "Students willing to work back years.", deadline: "Varies", trust: { sourceName: "Provider websites", sourceUrl: "https://www.gov.za/services/education-and-training", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Prototype data" } },
 ];
 
 export const SKILLS = [
@@ -185,14 +230,14 @@ export const SKILLS = [
 ];
 
 export const OPPORTUNITIES = [
-  { id: "op1", title: "University of Cape Town - 2027 Undergraduate Applications", category: "University Applications", province: "Western Cape", closes: "30 September", paid: false },
-  { id: "op2", title: "False Bay TVET College - Trimester Intake", category: "TVET Applications", province: "Western Cape", closes: "Rolling", paid: false },
-  { id: "op3", title: "MerSETA Plumbing Learnership", category: "Learnerships", province: "Gauteng", closes: "15 August", paid: true },
-  { id: "op4", title: "Standard Bank Graduate Programme", category: "Graduate Programmes", province: "Nationwide", closes: "31 July", paid: true },
-  { id: "op5", title: "Investec IT Internship", category: "Internships", province: "Western Cape", closes: "10 August", paid: true },
-  { id: "op6", title: "Sasol Engineering Bursary 2027", category: "Scholarships", province: "Nationwide", closes: "30 April", paid: false },
-  { id: "op7", title: "Toyota Apprenticeship Programme", category: "Apprenticeships", province: "KwaZulu-Natal", closes: "20 September", paid: true },
-  { id: "op8", title: "Shoprite Learner Cashier Programme", category: "Entry-Level Jobs", province: "Nationwide", closes: "Rolling", paid: true },
+  { id: "op1", title: "University of Cape Town - 2027 Undergraduate Applications", category: "University Applications", province: "Western Cape", closes: "30 September", paid: false, trust: { sourceName: "UCT", sourceUrl: "https://www.uct.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op2", title: "False Bay TVET College - Trimester Intake", category: "TVET Applications", province: "Western Cape", closes: "Rolling", paid: false, trust: { sourceName: "False Bay TVET College", sourceUrl: "https://www.falsebaycollege.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op3", title: "MerSETA Plumbing Learnership", category: "Learnerships", province: "Gauteng", closes: "15 August", paid: true, trust: { sourceName: "MerSETA", sourceUrl: "https://www.merseta.org.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op4", title: "Standard Bank Graduate Programme", category: "Graduate Programmes", province: "Nationwide", closes: "31 July", paid: true, trust: { sourceName: "Standard Bank", sourceUrl: "https://www.standardbank.com/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op5", title: "Investec IT Internship", category: "Internships", province: "Western Cape", closes: "10 August", paid: true, trust: { sourceName: "Investec", sourceUrl: "https://www.investec.com/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op6", title: "Sasol Engineering Bursary 2027", category: "Scholarships", province: "Nationwide", closes: "30 April", paid: false, trust: { sourceName: "Sasol", sourceUrl: "https://www.sasolbursaries.com/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op7", title: "Toyota Apprenticeship Programme", category: "Apprenticeships", province: "KwaZulu-Natal", closes: "20 September", paid: true, trust: { sourceName: "Toyota South Africa", sourceUrl: "https://www.toyota.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
+  { id: "op8", title: "Shoprite Learner Cashier Programme", category: "Entry-Level Jobs", province: "Nationwide", closes: "Rolling", paid: true, trust: { sourceName: "Shoprite Group", sourceUrl: "https://www.shopriteholdings.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
 ];
 
 export const GUIDES = [

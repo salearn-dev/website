@@ -150,7 +150,7 @@ function MatchPage() {
           </div>
         )}
 
-        {step === 4 && <Results aps={aps} interest={interest} />}
+        {step === 4 && <Results aps={aps} interest={interest} subjects={subjects} />}
 
         <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
           <button
@@ -181,7 +181,12 @@ function MatchPage() {
   );
 }
 
-function Results({ aps, interest }: { aps: number; interest: string }) {
+function Results({ aps, interest, subjects }: { aps: number; interest: string; subjects: Subject[] }) {
+  const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
+  const mathsMark = markFor("Mathematics") ?? markFor("Mathematical Literacy") ?? 0;
+  const englishMark = markFor("English HL") ?? markFor("English FAL") ?? 0;
+  const lifeSciencesMark = markFor("Life Sciences") ?? 0;
+
   return (
     <div className="space-y-8">
       <div>
@@ -195,12 +200,26 @@ function Results({ aps, interest }: { aps: number; interest: string }) {
         <ResultCard
           title="Higher Certificate in Information Technology"
           institution="Walter Sisulu University"
-          note="Meets minimum APS and English requirement."
+          confidence="Partial match"
+          reason="Your current marks appear to meet the prototype APS and English thresholds for this pathway."
+          requirementsMet={[
+            `Estimated APS is ${aps}, above the prototype minimum of 20.`,
+            `English mark is ${englishMark}%, above the prototype minimum of 50%.`,
+          ]}
+          requirementsMissing={["Official faculty requirements still need source verification."]}
+          nextStep="Confirm the current admission rules on the official institution page before applying."
         />
         <ResultCard
           title="Diploma in Information Technology"
           institution="False Bay TVET College"
-          note="Meets subject and APS requirements."
+          confidence="Partial match"
+          reason="Your APS and Mathematics result fit the current prototype rule for this technical route."
+          requirementsMet={[
+            `Estimated APS is ${aps}, above the prototype minimum of 22.`,
+            `Mathematics-related mark is ${mathsMark}%, above the prototype minimum of 50%.`,
+          ]}
+          requirementsMissing={["Campus-specific intake and subject rules are not verified yet."]}
+          nextStep="Compare this with related ICT programmes and confirm the latest TVET intake dates."
         />
       </Group>
 
@@ -208,8 +227,11 @@ function Results({ aps, interest }: { aps: number; interest: string }) {
         <ResultCard
           title="Diploma in Nursing"
           institution="University of Limpopo"
-          note="Life Sciences minimum is 60%. Your mark: 58%."
-          action="Consider rewriting Life Sciences, a bridging programme, or related health programmes."
+          confidence="Needs confirmation"
+          reason="You are close, but one listed prototype subject threshold is not met."
+          requirementsMet={[`Estimated APS is ${aps}, which may be competitive for some diploma routes.`]}
+          requirementsMissing={[`Life Sciences prototype minimum is 60%; your mark is ${lifeSciencesMark}%.`]}
+          nextStep="Consider rewriting Life Sciences, checking bridging options, or comparing related health programmes."
         />
       </Group>
 
@@ -217,8 +239,11 @@ function Results({ aps, interest }: { aps: number; interest: string }) {
         <ResultCard
           title="BSc Engineering (Civil)"
           institution="University of Cape Town"
-          note="Mathematics requirement is 70%+. Your mark falls short."
-          action="Bridging year or Higher Certificate in Engineering as an entry route."
+          confidence="Needs confirmation"
+          reason="This path usually has higher Mathematics requirements than your current prototype profile shows."
+          requirementsMet={[`Estimated APS is ${aps}; some engineering alternatives may still be worth checking.`]}
+          requirementsMissing={[`Mathematics prototype minimum is 70%; your Mathematics-related mark is ${mathsMark}%.`]}
+          nextStep="Look at a bridging year, a higher certificate route, or a related TVET engineering pathway."
         />
       </Group>
 
@@ -226,12 +251,20 @@ function Results({ aps, interest }: { aps: number; interest: string }) {
         <ResultCard
           title="Learnership: Health Promotion"
           institution="HWSETA partner"
-          note="No APS required. Earn a stipend while training."
+          confidence="Needs confirmation"
+          reason="This alternative is shown because learnership routes may rely less on APS and more on provider requirements."
+          requirementsMet={["APS is not used in this prototype alternative-path rule.", `Interest selected: ${interest}.`]}
+          requirementsMissing={["Open provider, age, location, and closing-date requirements still need verification."]}
+          nextStep="Check current HWSETA-linked listings and only apply through official provider links."
         />
         <ResultCard
           title="Short Course: Community Health Worker"
           institution="Online / accredited providers"
-          note="4–8 weeks, entry-level pathway into healthcare."
+          confidence="Needs confirmation"
+          reason="This is a lower-barrier skill route that may help you build evidence while comparing formal programmes."
+          requirementsMet={[`Interest selected: ${interest}.`, "Short courses can be useful while preparing stronger applications."]}
+          requirementsMissing={["Provider accreditation and certificate value must be checked before paying."]}
+          nextStep="Choose only providers with visible registration or accreditation evidence."
         />
       </Group>
     </div>
@@ -268,17 +301,66 @@ function Group({
   );
 }
 
-function ResultCard({ title, institution, note, action }: { title: string; institution: string; note: string; action?: string }) {
+function ResultCard({
+  title,
+  institution,
+  confidence,
+  reason,
+  requirementsMet,
+  requirementsMissing,
+  nextStep,
+}: {
+  title: string;
+  institution: string;
+  confidence: "Verified match" | "Partial match" | "Needs confirmation" | "Data outdated";
+  reason: string;
+  requirementsMet: string[];
+  requirementsMissing: string[];
+  nextStep: string;
+}) {
   return (
     <div className="rounded-2xl border border-border bg-background p-5">
       <p className="text-xs text-muted-foreground">{institution}</p>
       <h4 className="mt-1 text-base font-semibold text-foreground">{title}</h4>
-      <p className="mt-3 text-sm text-muted-foreground">{note}</p>
-      {action && (
-        <p className="mt-3 rounded-md bg-muted/60 p-3 text-sm text-foreground">
-          <span className="font-medium">What you can do: </span>{action}
-        </p>
-      )}
+      <span className="mt-3 inline-flex rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
+        {confidence}
+      </span>
+      <p className="mt-3 text-sm text-muted-foreground">{reason}</p>
+      <div className="mt-4 grid gap-3 text-sm">
+        <RequirementList title="Requirements met" items={requirementsMet} tone="success" />
+        <RequirementList title="Still missing or unverified" items={requirementsMissing} tone="warning" />
+      </div>
+      <p className="mt-3 rounded-md bg-muted/60 p-3 text-sm text-foreground">
+        <span className="font-medium">Next step: </span>{nextStep}
+      </p>
+    </div>
+  );
+}
+
+// Codex: Match result explanations
+// Status: Client-side prototype explains why results appear; server-side versioned rules remain pending.
+function RequirementList({
+  title,
+  items,
+  tone,
+}: {
+  title: string;
+  items: string[];
+  tone: "success" | "warning";
+}) {
+  const marker = tone === "success" ? "bg-success" : "bg-warning";
+
+  return (
+    <div>
+      <p className="text-xs font-medium text-muted-foreground">{title}</p>
+      <ul className="mt-1 space-y-1.5">
+        {items.map((item) => (
+          <li key={item} className="flex gap-2 text-muted-foreground">
+            <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${marker}`} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
