@@ -1,19 +1,33 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-05 18:35:11 +02:00
-**Assigned role for this task:** Learner-facing `/match` and `/opportunities` production-readiness improvements.
-**Files or areas expected to touch:** `src/routes/match.tsx`, `src/routes/opportunities.tsx`, `src/lib/data.ts`, `src/routes/prod-readiness.tsx`, `models/codex.md`.
-**Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, and deployment secrets.
-**Task summary:** Complete the approved three-item batch to move `/prod-readiness` from 46% to 50%.
-**Known risks:** Match report generation and opportunity filtering are client-side prototype features; official NBT/test rules and live opportunity data still need backend/source verification.
+**Date:** 2026-07-05 20:00:00 +02:00
+**Assigned role for this task:** Daily checkout report after completing the approved learner-facing production-readiness work.
+**Files or areas expected to touch:** `models/codex.md`.
+**Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, deployment secrets, and unrelated route work.
+**Task summary:** Record the 2026/07/05 Codex checkout state for the SA Learn team.
+**Known risks:** Prototype data, official requirements, NBT/additional-test rules, opportunity records, and backend-owned enforcement still require source verification or Lovable/backend ownership before production claims.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Match and opportunity actionability. Current task: complete the approved 50% readiness batch without entering backend-owned work.
+Checked out for 2026/07/05. Latest pushed Codex commit is `84c3828 Add match reports and opportunity filters`; `/prod-readiness` is at 50% with 34 of 68 features marked complete.
+
+## Daily Checkout Report
+
+**Date/Time:** 2026-07-05 20:00:00 +02:00
+
+**Files Modified:**
+
+- `models/codex.md`
+
+**Short Plain English Description:**
+Logged Codex's end-of-day status for 2026/07/05. Today I completed and pushed contained frontend/readiness updates for local logo fallback, local `/prod-readiness` gate support, course detail pages with Course JSON-LD, career detail pages and route fix, guide glossary and structured how-tos, match NBT/additional-test awareness with a downloadable PDF report, opportunity filters, and the readiness tracker update to 50%. AppDeploy was explored and then intentionally dropped after the external connection path failed; future work should continue directly in this repo with GitHub as source of truth.
+
+**Where I Left Off:**
+No active Codex implementation is in progress. Next work should start from `main`, read `plan.md`, `SA_Learn.md`, `models/codex.md`, `models/lovable.md`, and `/prod-readiness`, then choose the next contained learner-facing item for approval before editing.
 
 ## Match Report, NBT Awareness, and Opportunity Filters
 
