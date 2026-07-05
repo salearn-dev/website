@@ -3,9 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 export const unlockSite = createServerFn({ method: "POST" })
   .validator((data: { password: string }) => data)
   .handler(async ({ data }) => {
-    const { getGateSession, passwordMatches } = await import("./gate.server");
-    const expected = process.env.SITE_PASSWORD;
-    if (!expected) throw new Error("SITE_PASSWORD is not set");
+    const { getGateSession, getSitePassword, passwordMatches } = await import("./gate.server");
+    const expected = getSitePassword();
     if (typeof data.password !== "string" || data.password.length === 0) {
       return { ok: false as const };
     }

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
-import saFlag from "@/assets/sa-flag.png.asset.json";
+import { SaFlagLogo } from "./sa-flag-logo";
 
 const NAV = [
   { to: "/courses", label: "Courses" },
@@ -19,7 +19,7 @@ function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2.5">
       <span className="inline-flex h-7 w-11 overflow-hidden rounded-[3px] ring-1 ring-border">
-        <img src={saFlag.url} alt="South African flag" className="h-full w-full object-cover" />
+        <SaFlagLogo />
       </span>
       <span className="text-base font-semibold tracking-tight text-foreground">SA Learn</span>
     </Link>
@@ -40,7 +40,9 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              activeProps={{ className: "rounded-md px-3 py-2 text-sm font-medium text-foreground bg-muted" }}
+              activeProps={{
+                className: "rounded-md px-3 py-2 text-sm font-medium text-foreground bg-muted",
+              }}
             >
               {n.label}
             </Link>
@@ -48,11 +50,17 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-1 lg:flex">
-          <button aria-label="Search" className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+          <button
+            aria-label="Search"
+            className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
             <Search className="h-4 w-4" />
           </button>
           <ThemeToggle />
-          <Link to="/match" className="ml-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+          <Link
+            to="/match"
+            className="ml-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
             Check My Options
           </Link>
         </div>
