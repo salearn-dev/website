@@ -207,7 +207,7 @@ export const INSTITUTIONS: Institution[] = [
   { slug: "boston", name: "Boston City Campus", type: "Private College", province: "Nationwide", courses: 60, funding: "Private funding", website: "boston.co.za", trust: { sourceName: "Prototype seed data", sourceUrl: "https://www.boston.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
 ];
 
-export const FUNDING = [
+export const FUNDING: Array<{ slug: string; name: string; short: string; eligibility: string; coverage: string; best: string; deadline: string; trust: TrustMeta }> = [
   { slug: "nsfas", name: "NSFAS", short: "National Student Financial Aid Scheme", eligibility: "SA citizens with combined household income under R350,000/year (R600,000 for students with disabilities).", coverage: "Tuition, accommodation, allowances at public universities and TVET colleges.", best: "Students needing full financial support.", deadline: "Annual - see nsfas.org.za", trust: { sourceName: "NSFAS", sourceUrl: "https://www.nsfas.org.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
   { slug: "funza-lushaka", name: "Funza Lushaka Bursary", short: "For future teachers", eligibility: "Studying a BEd or PGCE in priority subjects.", coverage: "Full tuition, accommodation, meals, stipend.", best: "Aspiring teachers.", deadline: "Annual - see funzalushaka.doe.gov.za", trust: { sourceName: "Funza Lushaka", sourceUrl: "https://www.funzalushaka.doe.gov.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
   { slug: "sasol", name: "Sasol Bursary", short: "Engineering and sciences", eligibility: "Grade 12 or first-year students in engineering/science with strong marks.", coverage: "Tuition, accommodation, laptop, stipend.", best: "STEM students.", deadline: "March/April annually", trust: { sourceName: "Sasol", sourceUrl: "https://www.sasolbursaries.com/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
@@ -229,7 +229,7 @@ export const SKILLS = [
   { slug: "cyber-security", name: "Cyber Security", diff: "Intermediate–Advanced", time: "6–12 months", careers: ["Security Analyst"] },
 ];
 
-export const OPPORTUNITIES = [
+export const OPPORTUNITIES: Array<{ id: string; title: string; category: string; province: string; closes: string; paid: boolean; trust: TrustMeta }> = [
   { id: "op1", title: "University of Cape Town - 2027 Undergraduate Applications", category: "University Applications", province: "Western Cape", closes: "30 September", paid: false, trust: { sourceName: "UCT", sourceUrl: "https://www.uct.ac.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
   { id: "op2", title: "False Bay TVET College - Trimester Intake", category: "TVET Applications", province: "Western Cape", closes: "Rolling", paid: false, trust: { sourceName: "False Bay TVET College", sourceUrl: "https://www.falsebaycollege.co.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
   { id: "op3", title: "MerSETA Plumbing Learnership", category: "Learnerships", province: "Gauteng", closes: "15 August", paid: true, trust: { sourceName: "MerSETA", sourceUrl: "https://www.merseta.org.za/", lastVerifiedAt: LAST_VERIFIED, verificationStatus: "Needs confirmation" } },
