@@ -54,9 +54,9 @@ const GROUPS: Group[] = [
       { label: "Category filters (TVET, University, Short course)", done: true },
       { label: "Full catalogue synced from SAQA and DHET", done: false },
       { label: "Filter by NQF level, cost, city, delivery mode", done: false },
-      { label: "Per-course detail pages with SEO metadata", done: false },
+      { label: "Per-course detail pages with SEO metadata", done: true },
       { label: "'Last verified' badges with source URL", done: true },
-      { label: "JSON-LD Course structured data", done: false },
+      { label: "JSON-LD Course structured data", done: true },
     ],
   },
   {

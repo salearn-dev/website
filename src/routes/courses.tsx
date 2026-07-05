@@ -18,12 +18,39 @@ export const Route = createFileRoute("/courses")({
 function CoursesPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | null>(null);
+  const [province, setProvince] = useState("All");
+  const [nqf, setNqf] = useState("All");
+  const [cost, setCost] = useState("Any");
+  const [funding, setFunding] = useState("Any");
+  const [delivery, setDelivery] = useState("Any");
 
+  // Codex: Course explorer filters
+  // Status: Client-side filters use existing prototype fields; city-level filtering waits for richer data.
   const filtered = COURSES.filter((c) => {
     const matchesCat = !cat || c.category === cat;
     const matchesQ = !q || (c.title + c.institution + c.careers.join(" ")).toLowerCase().includes(q.toLowerCase());
-    return matchesCat && matchesQ;
+    const matchesProvince = province === "All" || c.province === province;
+    const matchesNqf = nqf === "All" || `NQF ${c.nqf}` === nqf;
+    const matchesCost =
+      cost === "Any" ||
+      (cost === "Free" && c.cost === "Free") ||
+      (cost === "Information unavailable" && c.cost === "Information unavailable");
+    const matchesFunding = funding === "Any" || c.funding.toLowerCase().includes(funding.toLowerCase());
+    const deliveryMode = c.province === "Online" ? "Online" : "Contact";
+    const matchesDelivery = delivery === "Any" || delivery === deliveryMode;
+
+    return matchesCat && matchesQ && matchesProvince && matchesNqf && matchesCost && matchesFunding && matchesDelivery;
   });
+
+  function clearFilters() {
+    setQ("");
+    setCat(null);
+    setProvince("All");
+    setNqf("All");
+    setCost("Any");
+    setFunding("Any");
+    setDelivery("Any");
+  }
 
   return (
     <PageShell
@@ -40,11 +67,9 @@ function CoursesPage() {
           placeholder="Search courses, institutions, careers…"
           className="h-11 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
-        {cat && (
-          <button onClick={() => setCat(null)} className="rounded-md bg-muted px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/80">
-            Clear filter
-          </button>
-        )}
+        <button onClick={clearFilters} className="rounded-md bg-muted px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/80">
+          Clear filters
+        </button>
       </div>
 
       {/* Categories */}
@@ -70,16 +95,21 @@ function CoursesPage() {
       </div>
 
       {/* Filters */}
-      <div className="mb-8 grid gap-3 md:grid-cols-4">
+      <div className="mb-8 grid gap-3 md:grid-cols-5">
         {[
-          { l: "Province", o: ["All", "Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape"] },
-          { l: "NQF Level", o: ["All", "NQF 3", "NQF 4", "NQF 5", "NQF 6", "NQF 7"] },
-          { l: "Cost", o: ["Any", "Free", "Under R30k", "Over R30k"] },
-          { l: "Funding", o: ["Any", "NSFAS", "Bursaries", "Employer funded"] },
+          { l: "Location", value: province, onChange: setProvince, o: ["All", "Gauteng", "Western Cape", "KwaZulu-Natal", "Eastern Cape", "Limpopo", "Online", "Nationwide"] },
+          { l: "NQF Level", value: nqf, onChange: setNqf, o: ["All", "NQF 3", "NQF 4", "NQF 5", "NQF 6", "NQF 7"] },
+          { l: "Cost", value: cost, onChange: setCost, o: ["Any", "Free", "Information unavailable"] },
+          { l: "Funding", value: funding, onChange: setFunding, o: ["Any", "NSFAS", "Bursaries", "Employer", "Free"] },
+          { l: "Delivery", value: delivery, onChange: setDelivery, o: ["Any", "Contact", "Online"] },
         ].map((f) => (
           <label key={f.l} className="block text-xs">
             <span className="mb-1.5 block font-medium text-muted-foreground">{f.l}</span>
-            <select className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
+            <select
+              value={f.value}
+              onChange={(event) => f.onChange(event.target.value)}
+              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+            >
               {f.o.map((o) => <option key={o}>{o}</option>)}
             </select>
           </label>
@@ -112,7 +142,11 @@ function CoursesPage() {
                   {c.accreditation}
                 </span>
               </div>
-              <Link to="/courses" className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline">
+              <Link
+                to="/courses/$slug"
+                params={{ slug: c.slug }}
+                className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline"
+              >
                 View course <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>

@@ -20,6 +20,7 @@ import { Route as FundingRouteImport } from './routes/funding'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 
 const SkillsRoute = SkillsRouteImport.update({
   id: '/skills',
@@ -76,11 +77,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesSlugRoute = CoursesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CoursesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/careers': typeof CareersRoute
-  '/courses': typeof CoursesRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRoute
   '/institutions': typeof InstitutionsRoute
@@ -89,11 +95,12 @@ export interface FileRoutesByFullPath {
   '/prod-readiness': typeof ProdReadinessRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
+  '/courses/$slug': typeof CoursesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/careers': typeof CareersRoute
-  '/courses': typeof CoursesRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRoute
   '/institutions': typeof InstitutionsRoute
@@ -102,12 +109,13 @@ export interface FileRoutesByTo {
   '/prod-readiness': typeof ProdReadinessRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
+  '/courses/$slug': typeof CoursesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/careers': typeof CareersRoute
-  '/courses': typeof CoursesRoute
+  '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRoute
   '/institutions': typeof InstitutionsRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/prod-readiness': typeof ProdReadinessRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
+  '/courses/$slug': typeof CoursesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/prod-readiness'
     | '/sitemap.xml'
     | '/skills'
+    | '/courses/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/prod-readiness'
     | '/sitemap.xml'
     | '/skills'
+    | '/courses/$slug'
   id:
     | '__root__'
     | '/'
@@ -157,12 +168,13 @@ export interface FileRouteTypes {
     | '/prod-readiness'
     | '/sitemap.xml'
     | '/skills'
+    | '/courses/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CareersRoute: typeof CareersRoute
-  CoursesRoute: typeof CoursesRoute
+  CoursesRoute: typeof CoursesRouteWithChildren
   FundingRoute: typeof FundingRoute
   GuidesRoute: typeof GuidesRoute
   InstitutionsRoute: typeof InstitutionsRoute
@@ -252,13 +264,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/$slug': {
+      id: '/courses/$slug'
+      path: '/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof CoursesSlugRouteImport
+      parentRoute: typeof CoursesRoute
+    }
   }
 }
+
+interface CoursesRouteChildren {
+  CoursesSlugRoute: typeof CoursesSlugRoute
+}
+
+const CoursesRouteChildren: CoursesRouteChildren = {
+  CoursesSlugRoute: CoursesSlugRoute,
+}
+
+const CoursesRouteWithChildren =
+  CoursesRoute._addFileChildren(CoursesRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CareersRoute: CareersRoute,
-  CoursesRoute: CoursesRoute,
+  CoursesRoute: CoursesRouteWithChildren,
   FundingRoute: FundingRoute,
   GuidesRoute: GuidesRoute,
   InstitutionsRoute: InstitutionsRoute,
