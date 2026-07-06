@@ -207,18 +207,21 @@ function RelatedCourses({ courses }: { courses: typeof COURSES }) {
 }
 
 function RelatedSkills({ skills }: { skills: typeof SKILLS }) {
+  // Codex: Career-to-skill mapping
+  // Status: Career detail links learners back to the skills overview; skill detail pages remain future work.
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       <h2 className="text-base font-semibold text-foreground">Skills to start now</h2>
       {skills.length > 0 ? (
         <div className="mt-4 flex flex-wrap gap-2">
           {skills.map((skill) => (
-            <span
+            <Link
               key={skill.slug}
-              className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground"
+              to="/skills"
+              className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/70"
             >
               {skill.name}
-            </span>
+            </Link>
           ))}
         </div>
       ) : (

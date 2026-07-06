@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { CAREERS, COURSES, GUIDES } from "@/lib/data";
+import { CAREERS, COURSES, GUIDES, INSTITUTIONS } from "@/lib/data";
 
 const BASE_URL = "";
 
@@ -31,6 +31,11 @@ export const Route = createFileRoute("/sitemap.xml")({
           })),
           ...CAREERS.map((career) => ({
             path: `/careers/${career.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
+          })),
+          ...INSTITUTIONS.map((institution) => ({
+            path: `/institutions/${institution.slug}`,
             changefreq: "monthly" as const,
             priority: "0.7",
           })),

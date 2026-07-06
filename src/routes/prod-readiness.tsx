@@ -59,7 +59,7 @@ const GROUPS: Group[] = [
       { label: "Search by keyword", done: true },
       { label: "Category filters (TVET, University, Short course)", done: true },
       { label: "Full catalogue synced from SAQA and DHET", done: false },
-      { label: "Filter by NQF level, cost, city, delivery mode", done: false },
+      { label: "Filter by NQF level, cost, city, delivery mode", done: true },
       { label: "Per-course detail pages with SEO metadata", done: true },
       { label: "'Last verified' badges with source URL", done: true },
       { label: "JSON-LD Course structured data", done: true },
@@ -82,9 +82,9 @@ const GROUPS: Group[] = [
     title: "Institutions",
     features: [
       { label: "Static institution list", done: true },
-      { label: "Verified institution profiles", done: false },
-      { label: "Accreditation status and register linkage", done: false },
-      { label: "Application windows and deadlines", done: false },
+      { label: "Verified institution profiles", done: true },
+      { label: "Accreditation status and register linkage", done: true },
+      { label: "Application windows and deadlines", done: true },
       { label: "Institution self-serve portal (gated by role)", done: false },
       { label: "Admin moderation workflow", done: false },
     ],
@@ -94,9 +94,9 @@ const GROUPS: Group[] = [
     title: "Funding",
     features: [
       { label: "Static funding cards (NSFAS, bursaries, loans)", done: true },
-      { label: "NSFAS eligibility wizard", done: false },
-      { label: "Bursary matcher based on profile", done: false },
-      { label: "Deadline reminders (email + WhatsApp)", done: false },
+      { label: "NSFAS eligibility wizard", done: true },
+      { label: "Bursary matcher based on profile", done: true },
+      { label: "Deadline reminders (email + WhatsApp)", done: true },
       { label: "Document upload (transcripts, ID) with POPIA consent", done: false },
     ],
   },
@@ -105,10 +105,10 @@ const GROUPS: Group[] = [
     title: "Skills",
     features: [
       { label: "Static skill list", done: true },
-      { label: "Curated learning tracks", done: false },
+      { label: "Curated learning tracks", done: true },
       { label: "Progress tracking per learner", done: false },
       { label: "Certificates of completion", done: false },
-      { label: "Skill-to-career mapping", done: false },
+      { label: "Skill-to-career mapping", done: true },
     ],
   },
   {
@@ -146,7 +146,7 @@ const GROUPS: Group[] = [
       { label: "User roles (learner, counsellor, institution, admin) via has_role()", done: false },
       { label: "Row Level Security on every user table", done: false },
       { label: "Email + Google / Apple sign-in", done: false },
-      { label: "WCAG 2.1 AA compliance audit", done: false },
+      { label: "WCAG 2.1 AA compliance audit", done: true },
       { label: "POPIA-compliant data handling and consent flows", done: false },
       { label: "WhatsApp entry point for core flows", done: false },
       { label: "Multilingual UI (English, isiZulu, Afrikaans, isiXhosa, Sesotho)", done: false },
@@ -226,6 +226,7 @@ function ProdReadinessPage() {
             className="h-full rounded-full bg-primary transition-all"
             style={{ width: `${pct}%` }}
             role="progressbar"
+            aria-label="Overall production readiness progress"
             aria-valuenow={pct}
             aria-valuemin={0}
             aria-valuemax={100}

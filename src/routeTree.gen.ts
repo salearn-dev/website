@@ -21,6 +21,7 @@ import { Route as FundingRouteImport } from './routes/funding'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InstitutionsSlugRouteImport } from './routes/institutions.$slug'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CareersSlugRouteImport } from './routes/careers.$slug'
@@ -85,6 +86,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InstitutionsSlugRoute = InstitutionsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => InstitutionsRoute,
+} as any)
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -107,7 +113,7 @@ export interface FileRoutesByFullPath {
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRouteWithChildren
-  '/institutions': typeof InstitutionsRoute
+  '/institutions': typeof InstitutionsRouteWithChildren
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
   '/prod-readiness': typeof ProdReadinessRoute
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/institutions/$slug': typeof InstitutionsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,7 +131,7 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRouteWithChildren
-  '/institutions': typeof InstitutionsRoute
+  '/institutions': typeof InstitutionsRouteWithChildren
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
   '/prod-readiness': typeof ProdReadinessRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/institutions/$slug': typeof InstitutionsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,7 +150,7 @@ export interface FileRoutesById {
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRouteWithChildren
-  '/institutions': typeof InstitutionsRoute
+  '/institutions': typeof InstitutionsRouteWithChildren
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
   '/prod-readiness': typeof ProdReadinessRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/institutions/$slug': typeof InstitutionsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/careers/$slug'
     | '/courses/$slug'
     | '/guides/$slug'
+    | '/institutions/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/careers/$slug'
     | '/courses/$slug'
     | '/guides/$slug'
+    | '/institutions/$slug'
   id:
     | '__root__'
     | '/'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/careers/$slug'
     | '/courses/$slug'
     | '/guides/$slug'
+    | '/institutions/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -213,7 +225,7 @@ export interface RootRouteChildren {
   CoursesRoute: typeof CoursesRouteWithChildren
   FundingRoute: typeof FundingRoute
   GuidesRoute: typeof GuidesRouteWithChildren
-  InstitutionsRoute: typeof InstitutionsRoute
+  InstitutionsRoute: typeof InstitutionsRouteWithChildren
   MatchRoute: typeof MatchRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
   ProdReadinessRoute: typeof ProdReadinessRoute
@@ -308,6 +320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/institutions/$slug': {
+      id: '/institutions/$slug'
+      path: '/$slug'
+      fullPath: '/institutions/$slug'
+      preLoaderRoute: typeof InstitutionsSlugRouteImport
+      parentRoute: typeof InstitutionsRoute
+    }
     '/guides/$slug': {
       id: '/guides/$slug'
       path: '/$slug'
@@ -365,13 +384,25 @@ const GuidesRouteChildren: GuidesRouteChildren = {
 const GuidesRouteWithChildren =
   GuidesRoute._addFileChildren(GuidesRouteChildren)
 
+interface InstitutionsRouteChildren {
+  InstitutionsSlugRoute: typeof InstitutionsSlugRoute
+}
+
+const InstitutionsRouteChildren: InstitutionsRouteChildren = {
+  InstitutionsSlugRoute: InstitutionsSlugRoute,
+}
+
+const InstitutionsRouteWithChildren = InstitutionsRoute._addFileChildren(
+  InstitutionsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CareersRoute: CareersRouteWithChildren,
   CoursesRoute: CoursesRouteWithChildren,
   FundingRoute: FundingRoute,
   GuidesRoute: GuidesRouteWithChildren,
-  InstitutionsRoute: InstitutionsRoute,
+  InstitutionsRoute: InstitutionsRouteWithChildren,
   MatchRoute: MatchRoute,
   OpportunitiesRoute: OpportunitiesRoute,
   ProdReadinessRoute: ProdReadinessRoute,

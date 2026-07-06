@@ -22,6 +22,8 @@ export type Course = {
   funding: string;
   careers: string[];
   province: string;
+  city: string;
+  deliveryMode: "Contact" | "Online" | "Blended" | "Workplace";
   category: string;
   accreditation: string;
   trust: TrustMeta;
@@ -85,6 +87,8 @@ export const COURSES: Course[] = [
     funding: "NSFAS possible",
     careers: ["Junior Developer", "IT Support", "Systems Assistant"],
     province: "Eastern Cape",
+    city: "Mthatha",
+    deliveryMode: "Contact",
     category: "universities",
     accreditation: "DHET registered",
     trust: {
@@ -105,6 +109,8 @@ export const COURSES: Course[] = [
     funding: "NSFAS possible",
     careers: ["Registered Nurse", "Clinical Assistant"],
     province: "Limpopo",
+    city: "Polokwane",
+    deliveryMode: "Contact",
     category: "universities",
     accreditation: "SANC accredited",
     trust: {
@@ -125,6 +131,8 @@ export const COURSES: Course[] = [
     funding: "NSFAS supported",
     careers: ["Electrician", "Electrical Technician"],
     province: "Western Cape",
+    city: "Cape Town",
+    deliveryMode: "Contact",
     category: "tvet",
     accreditation: "DHET / QCTO",
     trust: {
@@ -145,6 +153,8 @@ export const COURSES: Course[] = [
     funding: "Bursaries available",
     careers: ["Accountant", "Auditor", "Financial Analyst"],
     province: "Gauteng",
+    city: "Pretoria",
+    deliveryMode: "Contact",
     category: "universities",
     accreditation: "SAICA accredited",
     trust: {
@@ -165,6 +175,8 @@ export const COURSES: Course[] = [
     funding: "Free",
     careers: ["Marketing Assistant", "Social Media Coordinator"],
     province: "Online",
+    city: "Online",
+    deliveryMode: "Online",
     category: "short-courses",
     accreditation: "Google Certificate",
     trust: {
@@ -185,6 +197,8 @@ export const COURSES: Course[] = [
     funding: "Employer / SETA funded",
     careers: ["Plumber", "Site Assistant"],
     province: "Nationwide",
+    city: "Workplace-based",
+    deliveryMode: "Workplace",
     category: "learnerships",
     accreditation: "QCTO registered",
     trust: {
@@ -491,6 +505,10 @@ export type Institution = {
   courses: number;
   funding: string;
   website: string;
+  campuses: string[];
+  accreditationStatus: string;
+  registerLinks: Array<{ label: string; url: string }>;
+  applicationWindows: Array<{ label: string; period: string; status: string }>;
   trust: TrustMeta;
 };
 
@@ -503,6 +521,24 @@ export const INSTITUTIONS: Institution[] = [
     courses: 127,
     funding: "NSFAS supported",
     website: "uct.ac.za",
+    campuses: ["Cape Town"],
+    accreditationStatus: "Public university - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.uct.ac.za/" },
+      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      {
+        label: "Undergraduate applications",
+        period: "Usually annual",
+        status: "Needs confirmation",
+      },
+      {
+        label: "Postgraduate applications",
+        period: "Programme dependent",
+        status: "Needs confirmation",
+      },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.uct.ac.za/",
@@ -518,6 +554,24 @@ export const INSTITUTIONS: Institution[] = [
     courses: 140,
     funding: "NSFAS supported",
     website: "wits.ac.za",
+    campuses: ["Johannesburg"],
+    accreditationStatus: "Public university - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.wits.ac.za/" },
+      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      {
+        label: "Undergraduate applications",
+        period: "Usually annual",
+        status: "Needs confirmation",
+      },
+      {
+        label: "Residence applications",
+        period: "Usually tied to admission cycle",
+        status: "Needs confirmation",
+      },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.wits.ac.za/",
@@ -533,6 +587,20 @@ export const INSTITUTIONS: Institution[] = [
     courses: 155,
     funding: "NSFAS supported",
     website: "up.ac.za",
+    campuses: ["Pretoria"],
+    accreditationStatus: "Public university - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.up.ac.za/" },
+      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      {
+        label: "Undergraduate applications",
+        period: "Usually annual",
+        status: "Needs confirmation",
+      },
+      { label: "Faculty selection", period: "Programme dependent", status: "Needs confirmation" },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.up.ac.za/",
@@ -548,6 +616,24 @@ export const INSTITUTIONS: Institution[] = [
     courses: 130,
     funding: "NSFAS supported",
     website: "ukzn.ac.za",
+    campuses: ["Durban", "Pietermaritzburg"],
+    accreditationStatus: "Public university - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.ukzn.ac.za/" },
+      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      {
+        label: "Undergraduate applications",
+        period: "Usually annual",
+        status: "Needs confirmation",
+      },
+      {
+        label: "College-specific selection",
+        period: "Programme dependent",
+        status: "Needs confirmation",
+      },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.ukzn.ac.za/",
@@ -563,6 +649,24 @@ export const INSTITUTIONS: Institution[] = [
     courses: 98,
     funding: "NSFAS supported",
     website: "cput.ac.za",
+    campuses: ["Cape Town", "Bellville"],
+    accreditationStatus: "University of technology - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.cput.ac.za/" },
+      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      {
+        label: "Undergraduate applications",
+        period: "Usually annual",
+        status: "Needs confirmation",
+      },
+      {
+        label: "Late applications",
+        period: "If announced by institution",
+        status: "Needs confirmation",
+      },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.cput.ac.za/",
@@ -578,6 +682,20 @@ export const INSTITUTIONS: Institution[] = [
     courses: 42,
     funding: "NSFAS supported",
     website: "falsebaycollege.co.za",
+    campuses: ["Fish Hoek", "Muizenberg", "Mitchells Plain", "Khayelitsha", "Westlake"],
+    accreditationStatus: "Public TVET college - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.falsebaycollege.co.za/" },
+      { label: "DHET TVET colleges", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      { label: "NC(V) applications", period: "Intake dependent", status: "Needs confirmation" },
+      {
+        label: "Trimester / semester applications",
+        period: "Programme dependent",
+        status: "Needs confirmation",
+      },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.falsebaycollege.co.za/",
@@ -593,6 +711,20 @@ export const INSTITUTIONS: Institution[] = [
     courses: 38,
     funding: "NSFAS supported",
     website: "eec.edu.za",
+    campuses: ["Ekurhuleni"],
+    accreditationStatus: "Public TVET college - registration requires official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.eec.edu.za/" },
+      { label: "DHET TVET colleges", url: "https://www.dhet.gov.za/" },
+    ],
+    applicationWindows: [
+      { label: "NC(V) applications", period: "Intake dependent", status: "Needs confirmation" },
+      {
+        label: "Report 191 applications",
+        period: "Trimester / semester dependent",
+        status: "Needs confirmation",
+      },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.eec.edu.za/",
@@ -608,6 +740,22 @@ export const INSTITUTIONS: Institution[] = [
     courses: 60,
     funding: "Private funding",
     website: "boston.co.za",
+    campuses: ["Nationwide", "Online"],
+    accreditationStatus:
+      "Private provider - registration and programme accreditation require official confirmation",
+    registerLinks: [
+      { label: "Official website", url: "https://www.boston.co.za/" },
+      { label: "DHET private institutions", url: "https://www.dhet.gov.za/" },
+      { label: "SAQA qualification search", url: "https://www.saqa.org.za/" },
+    ],
+    applicationWindows: [
+      {
+        label: "New student applications",
+        period: "Programme dependent",
+        status: "Needs confirmation",
+      },
+      { label: "Online study intake", period: "Provider dependent", status: "Needs confirmation" },
+    ],
     trust: {
       sourceName: "Prototype seed data",
       sourceUrl: "https://www.boston.co.za/",
@@ -727,6 +875,12 @@ export const SKILLS = [
     diff: "Beginner–Advanced",
     time: "3–12 months",
     careers: ["Developer", "Data Analyst"],
+    track: [
+      "Learn digital basics and simple web pages",
+      "Build small JavaScript or Python projects",
+      "Publish a portfolio and connect it to study or internship routes",
+    ],
+    practice: "Create a small website that explains one SA Learn career route.",
   },
   {
     slug: "digital-literacy",
@@ -734,6 +888,12 @@ export const SKILLS = [
     diff: "Beginner",
     time: "2–4 weeks",
     careers: ["Any office role"],
+    track: [
+      "Set up email, cloud storage and safe password habits",
+      "Practise documents, spreadsheets and online applications",
+      "Use official portals to find courses, funding and opportunities",
+    ],
+    practice: "Prepare a clean application folder with CV, ID copy checklist and certificates.",
   },
   {
     slug: "communication",
@@ -741,6 +901,12 @@ export const SKILLS = [
     diff: "Beginner",
     time: "Ongoing",
     careers: ["All careers"],
+    track: [
+      "Practise clear written messages and short explanations",
+      "Prepare interview answers using real examples",
+      "Build presentation confidence through short recorded practice",
+    ],
+    practice: "Write a one-page motivation for a course, bursary or learnership.",
   },
   {
     slug: "ms-office",
@@ -748,6 +914,12 @@ export const SKILLS = [
     diff: "Beginner",
     time: "4–8 weeks",
     careers: ["Admin", "Analyst"],
+    track: [
+      "Learn document formatting and spreadsheet basics",
+      "Practise formulas, tables and simple dashboards",
+      "Use templates for budgets, application trackers and reports",
+    ],
+    practice: "Build a spreadsheet that compares three courses by cost, city and NQF level.",
   },
   {
     slug: "design",
@@ -755,6 +927,12 @@ export const SKILLS = [
     diff: "Beginner–Intermediate",
     time: "2–6 months",
     careers: ["Designer", "Marketer"],
+    track: [
+      "Learn layout, colour, typography and basic brand rules",
+      "Recreate simple posters, social posts and portfolio pieces",
+      "Collect feedback and refine a small public portfolio",
+    ],
+    practice: "Design a one-page career guide poster for a learner audience.",
   },
   {
     slug: "business",
@@ -762,6 +940,13 @@ export const SKILLS = [
     diff: "Beginner–Intermediate",
     time: "1–3 months",
     careers: ["Manager", "Analyst"],
+    track: [
+      "Learn basic finance, operations and customer language",
+      "Map a simple process and identify pain points",
+      "Practise comparing options with cost, risk and outcome notes",
+    ],
+    practice:
+      "Create a simple decision table for choosing between university, TVET and work routes.",
   },
   {
     slug: "entrepreneurship",
@@ -769,6 +954,12 @@ export const SKILLS = [
     diff: "Ongoing",
     time: "Ongoing",
     careers: ["Founder", "Freelancer"],
+    track: [
+      "Choose a small problem and define the customer",
+      "Test an offer with a simple price and delivery plan",
+      "Track income, costs and feedback before scaling",
+    ],
+    practice: "Draft a one-page offer for a local service you could test this month.",
   },
   {
     slug: "marketing",
@@ -776,6 +967,12 @@ export const SKILLS = [
     diff: "Beginner–Intermediate",
     time: "2–4 months",
     careers: ["Marketer", "Brand Assistant"],
+    track: [
+      "Learn audience, message and channel basics",
+      "Plan content around a learner or employer goal",
+      "Measure reach, clicks or responses and improve the next version",
+    ],
+    practice: "Plan a seven-day content calendar for a bursary or application deadline campaign.",
   },
   {
     slug: "ai",
@@ -783,6 +980,12 @@ export const SKILLS = [
     diff: "Intermediate",
     time: "3–6 months",
     careers: ["AI Practitioner", "Analyst"],
+    track: [
+      "Learn prompt basics and safe verification habits",
+      "Use AI to summarise, compare and draft without copying blindly",
+      "Build a small workflow that improves study or job-search productivity",
+    ],
+    practice: "Create a prompt checklist for comparing two career paths using verified sources.",
   },
   {
     slug: "cyber-security",
@@ -790,6 +993,12 @@ export const SKILLS = [
     diff: "Intermediate–Advanced",
     time: "6–12 months",
     careers: ["Security Analyst"],
+    track: [
+      "Start with networking, operating systems and password safety",
+      "Practise threat awareness and incident notes in a small lab",
+      "Build toward recognised ICT study or entry support roles",
+    ],
+    practice: "Write a simple cyber safety checklist for learners applying online.",
   },
 ];
 

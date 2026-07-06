@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
@@ -8,13 +8,22 @@ export const Route = createFileRoute("/institutions")({
   head: () => ({
     meta: [
       { title: "Institutions - SA Learn" },
-      { name: "description", content: "Verified South African universities, TVET colleges and private institutions." },
+      {
+        name: "description",
+        content: "Verified South African universities, TVET colleges and private institutions.",
+      },
     ],
   }),
   component: InstitutionsPage,
 });
 
-const TYPES = ["All", "Public University", "University of Technology", "TVET College", "Private College"];
+const TYPES = [
+  "All",
+  "Public University",
+  "University of Technology",
+  "TVET College",
+  "Private College",
+];
 
 function InstitutionsPage() {
   return (
@@ -25,7 +34,10 @@ function InstitutionsPage() {
     >
       <div className="mb-6 flex flex-wrap gap-2">
         {TYPES.map((t) => (
-          <button key={t} className="rounded-full border border-border bg-background px-4 py-2 text-sm text-foreground hover:bg-muted">
+          <button
+            key={t}
+            className="rounded-full border border-border bg-background px-4 py-2 text-sm text-foreground hover:bg-muted"
+          >
             {t}
           </button>
         ))}
@@ -33,11 +45,16 @@ function InstitutionsPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {INSTITUTIONS.map((i) => (
-          <article key={i.slug} className="rounded-2xl border border-border bg-card p-6 transition-shadow hover:shadow-[var(--shadow-card-hover)]">
+          <article
+            key={i.slug}
+            className="rounded-2xl border border-border bg-card p-6 transition-shadow hover:shadow-[var(--shadow-card-hover)]"
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs text-muted-foreground">{i.type}</p>
-                <h3 className="mt-1 text-lg font-semibold tracking-tight text-foreground">{i.name}</h3>
+                <h3 className="mt-1 text-lg font-semibold tracking-tight text-foreground">
+                  {i.name}
+                </h3>
                 <p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
                   <MapPin className="h-3.5 w-3.5" /> {i.province}
                 </p>
@@ -61,10 +78,21 @@ function InstitutionsPage() {
             <TrustMetadata trust={i.trust} />
 
             <div className="mt-5 flex items-center justify-between">
-              <a href={`https://${i.website}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+              <a
+                href={`https://${i.website}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              >
                 {i.website} <ExternalLink className="h-3.5 w-3.5" />
               </a>
-              <button className="text-sm font-medium text-foreground hover:underline">View institution</button>
+              <Link
+                to="/institutions/$slug"
+                params={{ slug: i.slug }}
+                className="text-sm font-medium text-foreground hover:underline"
+              >
+                View institution
+              </Link>
             </div>
           </article>
         ))}

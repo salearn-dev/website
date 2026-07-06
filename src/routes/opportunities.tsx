@@ -65,14 +65,15 @@ function OpportunitiesPage() {
           <FilterSelect label="Type" value={type} onChange={setType} options={types} />
           <div className="flex items-end">
             <button
+              type="button"
               onClick={clearFilters}
-              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted"
+              className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Clear filters
             </button>
           </div>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
           Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
           {OPPORTUNITIES.length} prototype opportunities.
         </p>
@@ -102,7 +103,10 @@ function OpportunitiesPage() {
               </div>
               <TrustMetadata trust={o.trust} />
             </div>
-            <button className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+            <button
+              type="button"
+              className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
               Apply
             </button>
           </article>
@@ -139,7 +143,7 @@ function FilterSelect({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+        className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {options.map((option) => (
           <option key={option}>{option}</option>

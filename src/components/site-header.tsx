@@ -17,7 +17,10 @@ const NAV = [
 
 function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2.5">
+    <Link
+      to="/"
+      className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    >
       <span className="inline-flex h-7 w-11 overflow-hidden rounded-[3px] ring-1 ring-border">
         <SaFlagLogo />
       </span>
@@ -29,17 +32,19 @@ function Logo() {
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
+  // Codex: WCAG presentational navigation pass
+  // Status: Header landmarks, button states and focus rings improved; full automated audit remains reviewer-owned.
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Logo />
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
           {NAV.map((n) => (
             <Link
               key={n.to}
               to={n.to}
-              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               activeProps={{
                 className: "rounded-md px-3 py-2 text-sm font-medium text-foreground bg-muted",
               }}
@@ -51,15 +56,16 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-1 lg:flex">
           <button
+            type="button"
             aria-label="Search"
-            className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <Search className="h-4 w-4" />
           </button>
           <ThemeToggle />
           <Link
             to="/match"
-            className="ml-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="ml-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             Check My Options
           </Link>
@@ -68,9 +74,12 @@ export function SiteHeader() {
         <div className="flex items-center gap-1 lg:hidden">
           <ThemeToggle />
           <button
-            className="grid h-9 w-9 place-items-center rounded-md text-foreground"
+            type="button"
+            className="grid h-9 w-9 place-items-center rounded-md text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             onClick={() => setOpen((o) => !o)}
             aria-label="Menu"
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -79,13 +88,17 @@ export function SiteHeader() {
 
       {open && (
         <div className="border-t border-border bg-background lg:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col px-6 py-3">
+          <nav
+            id="mobile-navigation"
+            aria-label="Mobile navigation"
+            className="mx-auto flex max-w-7xl flex-col px-6 py-3"
+          >
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-3 text-sm text-foreground hover:bg-muted"
+                className="rounded-md px-3 py-3 text-sm text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {n.label}
               </Link>
@@ -93,7 +106,7 @@ export function SiteHeader() {
             <Link
               to="/match"
               onClick={() => setOpen(false)}
-              className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Check My Options
             </Link>
