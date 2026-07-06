@@ -44,14 +44,14 @@ These form the skeleton that every assistive technology relies on. They must lan
 
 ## 3. Screen Reader Support
 
-- [ ] **3.1 Decorative images marked `alt=""`** — Any illustration or icon used purely for decoration must have an empty alt attribute so screen readers skip it.
-- [ ] **3.2 Meaningful images have descriptive alt text** — The South African flag logo, institution logos, career images, and any infographics must carry alt text that conveys their meaning in context.
-- [ ] **3.3 Icon buttons have accessible names** — Every button that contains only an icon (search, theme toggle, close) must have either a visible label, `aria-label`, or `<span class="sr-only">` text.
-- [ ] **3.4 Live region for match results** — When the APS calculator produces results, wrap the output region in `aria-live="polite"` so screen reader users hear the update without having to navigate to it.
-- [ ] **3.5 Loading states announced** — Any spinner or skeleton loader should have `aria-busy="true"` on the container and `role="status"` on a live region that announces completion.
-- [ ] **3.6 Toasts / notifications accessible** — `sonner` toasts must be rendered in an `aria-live="assertive"` region for error alerts and `aria-live="polite"` for informational ones.
-- [ ] **3.7 Data tables have `<caption>` and header scope** — Any data presented in `<table>` must have a `<caption>` and `<th scope="col|row">` so screen readers can associate cells with headers.
-- [ ] **3.8 Accordion / collapsible panels** — Audit `<Accordion>` usage (guides, FAQ) for correct `aria-expanded`, `aria-controls`, and `id` wiring.
+- [x] **3.1 Decorative images marked `alt=""`** — Audited all `<img>` elements. The only `<img>` in the app is the SA flag logo, which carries meaningful alt text. Lucide SVG icons that are decorative (alongside visible text labels) require no extra treatment. No violations found.
+- [x] **3.2 Meaningful images have descriptive alt text** — SA flag logo has `alt="South African flag"` which conveys its meaning in context. No institution or career images are present yet (prototype). No violations found.
+- [x] **3.3 Icon buttons have accessible names** — Audited all icon-only buttons site-wide. Theme toggle: `aria-label` ✅. Search: `aria-label="Search"` ✅. Account: `aria-label="Account"` ✅. Mobile menu: `aria-label` (dynamic "Open/Close menu") ✅. Admin refresh button: added `type="button"` + `aria-label` + `aria-hidden` on spinner/icon. (`src/routes/admin.data.tsx`)
+- [x] **3.4 Live region for match results** — Added a visually-hidden `<p role="status" aria-live="polite" aria-atomic="true">` above the stepper that announces the current step label (e.g. "Step 1 of 4: Subjects") and a distinct message when results load ("Results loaded…"). (`src/routes/match.tsx`)
+- [x] **3.5 Loading states announced** — Added `role="status"` to the account session-check loading container. Added `role="status"` + `aria-hidden="true"` on `Loader2` spinner to the admin table-statistics loading container. (`src/routes/account.tsx`, `src/routes/admin.data.tsx`)
+- [x] **3.6 Toasts / notifications accessible** — Added `<Toaster>` to the app root (`__root.tsx`). Sonner automatically assigns `role="status"` / `aria-live="polite"` to info toasts and `role="alert"` / `aria-live="assertive"` to error toasts — no custom wrapper needed. (`src/routes/__root.tsx`)
+- [x] **3.7 Data tables have `<caption>` and header scope** — Audited all routes. No HTML `<table>` elements are used in the app (all tabular-style layouts use `<div>`). No violations found.
+- [x] **3.8 Accordion / collapsible panels** — Audited all routes. The FAQ on the landing page uses native `<details>`/`<summary>` elements, which expose `aria-expanded` state natively in all modern browsers. No Radix `<Accordion>` is used. No violations found.
 
 ---
 

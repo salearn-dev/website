@@ -117,6 +117,8 @@ function saveBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url);
 }
 
+const STEP_LABELS = ["Subjects", "Marks", "Interests", "Results"];
+
 function MatchPage() {
   const [step, setStep] = useState(1);
   const [subjects, setSubjects] = useState<Subject[]>([
@@ -191,6 +193,13 @@ function MatchPage() {
       title="Check your options"
       description="A calm, four-step check based on your matric subjects and interests. No account needed."
     >
+      {/* 3.4 — Screen-reader live region: announces step changes and results without requiring navigation */}
+      <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {step < 4
+          ? `Step ${step} of 4: ${STEP_LABELS[step - 1]}`
+          : "Results loaded. Step 4 of 4: your match results are ready below."}
+      </p>
+
       {/* Stepper */}
       <ol className="mb-8 flex flex-wrap gap-2 text-xs">
         {["Subjects", "Marks", "Interests", "Results"].map((label, i) => {

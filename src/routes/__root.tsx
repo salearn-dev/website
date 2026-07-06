@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
 import { ThemeProvider } from "../components/theme-provider";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -130,6 +131,8 @@ function RootComponent() {
             <Outlet />
           </div>
           <SiteFooter />
+          {/* 3.6 — Toaster: Sonner renders role="status" for info toasts and role="alert" for errors automatically */}
+          <Toaster />
         </div>
       </ThemeProvider>
     </QueryClientProvider>

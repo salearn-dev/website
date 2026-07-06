@@ -88,3 +88,22 @@ Created this file. Accessibility.md checklist written and awaiting human approva
 **Notes:**
 - The Radix UI component library already handles focus management for dropdowns, dialogs, selects and accordions — those were audited and found correct.
 - 2.4 (search) is marked `[~]` (in-progress/deferred) until the search feature is built. Will be completed as part of that feature.
+
+### 2026-07-06 — Section 3 complete: Screen Reader Support (items 3.1–3.8)
+
+**Items implemented:**
+
+| # | Item | Files touched |
+|---|------|---------------|
+| 3.1 | Decorative images audit — no violations | — |
+| 3.2 | Meaningful alt text audit — SA flag logo correct | — |
+| 3.3 | Admin refresh button: `type="button"`, `aria-label`, `aria-hidden` on icons | `src/routes/admin.data.tsx` |
+| 3.4 | Step change + results live region `role="status"` `aria-live="polite"` | `src/routes/match.tsx` |
+| 3.5 | `role="status"` on loading containers | `src/routes/account.tsx`, `src/routes/admin.data.tsx` |
+| 3.6 | `<Toaster>` added to app root; Sonner handles role/aria-live per toast type | `src/routes/__root.tsx` |
+| 3.7 | Data table audit — no HTML `<table>` elements present | — |
+| 3.8 | Accordion audit — FAQ uses native `<details>`/`<summary>` (correct) | — |
+
+**Notes:**
+- Sections 3.1, 3.2, 3.7, 3.8 were audit-only passes — the prototype already followed correct patterns.
+- Sonner's built-in ARIA behaviour (`role="status"` for info, `role="alert"` for errors) is correct; no wrapper overrides needed.

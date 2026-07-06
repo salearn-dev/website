@@ -399,14 +399,16 @@ function DataManagerPage() {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={loadData}
                 disabled={loading}
-                className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60"
+                aria-label={loading ? "Refreshing data…" : "Refresh table statistics"}
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : (
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-4 w-4" aria-hidden="true" />
                 )}
                 Refresh
               </button>
@@ -429,8 +431,8 @@ function DataManagerPage() {
             </header>
 
             {loading ? (
-              <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <div role="status" className="flex items-center justify-center py-12 text-sm text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                 Loading table statistics...
               </div>
             ) : (
