@@ -112,7 +112,7 @@ function InstitutionDetailPage() {
           <section className="mt-8">
             <h3 className="text-base font-semibold text-foreground">Application windows</h3>
             <div className="mt-3 grid gap-3 md:grid-cols-2">
-              {institution.applicationWindows.map((window) => (
+              {institution.applicationWindows.map((window: { label: string; period: string; status: string }) => (
                 <div
                   key={window.label}
                   className="rounded-xl border border-border bg-background p-4"
@@ -131,7 +131,7 @@ function InstitutionDetailPage() {
           <section className="mt-8">
             <h3 className="text-base font-semibold text-foreground">Register and source links</h3>
             <div className="mt-3 grid gap-3 md:grid-cols-2">
-              {institution.registerLinks.map((link) => (
+              {institution.registerLinks.map((link: { label: string; url: string }) => (
                 <a
                   key={link.url}
                   href={link.url}

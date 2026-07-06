@@ -56,7 +56,7 @@ function GuideDetailPage() {
         "@type": "HowTo",
         name: guide.title,
         description: guide.summary,
-        step: guide.steps.map((step, index) => ({
+        step: guide.steps.map((step: string, index: number) => ({
           "@type": "HowToStep",
           position: index + 1,
           text: step,
@@ -99,7 +99,7 @@ function GuideDetailPage() {
           <section className="mt-8">
             <h3 className="text-base font-semibold text-foreground">What to remember</h3>
             <div className="mt-3 grid gap-2">
-              {guide.keyPoints.map((point) => (
+              {guide.keyPoints.map((point: string) => (
                 <div
                   key={point}
                   className="flex gap-3 rounded-xl border border-border bg-background p-4"
@@ -115,7 +115,7 @@ function GuideDetailPage() {
             <section className="mt-8">
               <h3 className="text-base font-semibold text-foreground">Steps</h3>
               <ol className="mt-3 space-y-3">
-                {guide.steps.map((step, index) => (
+                {guide.steps.map((step: string, index: number) => (
                   <li
                     key={step}
                     className="flex gap-3 rounded-xl border border-border bg-background p-4"
@@ -135,7 +135,7 @@ function GuideDetailPage() {
           <div className="rounded-2xl border border-border bg-card p-6">
             <h2 className="text-base font-semibold text-foreground">Related glossary terms</h2>
             <div className="mt-4 space-y-3">
-              {glossary.map((item) => (
+              {glossary.map((item: { term: string; meaning: string }) => (
                 <div key={item.term} className="rounded-xl border border-border bg-background p-4">
                   <p className="text-sm font-semibold text-foreground">{item.term}</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">

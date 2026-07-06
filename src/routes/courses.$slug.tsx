@@ -109,7 +109,7 @@ function CourseDetailPage() {
           <section className="mt-8">
             <h3 className="text-base font-semibold text-foreground">Where this can lead</h3>
             <div className="mt-3 flex flex-wrap gap-2">
-              {course.careers.map((career) => (
+              {course.careers.map((career: string) => (
                 <span key={career} className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground">
                   {career}
                 </span>
