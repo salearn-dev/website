@@ -27,7 +27,6 @@ import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CareersSlugRouteImport } from './routes/careers.$slug'
 import { Route as AdminDataRouteImport } from './routes/admin.data'
-import { Route as AdminDataRouteImport } from './routes/admin.data'
 
 const UnlockRoute = UnlockRouteImport.update({
   id: '/unlock',
@@ -113,11 +112,6 @@ const CareersSlugRoute = CareersSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => CareersRoute,
-const AdminDataRoute = AdminDataRouteImport.update({
-  id: '/admin/data',
-  path: '/admin/data',
-  getParentRoute: () => rootRouteImport,
-} as any)
 } as any)
 const AdminDataRoute = AdminDataRouteImport.update({
   id: '/admin/data',
@@ -133,7 +127,6 @@ export interface FileRoutesByFullPath {
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRouteWithChildren
   '/institutions': typeof InstitutionsRouteWithChildren
-  '/admin/data': typeof AdminDataRoute
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
   '/prod-readiness': typeof ProdReadinessRoute
@@ -153,7 +146,6 @@ export interface FileRoutesByTo {
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
   '/guides': typeof GuidesRouteWithChildren
-  '/admin/data': typeof AdminDataRoute
   '/institutions': typeof InstitutionsRouteWithChildren
   '/match': typeof MatchRoute
   '/opportunities': typeof OpportunitiesRoute
@@ -174,7 +166,6 @@ export interface FileRoutesById {
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
-  '/admin/data': typeof AdminDataRoute
   '/guides': typeof GuidesRouteWithChildren
   '/institutions': typeof InstitutionsRouteWithChildren
   '/match': typeof MatchRoute
@@ -196,7 +187,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/careers'
     | '/courses'
-    | '/admin/data'
     | '/funding'
     | '/guides'
     | '/institutions'
@@ -216,7 +206,6 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/careers'
-    | '/admin/data'
     | '/courses'
     | '/funding'
     | '/guides'
@@ -236,7 +225,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account'
-    | '/admin/data'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -257,7 +245,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminDataRoute: typeof AdminDataRoute
   AccountRoute: typeof AccountRoute
   CareersRoute: typeof CareersRouteWithChildren
   CoursesRoute: typeof CoursesRouteWithChildren
@@ -381,13 +368,6 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof GuidesRoute
     }
     '/courses/$slug': {
-    '/admin/data': {
-      id: '/admin/data'
-      path: '/admin/data'
-      fullPath: '/admin/data'
-      preLoaderRoute: typeof AdminDataRouteImport
-      parentRoute: typeof rootRouteImport
-    }
       id: '/courses/$slug'
       path: '/$slug'
       fullPath: '/courses/$slug'
@@ -450,7 +430,6 @@ interface InstitutionsRouteChildren {
 
 const InstitutionsRouteChildren: InstitutionsRouteChildren = {
   InstitutionsSlugRoute: InstitutionsSlugRoute,
-  AdminDataRoute: AdminDataRoute,
 }
 
 const InstitutionsRouteWithChildren = InstitutionsRoute._addFileChildren(
