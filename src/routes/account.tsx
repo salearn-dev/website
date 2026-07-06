@@ -180,7 +180,7 @@ function AccountPage() {
       {error && <Alert tone="warning" message={error} />}
 
       {loading ? (
-        <div role="status" className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
           <Loader2 className="mr-2 inline h-4 w-4 animate-spin" aria-hidden="true" />
           Checking account session...
         </div>

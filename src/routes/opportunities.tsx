@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { CalendarClock, CheckCircle2, Coins, MapPin, Save } from "lucide-react";
+import { useMemo, useState } from "react";
+import { CalendarClock, MapPin, Coins } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
-import { supabase } from "@/integrations/supabase/client";
 import { OPPORTUNITIES } from "@/lib/data";
 
 export const Route = createFileRoute("/opportunities")({
@@ -24,9 +23,6 @@ function OpportunitiesPage() {
   const [province, setProvince] = useState("All");
   const [sector, setSector] = useState("All");
   const [type, setType] = useState("All");
-  const [savedReminders, setSavedReminders] = useState<Record<string, string>>({});
-  const [savingId, setSavingId] = useState<string | null>(null);
-  const [saveMessage, setSaveMessage] = useState("");
 
   const provinces = useMemo(
     () => ["All", ...unique(OPPORTUNITIES.map((item) => item.province))],
@@ -49,84 +45,6 @@ function OpportunitiesPage() {
     setProvince("All");
     setSector("All");
     setType("All");
-  }
-
-  useEffect(() => {
-    let alive = true;
-
-    async function loadSavedReminders() {
-      try {
-        const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData.session?.user;
-        if (!user) return;
-
-        const { data } = await supabase
-          .from("saved_items")
-          .select("item_slug, notes")
-          .eq("user_id", user.id)
-          .eq("item_type", "opportunity");
-
-        if (!alive) return;
-        setSavedReminders(
-          Object.fromEntries((data ?? []).map((item) => [item.item_slug, item.notes ?? "Saved"])),
-        );
-      } catch {
-        if (alive) setSaveMessage("Sign in from Account to save opportunity reminders.");
-      }
-    }
-
-    loadSavedReminders();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  // Codex: Saved opportunity deadline reminders
-  // Status: Saves reminder intent to saved_items notes; scheduled email/WhatsApp delivery remains backend-owned.
-  async function saveReminder(id: string, title: string, closes: string) {
-    setSavingId(id);
-    setSaveMessage("");
-
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData.session?.user;
-      if (!user) {
-        setSaveMessage("Sign in from Account to save opportunity reminders.");
-        return;
-      }
-
-      const { data: existing } = await supabase
-        .from("saved_items")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_type", "opportunity")
-        .eq("item_slug", id)
-        .maybeSingle();
-
-      const notes = `Reminder requested - ${title} closes ${closes}. Confirm the official deadline before applying.`;
-      if (existing?.id) {
-        const { error } = await supabase
-          .from("saved_items")
-          .update({ notes })
-          .eq("id", existing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("saved_items").insert({
-          user_id: user.id,
-          item_type: "opportunity",
-          item_slug: id,
-          notes,
-        });
-        if (error) throw error;
-      }
-
-      setSavedReminders((current) => ({ ...current, [id]: notes }));
-      setSaveMessage(`Saved reminder for ${title}.`);
-    } catch {
-      setSaveMessage("Reminder could not be saved yet. Please try again.");
-    } finally {
-      setSavingId(null);
-    }
   }
 
   return (
@@ -157,8 +75,7 @@ function OpportunitiesPage() {
         </div>
         <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
           Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
-          {OPPORTUNITIES.length} prototype opportunities.{" "}
-          {saveMessage || "Signed-in learners can save reminder intent for deadlines."}
+          {OPPORTUNITIES.length} prototype opportunities.
         </p>
       </div>
 
@@ -186,29 +103,12 @@ function OpportunitiesPage() {
               </div>
               <TrustMetadata trust={o.trust} />
             </div>
-            <div className="flex flex-wrap gap-2 md:justify-end">
-              <button
-                type="button"
-                onClick={() => saveReminder(o.id, o.title, o.closes)}
-                disabled={savingId === o.id}
-                className="inline-flex h-10 items-center gap-2 rounded-md border border-input bg-background px-4 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
-              >
-                {savedReminders[o.id] ? (
-                  <CheckCircle2 className="h-4 w-4 text-success" />
-                ) : (
-                  <Save className="h-4 w-4" />
-                )}
-                {savedReminders[o.id] ? "Reminder saved" : "Save reminder"}
-              </button>
-              <a
-                href={o.trust.sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Apply
-              </a>
-            </div>
+            <button
+              type="button"
+              className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Apply
+            </button>
           </article>
         ))}
         {filtered.length === 0 && (
