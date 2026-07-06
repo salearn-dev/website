@@ -1,8 +1,9 @@
+/* Updated to set absolute BASE_URL for sitemap generation */
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { CAREERS, COURSES, GUIDES, INSTITUTIONS } from "@/lib/data";
 
-const BASE_URL = "";
+const BASE_URL = "https://salearn.online";
 
 interface SitemapEntry {
   path: string;
