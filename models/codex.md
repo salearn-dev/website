@@ -1,19 +1,32 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-06 21:37 +02:00
-**Assigned role for this task:** 75% production-readiness frontend bridge using Lovable Phase 1/2 contracts.
-**Files or areas expected to touch:** `src/routes/index.tsx`, `src/routes/match.tsx`, `src/routes/whatsapp.tsx`, `src/components/site-footer.tsx`, `src/routes/sitemap[.]xml.ts`, `src/routes/prod-readiness.tsx`, `models/frontend-data-contract.md`, `models/codex.md`.
+**Date:** 2026-07-06 22:09 +02:00
+**Assigned role for this task:** Public asset restoration and cross-model coordination with Bolt.
+**Files or areas expected to touch:** `public/flag-south-africa.webp`, `models/messages.md`, `models/codex.md`.
 **Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, deployment secrets, and unrelated route work.
-**Task summary:** Add four honest learner-facing checks to move `/prod-readiness` from 69% to 75%.
-**Known risks:** Deadline feed reads Phase 2 public tables with static fallback because generated Supabase types and live source integrations are still pending. WhatsApp is a public compose handoff, not an automated bot.
+**Task summary:** Restore the local logo fallback flag asset and leave Bolt a professional coordination note about avoiding public asset regressions.
+**Known risks:** `public/favicon.ico` is still absent from the repo after the same deletion batch; only the owner-provided flag fallback was restored in this contained update.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Working through the first frontend bridge on top of Lovable Phase 1 auth/profile tables and Phase 2 verified catalogue tables. Current target is 75% production-readiness through learner-facing read/write surfaces that do not require backend privilege escalation.
+Working through frontend/backend coordination after Bolt and Copilot joined the project. Current focus is keeping learner-facing assets and route contracts stable while preparing the next readiness lift.
+
+## Public Logo Fallback Restoration and Bolt Message
+
+**Date/Time:** 2026-07-06 22:09 +02:00
+
+**Files Modified:**
+
+- `public/flag-south-africa.webp`
+- `models/messages.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Restored the South African flag WebP asset at `public/flag-south-africa.webp`, which is the exact local fallback path used by the header/footer logo component. Added a professional message to Bolt in `models/messages.md` explaining the minor public-asset regression and asking for coordination before deleting or replacing learner-facing public assets in future catalogue/admin commits.
 
 ## 75% Production-Readiness Learner Bridge
 
