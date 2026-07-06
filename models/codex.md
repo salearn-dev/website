@@ -1,19 +1,37 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-06 17:19:50 +02:00
-**Assigned role for this task:** Phase 1 account foundation UI after Lovable auth/profile backend delivery.
-**Files or areas expected to touch:** `src/routes/account.tsx`, `src/components/site-header.tsx`, `src/components/site-footer.tsx`, `src/routes/prod-readiness.tsx`, `models/frontend-data-contract.md`, `models/codex.md`.
+**Date:** 2026-07-06 21:37 +02:00
+**Assigned role for this task:** 75% production-readiness frontend bridge using Lovable Phase 1/2 contracts.
+**Files or areas expected to touch:** `src/routes/index.tsx`, `src/routes/match.tsx`, `src/routes/whatsapp.tsx`, `src/components/site-footer.tsx`, `src/routes/sitemap[.]xml.ts`, `src/routes/prod-readiness.tsx`, `models/frontend-data-contract.md`, `models/codex.md`.
 **Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, deployment secrets, and unrelated route work.
-**Task summary:** Add a learner-facing account status surface that reads Phase 1 auth/profile/roles/saved-item contracts without writing sensitive learner data.
-**Known risks:** Auth UI uses email magic links and read-only profile summaries. Saved-profile writes, save buttons, document upload, and automated reminders still wait for verified catalogue/POPIA/reminder contracts.
+**Task summary:** Add four honest learner-facing checks to move `/prod-readiness` from 69% to 75%.
+**Known risks:** Deadline feed reads Phase 2 public tables with static fallback because generated Supabase types and live source integrations are still pending. WhatsApp is a public compose handoff, not an automated bot.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Working through Lovable Phase 1 handoff after auth, roles, RLS, profiles, learner details, and saved items landed. Current implementation exposes a safe `/account` read surface and updates readiness for backend controls Lovable completed.
+Working through the first frontend bridge on top of Lovable Phase 1 auth/profile tables and Phase 2 verified catalogue tables. Current target is 75% production-readiness through learner-facing read/write surfaces that do not require backend privilege escalation.
+
+## 75% Production-Readiness Learner Bridge
+
+**Date/Time:** 2026-07-06 21:37 +02:00
+
+**Files Modified:**
+
+- `src/routes/index.tsx`
+- `src/routes/match.tsx`
+- `src/routes/whatsapp.tsx`
+- `src/components/site-footer.tsx`
+- `src/routes/sitemap[.]xml.ts`
+- `src/routes/prod-readiness.tsx`
+- `models/frontend-data-contract.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added a signed-in learner dashboard to the landing page that reads the learner's Phase 1 profile, APS, and saved-item count. Added a deadline watch section that reads Lovable Phase 2 public `opportunities` and `funding_windows` tables with static fallback if live data is unavailable. Added a `/match` save action that writes the learner's subjects, APS, marks, and interest into `learner_details` under RLS. Added a public `/whatsapp` route with prefilled WhatsApp compose links for match, funding, deadlines, and course search. `/prod-readiness` now marks these four checks complete, moving readiness to 75% without claiming ingestion, cron, POPIA document upload, or automated WhatsApp bot completion.
 
 ## Phase 1 Account Foundation Surface
 

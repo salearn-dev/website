@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -28,6 +29,11 @@ import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CareersSlugRouteImport } from './routes/careers.$slug'
 import { Route as AdminDataRouteImport } from './routes/admin.data'
 
+const WhatsappRoute = WhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnlockRoute = UnlockRouteImport.update({
   id: '/unlock',
   path: '/unlock',
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/whatsapp': typeof WhatsappRoute
   '/admin/data': typeof AdminDataRoute
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/whatsapp': typeof WhatsappRoute
   '/admin/data': typeof AdminDataRoute
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/whatsapp': typeof WhatsappRoute
   '/admin/data': typeof AdminDataRoute
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/whatsapp'
     | '/admin/data'
     | '/careers/$slug'
     | '/courses/$slug'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/whatsapp'
     | '/admin/data'
     | '/careers/$slug'
     | '/courses/$slug'
@@ -236,6 +247,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/whatsapp'
     | '/admin/data'
     | '/careers/$slug'
     | '/courses/$slug'
@@ -257,11 +269,19 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SkillsRoute: typeof SkillsRoute
   UnlockRoute: typeof UnlockRoute
+  WhatsappRoute: typeof WhatsappRoute
   AdminDataRoute: typeof AdminDataRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/whatsapp': {
+      id: '/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/whatsapp'
+      preLoaderRoute: typeof WhatsappRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unlock': {
       id: '/unlock'
       path: '/unlock'
@@ -450,6 +470,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SkillsRoute: SkillsRoute,
   UnlockRoute: UnlockRoute,
+  WhatsappRoute: WhatsappRoute,
   AdminDataRoute: AdminDataRoute,
 }
 export const routeTree = rootRouteImport

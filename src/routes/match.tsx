@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft,
@@ -8,8 +8,11 @@ import {
   XCircle,
   Compass,
   Download,
+  Save,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/match")({
   head: () => ({
@@ -125,6 +128,8 @@ function MatchPage() {
     { name: "Geography", mark: 64 },
   ]);
   const [interest, setInterest] = useState<string>("Health");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveMessage, setSaveMessage] = useState<string>("");
 
   const aps = useMemo(
     () =>
@@ -134,6 +139,51 @@ function MatchPage() {
         .reduce((sum, s) => sum + apsPoints(s.mark), 0),
     [subjects],
   );
+
+  const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
+
+  // Codex: Saved match profile
+  // Status: Saves learner-owned subjects and marks to Phase 1 learner_details; saved result cards wait for catalogue IDs.
+  async function saveLearnerProfile() {
+    setSaveState("saving");
+    setSaveMessage("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setSaveState("error");
+        setSaveMessage("Sign in first, then return here to save your subjects and marks.");
+        return;
+      }
+
+      const mathsMark = markFor("Mathematics") ?? markFor("Mathematical Literacy") ?? null;
+      const englishMark = markFor("English HL") ?? markFor("English FAL") ?? null;
+      const lifeSciencesMark = markFor("Life Sciences") ?? null;
+
+      const { error } = await supabase.from("learner_details").upsert(
+        {
+          user_id: user.id,
+          aps,
+          subjects: subjects as unknown as Json,
+          maths_mark: mathsMark,
+          english_mark: englishMark,
+          life_sciences_mark: lifeSciencesMark,
+          interests: [interest],
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" },
+      );
+
+      if (error) throw error;
+
+      setSaveState("saved");
+      setSaveMessage("Saved to your learner profile.");
+    } catch {
+      setSaveState("error");
+      setSaveMessage("We could not save this profile yet. Please try again after refreshing.");
+    }
+  }
 
   return (
     <PageShell
@@ -257,6 +307,43 @@ function MatchPage() {
         )}
 
         {step === 4 && <Results aps={aps} interest={interest} subjects={subjects} />}
+
+        {step === 4 && (
+          <div className="mt-8 rounded-2xl border border-border bg-background p-5">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h3 className="text-base font-semibold text-foreground">
+                  Save this learner profile
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Keep your APS, subjects and interests attached to your account for the next visit.
+                </p>
+                {saveMessage && (
+                  <p
+                    className={`mt-2 text-sm ${saveState === "saved" ? "text-success" : "text-muted-foreground"}`}
+                    aria-live="polite"
+                  >
+                    {saveMessage}{" "}
+                    {saveState === "error" && (
+                      <Link to="/account" className="font-medium text-foreground underline">
+                        Open account
+                      </Link>
+                    )}
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={saveLearnerProfile}
+                disabled={saveState === "saving"}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+              >
+                <Save className="h-4 w-4" />
+                {saveState === "saving" ? "Saving..." : "Save profile"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
           <button

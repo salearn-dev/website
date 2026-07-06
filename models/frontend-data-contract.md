@@ -12,6 +12,63 @@
 - Use `TrustMeta` or a compatible live equivalent anywhere the UI currently renders `TrustMetadata`.
 - Treat all current `Needs confirmation`, `Prototype data`, and inline prototype warnings as candidates for live `verification_status`.
 
+## `/`
+
+Data source today:
+
+- Static `CAREERS`, `COURSES`, `FUNDING`, and `OPPORTUNITIES`
+- Optional Supabase reads from Phase 1/2 tables after the browser loads
+
+Live fields read:
+
+- `profiles.display_name`
+- `learner_details.aps`
+- `saved_items` count for the current user
+- `opportunities.title`
+- `opportunities.closing_date`
+- `opportunities.provider`
+- `opportunities.source_name`
+- `opportunities.source_url`
+- `opportunities.verification_status`
+- `funding_windows.name`
+- `funding_windows.deadline`
+- `funding_windows.provider`
+- `funding_windows.source_name`
+- `funding_windows.source_url`
+- `funding_windows.verification_status`
+
+Fallback behavior:
+
+- If Supabase environment variables, permissions, generated types, or table data are unavailable, the page keeps rendering static prototype deadline cards.
+
+## `/account`
+
+Data source today:
+
+- Supabase auth session
+- `profiles`
+- `learner_details`
+- `saved_items`
+- `user_roles`
+
+Fields read:
+
+- `profiles.display_name`
+- `profiles.province`
+- `learner_details.aps`
+- `learner_details.interests`
+- `learner_details.preferred_study_mode`
+- `learner_details.preferred_delivery_mode`
+- `saved_items.item_type`
+- `saved_items.item_id`
+- `saved_items.title`
+- `saved_items.note`
+- `user_roles.role`
+
+Frontend writes:
+
+- Email magic-link sign-in and sign-out only. Profile editing remains pending.
+
 ## Shared Trust Metadata
 
 Current frontend type:
@@ -218,6 +275,42 @@ Verification badge targets:
 - `coverage`
 - `deadline`
 - `trust.verificationStatus`
+
+## `/match`
+
+Data source today:
+
+- Client-entered subjects, marks, and interest
+- Supabase auth session for optional save
+
+Frontend writes:
+
+- `learner_details.user_id`
+- `learner_details.aps`
+- `learner_details.subjects`
+- `learner_details.maths_mark`
+- `learner_details.english_mark`
+- `learner_details.life_sciences_mark`
+- `learner_details.interests`
+- `learner_details.updated_at`
+
+Deferred:
+
+- Saved individual match result cards need stable catalogue IDs from live course, career, funding, and opportunity tables.
+
+## `/whatsapp`
+
+Data source today:
+
+- Static public compose templates in `src/routes/whatsapp.tsx`
+
+Frontend behavior:
+
+- Opens `https://wa.me/?text=...` with prefilled learner messages for match, funding, deadlines, and course search.
+
+Deferred:
+
+- Automated WhatsApp bot, webhook handling, consent tracking, and persisted reminders remain backend/platform work.
 - Funding matcher reasons
 - Reminder copy
 
