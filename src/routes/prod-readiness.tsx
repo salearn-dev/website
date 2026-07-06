@@ -85,8 +85,8 @@ const GROUPS: Group[] = [
       { label: "Verified institution profiles", done: true },
       { label: "Accreditation status and register linkage", done: true },
       { label: "Application windows and deadlines", done: true },
-      { label: "Institution self-serve portal (gated by role)", done: false },
-      { label: "Admin moderation workflow", done: false },
+      { label: "Institution self-serve portal (gated by role)", done: true },
+      { label: "Admin moderation workflow", done: true },
     ],
   },
   {
@@ -106,7 +106,7 @@ const GROUPS: Group[] = [
     features: [
       { label: "Static skill list", done: true },
       { label: "Curated learning tracks", done: true },
-      { label: "Progress tracking per learner", done: false },
+      { label: "Progress tracking per learner", done: true },
       { label: "Certificates of completion", done: false },
       { label: "Skill-to-career mapping", done: true },
     ],
@@ -119,7 +119,7 @@ const GROUPS: Group[] = [
       { label: "Ingestion pipeline for live opportunities", done: false },
       { label: "Weekly cron to flag stale records (>90 days)", done: false },
       { label: "Public API for institution partners to push windows", done: false },
-      { label: "Reminders for saved opportunity deadlines", done: false },
+      { label: "Reminders for saved opportunity deadlines", done: true },
       { label: "Filtering by province, sector and type", done: true },
     ],
   },

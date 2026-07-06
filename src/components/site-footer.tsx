@@ -28,6 +28,7 @@ export function SiteFooter() {
                 ["Courses", "/courses"],
                 ["Careers", "/careers"],
                 ["Institutions", "/institutions"],
+                ["Institution portal", "/institutions/portal"],
               ]}
             />
             <FooterCol

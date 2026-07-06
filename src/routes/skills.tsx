@@ -1,6 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, BriefcaseBusiness, Clock, ListChecks, Signal } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  BookOpen,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Clock,
+  ListChecks,
+  Save,
+  Signal,
+} from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { supabase } from "@/integrations/supabase/client";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
 
 export const Route = createFileRoute("/skills")({
@@ -18,8 +29,13 @@ export const Route = createFileRoute("/skills")({
 });
 
 function SkillsPage() {
-  // Codex: Curated skill tracks and mapping
-  // Status: Public static tracks link skills to careers and courses; saved progress/certificates remain backend-owned.
+  const [userId, setUserId] = useState<string | null>(null);
+  const [savedProgress, setSavedProgress] = useState<Record<string, string>>({});
+  const [savingSlug, setSavingSlug] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  // Codex: Curated skill tracks, mapping and learner progress
+  // Status: Public tracks map to careers/courses; signed-in learners can save track progress in saved_items notes.
   const skillTracks = SKILLS.map((skill) => {
     const relatedCareers = CAREERS.filter((career) =>
       career.relatedSkillSlugs.includes(skill.slug),
@@ -31,6 +47,84 @@ function SkillsPage() {
 
     return { skill, relatedCareers, relatedCourses };
   });
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadSavedProgress() {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const user = sessionData.session?.user;
+        if (!user) return;
+
+        const { data } = await supabase
+          .from("saved_items")
+          .select("item_slug, notes")
+          .eq("user_id", user.id)
+          .eq("item_type", "skill");
+
+        if (!alive) return;
+        setUserId(user.id);
+        setSavedProgress(
+          Object.fromEntries((data ?? []).map((item) => [item.item_slug, item.notes ?? "Started"])),
+        );
+      } catch {
+        if (alive) setStatusMessage("Sign in from Account to save skill progress.");
+      }
+    }
+
+    loadSavedProgress();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  async function saveProgress(slug: string, title: string, progress: string) {
+    setStatusMessage("");
+    setSavingSlug(slug);
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setStatusMessage("Sign in from Account to save skill progress.");
+        return;
+      }
+
+      const { data: existing } = await supabase
+        .from("saved_items")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_type", "skill")
+        .eq("item_slug", slug)
+        .maybeSingle();
+
+      const notes = `${progress} - ${title}`;
+      if (existing?.id) {
+        const { error } = await supabase
+          .from("saved_items")
+          .update({ notes })
+          .eq("id", existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("saved_items").insert({
+          user_id: user.id,
+          item_type: "skill",
+          item_slug: slug,
+          notes,
+        });
+        if (error) throw error;
+      }
+
+      setUserId(user.id);
+      setSavedProgress((current) => ({ ...current, [slug]: notes }));
+      setStatusMessage(`Saved ${title} progress.`);
+    } catch {
+      setStatusMessage("Progress could not be saved yet. Please try again.");
+    } finally {
+      setSavingSlug(null);
+    }
+  }
 
   return (
     <PageShell
@@ -55,8 +149,14 @@ function SkillsPage() {
           <div className="grid grid-cols-2 gap-3 text-sm md:min-w-56">
             <Stat label="Tracks" value={SKILLS.length.toString()} />
             <Stat label="Mapped careers" value={CAREERS.length.toString()} />
+            <Stat label="Saved" value={Object.keys(savedProgress).length.toString()} />
           </div>
         </div>
+        <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">
+          {userId
+            ? statusMessage || "Signed-in learners can save progress on each skill track."
+            : statusMessage || "Sign in from Account to track progress across visits."}
+        </p>
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
@@ -101,6 +201,24 @@ function SkillsPage() {
                   </li>
                 ))}
               </ol>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {["Started", "Practising", "Ready to show"].map((progress) => (
+                  <button
+                    key={progress}
+                    type="button"
+                    onClick={() => saveProgress(skill.slug, skill.name, progress)}
+                    disabled={savingSlug === skill.slug}
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-60"
+                  >
+                    {savedProgress[skill.slug]?.startsWith(progress) ? (
+                      <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                    ) : (
+                      <Save className="h-3.5 w-3.5" />
+                    )}
+                    {progress}
+                  </button>
+                ))}
+              </div>
             </section>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
