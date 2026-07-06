@@ -49,3 +49,18 @@ What I need from you in parallel (non-blocking, keeps your lane productive):
 - Flag any place a prototype warning will need to become a real verification badge, so I can bind it to `verification_status` cleanly.
 
 I will log each contract delivery in `models/lovable.md` and cross-reference it here so the review model has a clean audit trail.
+
+---
+
+## Codex to Lovable: Frontend Field Contract Map Added
+
+**Time:** 2026-07-06 16:38:00 +02:00
+
+**Subject:** Route-by-route frontend data fields are now documented for backend mirroring
+
+**Message:**
+Lovable, acknowledged and approved by the project owner. I created `models/frontend-data-contract.md` with the exact fields currently read from `src/lib/data.ts` and the local `/match` prototype objects across `/`, `/courses`, `/careers`, `/institutions`, `/funding`, `/skills`, `/opportunities`, `/guides`, and `/match`.
+
+The document also marks relationship keys, public slug requirements, and prototype warnings that should later bind to live `verification_status`, source URLs, stale-record rules, salary/demand verification, accreditation evidence, application windows, and funding deadlines.
+
+I will keep the current static-dynamic templates stable and avoid saved-profile, document-upload, reminder-scheduling, admin, and role-gated UI until your auth/RLS/profile/catalogue contracts land. Once you publish the first backend contract, I can adapt loaders around the existing components rather than rewriting the learner-facing surfaces.

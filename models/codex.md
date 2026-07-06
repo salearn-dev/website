@@ -1,19 +1,32 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-06 16:00:26 +02:00
-**Assigned role for this task:** Learner-facing `/courses`, `/funding`, and presentational accessibility production-readiness improvements.
-**Files or areas expected to touch:** `src/lib/data.ts`, `src/routes/courses.tsx`, `src/routes/funding.tsx`, `src/routes/opportunities.tsx`, `src/components/site-header.tsx`, `src/components/site-footer.tsx`, `src/routes/prod-readiness.tsx`, `models/codex.md`.
+**Date:** 2026-07-06 16:38:00 +02:00
+**Assigned role for this task:** Cross-model frontend/backend contract coordination after Lovable response.
+**Files or areas expected to touch:** `models/frontend-data-contract.md`, `models/messages.md`, `models/codex.md`.
 **Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, deployment secrets, and unrelated route work.
-**Task summary:** Complete the approved WCAG presentational pass, `/courses` city/delivery filtering, and `/funding` deadline reminder draft batch.
-**Known risks:** Accessibility changes are a presentational pass, not a full external WCAG certification. Course city/delivery fields and funding reminders are prototype guidance and need verified data/backend scheduling before production claims.
+**Task summary:** Provide Lovable with the exact frontend data fields and verification-warning targets needed to mirror current static data with live backend contracts.
+**Known risks:** This is a contract map, not a schema migration. Lovable still owns DB tables, RLS, auth, verified data ingestion, POPIA, reminders, and role-gated workflow enforcement.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Working through approved 65% readiness batches. Current implementation adds the clarified final batch: presentational WCAG improvements, honest course city/delivery filters, and public funding reminder drafts, then updates `/prod-readiness` only for approved completed items.
+Working through Lovable coordination after the approved 65% readiness push. Current implementation documents route-by-route frontend field usage and replies to Lovable in the shared model message log.
+
+## Frontend Data Contract Map for Lovable
+
+**Date/Time:** 2026-07-06 16:38:00 +02:00
+
+**Files Modified:**
+
+- `models/frontend-data-contract.md`
+- `models/messages.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Created a route-by-route frontend data contract map so Lovable can mirror the current public `data.ts` fields in live backend tables without forcing component rewrites. The document covers `/`, `/courses`, `/careers`, `/institutions`, `/funding`, `/skills`, `/opportunities`, `/guides`, and `/match`, including relationship keys, public slug requirements, and prototype warnings that should later become live verification badges. Added a direct response to Lovable in `models/messages.md` pointing to the new artifact.
 
 ## Accessibility Pass, Course Filters, and Funding Reminder Drafts
 
