@@ -33,12 +33,12 @@ These form the skeleton that every assistive technology relies on. They must lan
 
 ## 2. Keyboard Navigation
 
-- [ ] **2.1 Focus-visible styles on all interactive elements** — Confirm `focus-visible:ring-2` is present on every `<button>`, `<a>`, `<input>`, `<select>`, and custom control. Replace any `outline: none` that removes the ring without a replacement.
-- [ ] **2.2 Mobile menu keyboard trap** — When the mobile hamburger menu is open, focus must be trapped inside it. Pressing `Escape` must close it and return focus to the trigger button. Implement with a focus-trap utility or Radix `Dialog`.
-- [ ] **2.3 Match wizard step navigation** — The 4-step APS calculator (`/match`) must be fully operable by keyboard: `Tab` through fields, `Enter`/`Space` on buttons, `Arrow` keys on radio groups, no mouse-only interactions.
-- [ ] **2.4 Search modal keyboard flow** — Opening the search, typing, navigating results with arrow keys, selecting a result with `Enter`, and closing with `Escape` must all work without a mouse.
-- [ ] **2.5 Card / list items not wrapping links in links** — Audit course cards, career cards, funding cards for nested interactive elements that create keyboard traps or confusing tab order.
-- [ ] **2.6 Logical tab order** — Visually reordered content (CSS `order`, `flex-direction: row-reverse`) must not create a tab order that jumps around the screen.
+- [x] **2.1 Focus-visible styles on all interactive elements** — Audited all interactive elements site-wide. Radix UI components correctly replace `outline` with `focus:bg-accent` or `focus:ring-2`. Fixed missing `focus-visible:ring-2` on match wizard subject toggle buttons, mark number inputs, interest buttons, and Back/Continue/Start-over navigation buttons. (`src/routes/match.tsx`)
+- [x] **2.2 Mobile menu keyboard trap** — Added `useRef` + `useEffect` to `SiteHeader`: Escape key closes the menu and returns focus to the hamburger trigger; opening the menu moves focus to the first link inside it. Trigger `aria-label` now reads "Open menu" / "Close menu" dynamically. (`src/components/site-header.tsx`)
+- [x] **2.3 Match wizard step navigation** — All wizard buttons now have `type="button"` (prevents accidental form submit). Subject and interest buttons have `aria-pressed` state. Mark inputs have `aria-label="{subject} mark (percentage)"`. Back/Continue/Start-over all have focus-visible rings. (`src/routes/match.tsx`)
+- [~] **2.4 Search modal keyboard flow** — The search button is a non-functional placeholder; no modal or results UI exists yet. Deferred until the search feature is built. Will be revisited as part of Section 10 (testing) once implemented.
+- [x] **2.5 Card / list items not wrapping links in links** — Audited all card components across all routes. Deadline cards in `index.tsx` correctly use `<a>` OR `<div>` (never nested). No nested interactive elements found.
+- [x] **2.6 Logical tab order** — Audited all routes for CSS `order`, `flex-row-reverse`, `flex-col-reverse`. No visual/DOM tab order mismatches found.
 
 ---
 

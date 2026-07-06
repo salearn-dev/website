@@ -226,12 +226,14 @@ function MatchPage() {
                 return (
                   <button
                     key={s}
+                    type="button"
+                    aria-pressed={on}
                     onClick={() =>
                       setSubjects((prev) =>
                         on ? prev.filter((x) => x.name !== s) : [...prev, { name: s, mark: 50 }],
                       )
                     }
-                    className={`rounded-full border px-4 py-2 text-sm ${on ? "border-foreground bg-foreground text-background" : "border-border bg-background text-foreground hover:bg-muted"}`}
+                    className={`rounded-full border px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${on ? "border-foreground bg-foreground text-background" : "border-border bg-background text-foreground hover:bg-muted"}`}
                   >
                     {s}
                   </button>
@@ -259,13 +261,14 @@ function MatchPage() {
                       min={0}
                       max={100}
                       value={s.mark}
+                      aria-label={`${s.name} mark (percentage)`}
                       onChange={(e) => {
                         const v = Math.max(0, Math.min(100, Number(e.target.value) || 0));
                         setSubjects((prev) =>
                           prev.map((x, j) => (j === i ? { ...x, mark: v } : x)),
                         );
                       }}
-                      className="h-10 w-20 rounded-md border border-input bg-background px-3 text-right text-sm"
+                      className="h-10 w-20 rounded-md border border-input bg-background px-3 text-right text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     />
                     <span className="text-sm text-muted-foreground">%</span>
                   </div>
@@ -292,8 +295,10 @@ function MatchPage() {
                 (f) => (
                   <button
                     key={f}
+                    type="button"
+                    aria-pressed={interest === f}
                     onClick={() => setInterest(f)}
-                    className={`rounded-2xl border p-5 text-left transition-all ${interest === f ? "border-foreground/40 bg-muted/60" : "border-border bg-background hover:border-foreground/20"}`}
+                    className={`rounded-2xl border p-5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${interest === f ? "border-foreground/40 bg-muted/60" : "border-border bg-background hover:border-foreground/20"}`}
                   >
                     <p className="text-base font-medium text-foreground">{f}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
@@ -347,23 +352,26 @@ function MatchPage() {
 
         <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
           <button
+            type="button"
             onClick={() => setStep((s) => Math.max(1, s - 1))}
             disabled={step === 1}
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground disabled:opacity-40"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1"
           >
             <ArrowLeft className="h-4 w-4" /> Back
           </button>
           {step < 4 ? (
             <button
+              type="button"
               onClick={() => setStep((s) => s + 1)}
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Continue <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
             <button
+              type="button"
               onClick={() => setStep(1)}
-              className="inline-flex h-10 items-center rounded-md border border-input bg-background px-5 text-sm font-medium text-foreground hover:bg-muted"
+              className="inline-flex h-10 items-center rounded-md border border-input bg-background px-5 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Start over
             </button>

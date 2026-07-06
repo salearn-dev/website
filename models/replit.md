@@ -71,3 +71,20 @@ Created this file. Accessibility.md checklist written and awaiting human approva
 - All routes use `PageShell`, which renders `<main>` + `<h1>` — the landmark and heading foundations are consistent site-wide.
 - Skip link is invisible until Tab is pressed; then it appears as a primary-coloured pill in the top-left corner.
 - Footer nav wrapper uses `className="contents"` so the CSS grid layout is unaffected.
+
+### 2026-07-06 — Section 2 complete: Keyboard Navigation (items 2.1–2.6)
+
+**Items implemented:**
+
+| # | Item | Files touched |
+|---|------|---------------|
+| 2.1 | `focus-visible:ring-2` on all match wizard buttons and inputs | `src/routes/match.tsx` |
+| 2.2 | Mobile menu: Escape closes + returns focus; open moves focus to first item | `src/components/site-header.tsx` |
+| 2.3 | `type="button"`, `aria-pressed`, `aria-label` on all wizard controls | `src/routes/match.tsx` |
+| 2.4 | Search deferred — button is a placeholder, no modal exists yet | — |
+| 2.5 | Nested-link audit passed — no violations found | — |
+| 2.6 | Tab-order audit passed — no CSS reordering violations found | — |
+
+**Notes:**
+- The Radix UI component library already handles focus management for dropdowns, dialogs, selects and accordions — those were audited and found correct.
+- 2.4 (search) is marked `[~]` (in-progress/deferred) until the search feature is built. Will be completed as part of that feature.
