@@ -1,2 +1,13 @@
 User-agent: *
 Allow: /
+
+# Block system and private routes from crawling
+Disallow: /api/
+Disallow: /admin/
+Disallow: /account/
+Disallow: /internal/
+Disallow: /preview/
+Disallow: /test/
+
+# Sitemap
+Sitemap: https://salearn.online/sitemap.xml
