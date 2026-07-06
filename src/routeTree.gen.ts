@@ -26,6 +26,7 @@ import { Route as InstitutionsSlugRouteImport } from './routes/institutions.$slu
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CareersSlugRouteImport } from './routes/careers.$slug'
+import { Route as AdminDataRouteImport } from './routes/admin.data'
 
 const UnlockRoute = UnlockRouteImport.update({
   id: '/unlock',
@@ -112,6 +113,11 @@ const CareersSlugRoute = CareersSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => CareersRoute,
 } as any)
+const AdminDataRoute = AdminDataRouteImport.update({
+  id: '/admin/data',
+  path: '/admin/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/admin/data': typeof AdminDataRoute
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/guides/$slug': typeof GuidesSlugRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/admin/data': typeof AdminDataRoute
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/guides/$slug': typeof GuidesSlugRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/unlock': typeof UnlockRoute
+  '/admin/data': typeof AdminDataRoute
   '/careers/$slug': typeof CareersSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/guides/$slug': typeof GuidesSlugRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/admin/data'
     | '/careers/$slug'
     | '/courses/$slug'
     | '/guides/$slug'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/admin/data'
     | '/careers/$slug'
     | '/courses/$slug'
     | '/guides/$slug'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/skills'
     | '/unlock'
+    | '/admin/data'
     | '/careers/$slug'
     | '/courses/$slug'
     | '/guides/$slug'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SkillsRoute: typeof SkillsRoute
   UnlockRoute: typeof UnlockRoute
+  AdminDataRoute: typeof AdminDataRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -368,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CareersSlugRouteImport
       parentRoute: typeof CareersRoute
     }
+    '/admin/data': {
+      id: '/admin/data'
+      path: '/admin/data'
+      fullPath: '/admin/data'
+      preLoaderRoute: typeof AdminDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -430,6 +450,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SkillsRoute: SkillsRoute,
   UnlockRoute: UnlockRoute,
+  AdminDataRoute: AdminDataRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
