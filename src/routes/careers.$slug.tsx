@@ -92,7 +92,7 @@ function CareerDetailPage() {
         <article className="rounded-2xl border border-border bg-card p-6 md:p-8">
           <div className="flex flex-wrap gap-2 text-xs">
             <Badge>{career.demand} demand</Badge>
-            {career.routes.map((route) => (
+            {career.routes.map((route: string) => (
               <Badge key={route}>{route}</Badge>
             ))}
           </div>
@@ -124,7 +124,7 @@ function CareerDetailPage() {
           <section className="mt-8">
             <h3 className="text-base font-semibold text-foreground">Typical work activities</h3>
             <div className="mt-3 grid gap-2 md:grid-cols-2">
-              {career.dailyWork.map((item) => (
+              {career.dailyWork.map((item: string) => (
                 <CheckItem key={item}>{item}</CheckItem>
               ))}
             </div>
@@ -133,7 +133,7 @@ function CareerDetailPage() {
           <section className="mt-8">
             <h3 className="text-base font-semibold text-foreground">Possible route timeline</h3>
             <ol className="mt-3 space-y-3">
-              {career.timeline.map((step, index) => (
+              {career.timeline.map((step: string, index: number) => (
                 <li
                   key={step}
                   className="flex gap-3 rounded-xl border border-border bg-background p-4"
