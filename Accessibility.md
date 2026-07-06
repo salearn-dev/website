@@ -21,13 +21,13 @@ Each section is a theme. Each item is a discrete unit of work — small enough t
 
 These form the skeleton that every assistive technology relies on. They must land before anything else.
 
-- [ ] **1.1 Skip-to-content link** — Add a visually hidden `<a href="#main-content">Skip to main content</a>` as the very first focusable element in `__root.tsx`; make it visible on focus. Lets keyboard and screen-reader users bypass the header on every page.
-- [ ] **1.2 `<main>` landmark with `id="main-content"`** — Wrap the `<Outlet />` area in a `<main>` element so AT users can jump straight to page content.
-- [ ] **1.3 `<nav>` landmarks labelled** — The desktop nav already has `aria-label="Primary navigation"`; audit the mobile menu and footer nav to ensure each has a unique, descriptive `aria-label` so they are distinguishable in the landmarks list.
-- [ ] **1.4 `<footer>` landmark** — Confirm `<SiteFooter>` renders a semantic `<footer>` element (not just a `<div>`).
-- [ ] **1.5 `<header>` landmark** — Confirm `<SiteHeader>` renders a semantic `<header>` element.
-- [ ] **1.6 Page `<title>` per route** — Every route should set a descriptive, unique `<title>` that names the page first, then the site (e.g. "Courses — SA Learn"). Audit all 18 routes; fill in any that are missing or identical to others.
-- [ ] **1.7 Heading hierarchy** — Audit every route so headings descend logically (`h1` → `h2` → `h3`) with no levels skipped. Each page must have exactly one `h1`.
+- [x] **1.1 Skip-to-content link** — Added visually hidden `<a href="#main-content">Skip to main content</a>` as first focusable element in `__root.tsx`; becomes visible and styled on focus. (`src/routes/__root.tsx`)
+- [x] **1.2 `<main>` landmark with `id="main-content"`** — `PageShell` (used by all routes) already renders `<main>`; added `id="main-content"` to it as the skip-link target. Added matching id to `index.tsx`'s own `<main>`. (`src/components/page-shell.tsx`, `src/routes/index.tsx`)
+- [x] **1.3 `<nav>` landmarks labelled** — Desktop nav has `aria-label="Primary navigation"`, mobile has `aria-label="Mobile navigation"`. Wrapped the three footer link columns in `<nav aria-label="Footer navigation">` — all three nav landmarks now have unique labels. (`src/components/site-footer.tsx`)
+- [x] **1.4 `<footer>` landmark** — `SiteFooter` already uses a semantic `<footer>` element. No change needed.
+- [x] **1.5 `<header>` landmark** — `SiteHeader` already uses a semantic `<header>` element. No change needed.
+- [x] **1.6 Page `<title>` per route** — Audited all 18 routes. Every route sets a unique `<title>` in the format "Page - SA Learn" via its `head()` function. No changes needed.
+- [x] **1.7 Heading hierarchy** — Audited all routes. `PageShell` enforces exactly one `<h1>` per page. Routes use `<h2>` for sections, `<h3>` for subsections, `<h4>` where needed — no levels skipped. `index.tsx` follows the same pattern with its own `<h1>`. No changes needed.
 
 ---
 

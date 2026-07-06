@@ -52,3 +52,22 @@ Make SA Learn the most accessible education platform for South African learners 
 ### 2026-07-06 — Model registration
 
 Created this file. Accessibility.md checklist written and awaiting human approval before implementation begins.
+
+### 2026-07-06 — Section 1 complete: Page Structure & Landmarks (items 1.1–1.7)
+
+**Items implemented:**
+
+| # | Item | Files touched |
+|---|------|---------------|
+| 1.1 | Skip-to-content link | `src/routes/__root.tsx` |
+| 1.2 | `<main id="main-content">` skip-link target | `src/components/page-shell.tsx`, `src/routes/index.tsx` |
+| 1.3 | Footer nav labelled with `aria-label="Footer navigation"` | `src/components/site-footer.tsx` |
+| 1.4 | `<footer>` landmark | Already present — no change |
+| 1.5 | `<header>` landmark | Already present — no change |
+| 1.6 | Unique `<title>` on all 18 routes | Audited — all present — no change |
+| 1.7 | Heading hierarchy (`h1`→`h2`→`h3`) | Audited — `PageShell` enforces one `h1`; routes follow correctly — no change |
+
+**Notes:**
+- All routes use `PageShell`, which renders `<main>` + `<h1>` — the landmark and heading foundations are consistent site-wide.
+- Skip link is invisible until Tab is pressed; then it appears as a primary-coloured pill in the top-left corner.
+- Footer nav wrapper uses `className="contents"` so the CSS grid layout is unaffected.

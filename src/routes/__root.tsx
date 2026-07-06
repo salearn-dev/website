@@ -118,6 +118,13 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <div className="flex min-h-screen flex-col bg-background">
+          {/* 1.1 — Skip-to-content: visually hidden until focused, lets keyboard/AT users bypass the header */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:shadow-lg focus:outline-none"
+          >
+            Skip to main content
+          </a>
           <SiteHeader />
           <div className="flex-1">
             <Outlet />
