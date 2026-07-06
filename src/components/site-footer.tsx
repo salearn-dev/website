@@ -34,6 +34,7 @@ export function SiteFooter() {
               ["Match", "/match"],
               ["Funding", "/funding"],
               ["Opportunities", "/opportunities"],
+              ["Account", "/account"],
             ]}
           />
           <FooterCol

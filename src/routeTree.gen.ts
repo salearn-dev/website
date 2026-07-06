@@ -20,6 +20,7 @@ import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FundingRouteImport } from './routes/funding'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CareersRouteImport } from './routes/careers'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InstitutionsSlugRouteImport } from './routes/institutions.$slug'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
@@ -81,6 +82,11 @@ const CareersRoute = CareersRouteImport.update({
   path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -109,6 +115,7 @@ const CareersSlugRoute = CareersSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -221,6 +233,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   CareersRoute: typeof CareersRouteWithChildren
   CoursesRoute: typeof CoursesRouteWithChildren
   FundingRoute: typeof FundingRoute
@@ -313,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CareersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -398,6 +418,7 @@ const InstitutionsRouteWithChildren = InstitutionsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   CareersRoute: CareersRouteWithChildren,
   CoursesRoute: CoursesRouteWithChildren,
   FundingRoute: FundingRoute,
@@ -413,3 +434,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

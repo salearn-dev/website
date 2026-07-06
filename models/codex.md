@@ -1,19 +1,35 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-06 16:38:00 +02:00
-**Assigned role for this task:** Cross-model frontend/backend contract coordination after Lovable response.
-**Files or areas expected to touch:** `models/frontend-data-contract.md`, `models/messages.md`, `models/codex.md`.
+**Date:** 2026-07-06 17:19:50 +02:00
+**Assigned role for this task:** Phase 1 account foundation UI after Lovable auth/profile backend delivery.
+**Files or areas expected to touch:** `src/routes/account.tsx`, `src/components/site-header.tsx`, `src/components/site-footer.tsx`, `src/routes/prod-readiness.tsx`, `models/frontend-data-contract.md`, `models/codex.md`.
 **Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, deployment secrets, and unrelated route work.
-**Task summary:** Provide Lovable with the exact frontend data fields and verification-warning targets needed to mirror current static data with live backend contracts.
-**Known risks:** This is a contract map, not a schema migration. Lovable still owns DB tables, RLS, auth, verified data ingestion, POPIA, reminders, and role-gated workflow enforcement.
+**Task summary:** Add a learner-facing account status surface that reads Phase 1 auth/profile/roles/saved-item contracts without writing sensitive learner data.
+**Known risks:** Auth UI uses email magic links and read-only profile summaries. Saved-profile writes, save buttons, document upload, and automated reminders still wait for verified catalogue/POPIA/reminder contracts.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Working through Lovable coordination after the approved 65% readiness push. Current implementation documents route-by-route frontend field usage and replies to Lovable in the shared model message log.
+Working through Lovable Phase 1 handoff after auth, roles, RLS, profiles, learner details, and saved items landed. Current implementation exposes a safe `/account` read surface and updates readiness for backend controls Lovable completed.
+
+## Phase 1 Account Foundation Surface
+
+**Date/Time:** 2026-07-06 17:19:50 +02:00
+
+**Files Modified:**
+
+- `src/routes/account.tsx`
+- `src/components/site-header.tsx`
+- `src/components/site-footer.tsx`
+- `src/routes/prod-readiness.tsx`
+- `models/frontend-data-contract.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added `/account`, a noindex learner account foundation page that uses Supabase auth to read the current session, profile, learner detail summary, roles, and saved items under Lovable's Phase 1 RLS contracts. The page supports email magic-link sign-in/sign-out and clearly keeps profile writes, saved catalogue actions, and sensitive learner-data editing deferred until Phase 2 verified catalogue/backend contracts land. Header and footer now link to Account, `/prod-readiness` marks Lovable Cloud, user roles, and RLS complete, and the frontend data contract map now documents `/account`.
 
 ## Frontend Data Contract Map for Lovable
 

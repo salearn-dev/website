@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, UserRound } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { SaFlagLogo } from "./sa-flag-logo";
 
@@ -64,6 +64,13 @@ export function SiteHeader() {
           </button>
           <ThemeToggle />
           <Link
+            to="/account"
+            aria-label="Account"
+            className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <UserRound className="h-4 w-4" />
+          </Link>
+          <Link
             to="/match"
             className="ml-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
@@ -103,6 +110,13 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
+            <Link
+              to="/account"
+              onClick={() => setOpen(false)}
+              className="rounded-md px-3 py-3 text-sm text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Account
+            </Link>
             <Link
               to="/match"
               onClick={() => setOpen(false)}

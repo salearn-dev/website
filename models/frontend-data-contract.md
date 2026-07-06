@@ -376,6 +376,42 @@ Backend handoff note:
 
 - Saved learner profiles, versioned rules, and server-side institution/faculty rules should wait for Lovable contracts.
 
+## `/account`
+
+Data source today:
+
+- Supabase auth session
+- `profiles`
+- `learner_details`
+- `user_roles`
+- `saved_items`
+
+Fields read:
+
+- Auth user: `id`, `email`
+- Profile: `display_name`, `avatar_url`, `province`, `bio`, `updated_at`
+- Learner details: `subjects`, `aps`, `maths_mark`, `english_mark`, `life_sciences_mark`, `nbt_completed`, `interests`, `preferred_study_mode`, `preferred_delivery_mode`, `budget_max_per_year`
+- User roles: `role`
+- Saved items: `id`, `item_type`, `item_slug`, `notes`, `created_at`
+
+Relationship keys:
+
+- `profiles.id` joins to auth user ID
+- `learner_details.user_id` joins to auth user ID
+- `user_roles.user_id` joins to auth user ID
+- `saved_items.user_id` joins to auth user ID
+- `saved_items.item_type` + `saved_items.item_slug` will later join to verified live catalogue records
+
+Verification badge targets:
+
+- Save buttons remain disabled or prototype-only until Phase 2 verified catalogue records exist
+- Learner detail write UI remains deferred until saved profile UX is approved
+
+Backend handoff note:
+
+- `/account` is intentionally `noindex`.
+- The current page reads Phase 1 contracts but does not write learner detail records or saved catalogue items.
+
 ## `/`
 
 Data source today:
