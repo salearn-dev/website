@@ -29,6 +29,7 @@ import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CareersSlugRouteImport } from './routes/careers.$slug'
 import { Route as AdminDataRouteImport } from './routes/admin.data'
+import { Route as ApiPublicOpportunitiesRouteImport } from './routes/api.public.opportunities'
 
 const WhatsappRoute = WhatsappRouteImport.update({
   id: '/whatsapp',
@@ -130,6 +131,11 @@ const AdminDataRoute = AdminDataRouteImport.update({
   path: '/admin/data',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOpportunitiesRoute = ApiPublicOpportunitiesRouteImport.update({
+  id: '/api/public/opportunities',
+  path: '/api/public/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/guides/$slug': typeof GuidesSlugRoute
   '/institutions/$slug': typeof InstitutionsSlugRoute
   '/institutions/portal': typeof InstitutionsPortalRoute
+  '/api/public/opportunities': typeof ApiPublicOpportunitiesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/guides/$slug': typeof GuidesSlugRoute
   '/institutions/$slug': typeof InstitutionsSlugRoute
   '/institutions/portal': typeof InstitutionsPortalRoute
+  '/api/public/opportunities': typeof ApiPublicOpportunitiesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/guides/$slug': typeof GuidesSlugRoute
   '/institutions/$slug': typeof InstitutionsSlugRoute
   '/institutions/portal': typeof InstitutionsPortalRoute
+  '/api/public/opportunities': typeof ApiPublicOpportunitiesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/guides/$slug'
     | '/institutions/$slug'
     | '/institutions/portal'
+    | '/api/public/opportunities'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/guides/$slug'
     | '/institutions/$slug'
     | '/institutions/portal'
+    | '/api/public/opportunities'
   id:
     | '__root__'
     | '/'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/guides/$slug'
     | '/institutions/$slug'
     | '/institutions/portal'
+    | '/api/public/opportunities'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -283,6 +295,7 @@ export interface RootRouteChildren {
   UnlockRoute: typeof UnlockRoute
   WhatsappRoute: typeof WhatsappRoute
   AdminDataRoute: typeof AdminDataRoute
+  ApiPublicOpportunitiesRoute: typeof ApiPublicOpportunitiesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -427,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDataRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/opportunities': {
+      id: '/api/public/opportunities'
+      path: '/api/public/opportunities'
+      fullPath: '/api/public/opportunities'
+      preLoaderRoute: typeof ApiPublicOpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -493,6 +513,7 @@ const rootRouteChildren: RootRouteChildren = {
   UnlockRoute: UnlockRoute,
   WhatsappRoute: WhatsappRoute,
   AdminDataRoute: AdminDataRoute,
+  ApiPublicOpportunitiesRoute: ApiPublicOpportunitiesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

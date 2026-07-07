@@ -4,6 +4,20 @@ import { PageShell } from "@/components/page-shell";
 import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
 
+const ISIZULU_GLOSSARY: Record<string, string> = {
+  APS: "Amaphuzu asiza izikhungo ukubheka ukuthi imiphumela yakho iyahlangabezana yini nezidingo zokungena.",
+  NQF: "Uhlelo lwamazinga olukhombisa ukuthi isitifiketi, idiploma noma iziqu zisezingeni liphi eNingizimu Afrika.",
+  SAQA: "Inhlangano esiza ukubheka nokuphatha imininingwane yezimfanelo ezisemthethweni.",
+  DHET: "Umnyango kahulumeni obhekele imfundo ephakeme, ama-TVET kanye nokuqeqeshwa kwamakhono.",
+  NSFAS: "Uhlelo losizo lwezimali kubafundi abafanelekile emanyuvesi omphakathi nama-TVET.",
+  TVET: "Amakolishi agxile emakhonweni asebenzayo nasezifundweni ezixhumene nomsebenzi.",
+  Accreditation: "Ubufakazi bokuthi isikhungo noma uhlelo luhloliwe noma lubhaliswe ngendlela efanele.",
+  Learnership: "Uhlelo oluhlanganisa ukufunda kanye nesipiliyoni somsebenzi.",
+  Diploma: "Isiqu esivame ukugxila emsebenzini futhi sivame ukuba sendleleni ephathekayo.",
+  Degree: "Isiqu semfundo ephakeme esivame ukunikezwa izikhungo zemfundo ephakeme.",
+  "Higher Certificate": "Isiqu sokuqala semfundo ephakeme esingakusiza uqhubekele phambili.",
+};
+
 export const Route = createFileRoute("/guides")({
   head: () =>
     buildSeoHead({
@@ -62,7 +76,9 @@ function GuidesPage() {
       <section className="mb-10 rounded-2xl border border-border bg-card p-6 md:p-8">
         <div className="flex items-center gap-2">
           <ListChecks className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">Glossary</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            Glossary / Amagama abalulekile
+          </h2>
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-2">
           {GLOSSARY_TERMS.map((item) => (
@@ -74,6 +90,11 @@ function GuidesPage() {
             >
               <p className="text-sm font-semibold text-foreground">{item.term}</p>
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.meaning}</p>
+              {ISIZULU_GLOSSARY[item.term] && (
+                <p lang="zu" className="mt-3 text-sm leading-relaxed text-foreground">
+                  {ISIZULU_GLOSSARY[item.term]}
+                </p>
+              )}
             </Link>
           ))}
         </div>

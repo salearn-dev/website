@@ -7,9 +7,11 @@ import {
   ShieldAlert,
   Mail,
   MessageCircle,
+  UploadCloud,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
+import { supabase } from "@/integrations/supabase/client";
 import { FUNDING } from "@/lib/data";
 import { loadApprovedFunding } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
@@ -57,6 +59,7 @@ function FundingPage() {
       <NsfasWizard />
       <BursaryMatcher fundingItems={fundingItems} />
       <DeadlineReminderHelper fundingItems={fundingItems} catalogueSource={catalogueSource} />
+      <DocumentUploadConsent />
 
       <div className="grid gap-4 md:grid-cols-2">
         {fundingItems.map((f) => (
@@ -92,6 +95,138 @@ function FundingPage() {
         ))}
       </div>
     </PageShell>
+  );
+}
+
+function DocumentUploadConsent() {
+  const [documentType, setDocumentType] = useState("transcript");
+  const [file, setFile] = useState<File | null>(null);
+  const [consent, setConsent] = useState(false);
+  const [state, setState] = useState<"idle" | "uploading" | "uploaded" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  // Codex: POPIA-aware learner document upload
+  // Status: Uploads to a private owner-scoped Supabase bucket and records consent metadata.
+  async function uploadDocument() {
+    setMessage("");
+
+    if (!file || !consent) {
+      setState("error");
+      setMessage("Choose a document and confirm consent before uploading.");
+      return;
+    }
+
+    setState("uploading");
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setState("error");
+        setMessage("Sign in from Account before uploading sensitive documents.");
+        return;
+      }
+
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-80);
+      const path = `${user.id}/${documentType}/${Date.now()}-${safeName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("learner-documents")
+        .upload(path, file, { upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const documentClient = supabase as unknown as {
+        from: (table: "document_consents") => {
+          insert: (row: {
+            user_id: string;
+            document_type: string;
+            file_path: string;
+            consent_version: string;
+          }) => Promise<{ error: Error | null }>;
+        };
+      };
+
+      const { error: consentError } = await documentClient.from("document_consents").insert({
+        user_id: user.id,
+        document_type: documentType,
+        file_path: path,
+        consent_version: "2026-07-07",
+      });
+
+      if (consentError) throw consentError;
+
+      setState("uploaded");
+      setMessage("Document uploaded to your private learner document vault.");
+      setFile(null);
+    } catch (error) {
+      setState("error");
+      setMessage(error instanceof Error ? error.message : "Document upload failed.");
+    }
+  }
+
+  return (
+    <section className="mb-8 rounded-2xl border border-border bg-card p-6 md:p-8">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            POPIA consent
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground">
+            Upload funding documents safely
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Signed-in learners can upload a transcript, ID copy or supporting document to a private
+            owner-scoped storage bucket. SA Learn records consent before the file is accepted.
+          </p>
+        </div>
+
+        <div className="space-y-3 rounded-xl border border-border bg-background p-4">
+          <WizardSelect
+            label="Document type"
+            value={documentType}
+            onChange={setDocumentType}
+            options={["transcript", "id", "proof_of_residence", "other"]}
+          />
+          <label className="block text-xs">
+            <span className="mb-1.5 block font-medium text-muted-foreground">Document file</span>
+            <input
+              type="file"
+              accept=".pdf,image/png,image/jpeg,image/webp"
+              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              className="block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="flex items-start gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(event) => setConsent(event.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-input"
+            />
+            <span>
+              I consent to SA Learn storing this document privately for funding/application support.
+              I understand uploads are not sent to NSFAS or any institution automatically.
+            </span>
+          </label>
+          <button
+            type="button"
+            onClick={uploadDocument}
+            disabled={state === "uploading" || !file || !consent}
+            className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+          >
+            <UploadCloud className="h-4 w-4" aria-hidden="true" />
+            {state === "uploading" ? "Uploading..." : "Upload document"}
+          </button>
+          {message && (
+            <p
+              className={`text-sm ${state === "uploaded" ? "text-success" : "text-muted-foreground"}`}
+              aria-live="polite"
+            >
+              {message}
+            </p>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
 

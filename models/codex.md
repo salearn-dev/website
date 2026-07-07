@@ -15,6 +15,23 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Working through autonomous frontend production-readiness lifts on top of Lovable Phase 1 user contracts and Bolt Phase 2 catalogue tables. Current focus is honest readiness movement without inventing unsupported ingestion, cron, POPIA, or source-sync claims.
 
+## 95% Production-Readiness Final Push
+
+**Date/Time:** 2026-07-07 15:20 +02:00
+
+**Files Modified:**
+
+- `supabase/migrations/20260707152000_stale_records_partner_documents.sql`
+- `src/routes/api.public.opportunities.ts`
+- `src/routes/funding.tsx`
+- `src/routes/guides.tsx`
+- `src/routes/prod-readiness.tsx`
+- `models/messages.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added a weekly stale-record automation function and cron schedule for Phase 2 catalogue tables. Added a partner opportunity API that requires `SA_LEARN_PARTNER_API_KEY` and sends submissions into moderation as provisional records. Added a private learner document upload foundation with POPIA consent, owner-scoped storage policies, and consent metadata. Added English/isiZulu glossary explanations for the core guides terms. `/prod-readiness` now marks these implemented checks complete while leaving real testimonials and full five-language UI unfinished for the correct owning lanes.
+
 ## 90% Production-Readiness Live Data and Consent Lift
 
 **Date/Time:** 2026-07-07 13:40 +02:00

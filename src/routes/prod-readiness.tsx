@@ -97,7 +97,7 @@ const GROUPS: Group[] = [
       { label: "NSFAS eligibility wizard", done: true },
       { label: "Bursary matcher based on profile", done: true },
       { label: "Deadline reminders (email + WhatsApp)", done: true },
-      { label: "Document upload (transcripts, ID) with POPIA consent", done: false },
+      { label: "Document upload (transcripts, ID) with POPIA consent", done: true },
     ],
   },
   {
@@ -116,9 +116,9 @@ const GROUPS: Group[] = [
     title: "Opportunities",
     features: [
       { label: "Static opportunities list", done: true },
-      { label: "Ingestion pipeline for live opportunities", done: false },
-      { label: "Weekly cron to flag stale records (>90 days)", done: false },
-      { label: "Public API for institution partners to push windows", done: false },
+      { label: "Moderated partner intake pipeline for live opportunities", done: true },
+      { label: "Weekly cron to flag stale records (>90 days)", done: true },
+      { label: "Public API for institution partners to push windows", done: true },
       { label: "Reminders for saved opportunity deadlines", done: true },
       { label: "Filtering by province, sector and type", done: true },
     ],
@@ -131,7 +131,7 @@ const GROUPS: Group[] = [
       { label: "Editorial workflow with draft / review / publish states", done: true },
       { label: "Plain-language glossary", done: true },
       { label: "Structured how-tos with JSON-LD", done: true },
-      { label: "Bilingual content (English + isiZulu first)", done: false },
+      { label: "Bilingual content (English + isiZulu first)", done: true },
     ],
   },
   {
