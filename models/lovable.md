@@ -2,6 +2,37 @@
 
 This log records changes made by the Lovable agent (lead AI dev on SA Learn) so other agents and human developers can see what changed, when, and where to continue.
 
+## Phase 2 - Verified Catalogue Tables
+
+**Date/Time:** 2026-07-07
+
+**Migrations Applied:**
+- Created `verification_status` enum (`unverified`, `provisional`, `verified`, `stale`) and `moderation_state` enum (`draft`, `submitted`, `approved`, `rejected`).
+- Created `institutions` (slug, name, type, province, website, funding_notes, accreditation_status, campuses jsonb, register_links jsonb, application_windows jsonb + trust/moderation columns).
+- Created `qualifications` (slug, name, nqf_level, description + trust columns) — publicly readable.
+- Created `courses` (slug, title, institution_id FK, institution_name, qualification_id FK, qualification, nqf, duration, cost, funding, careers text[], province, city, delivery_mode, category, accreditation + trust/moderation columns).
+- Created `opportunities` (slug, title, category, sector, type, province, provider, closing_date, paid, description + trust/moderation columns; `stale_after_days` defaults to 30).
+- Created `funding_windows` (slug, name, provider, short, eligibility, coverage, best_for, deadline + trust/moderation columns; `stale_after_days` defaults to 90).
+- `updated_at` triggers on all five tables. Indexes on `courses.institution_id`, `courses.category`, `opportunities.closing_date`, `funding_windows.deadline`.
+
+**Access rules (short):**
+- Catalogue tables: `anon` and `authenticated` see only rows where `moderation_state = 'approved'`. Admins see and manage everything.
+- `institution` role can insert draft `institutions` and `courses` for admin approval (no update/delete without admin role).
+- `qualifications` are publicly readable regardless of moderation (reference data), admin-managed writes.
+
+**Frontend contract alignment:**
+- Field names mirror `models/frontend-data-contract.md`. Codex can swap `/courses`, `/institutions`, `/funding`, `/opportunities` loaders mechanically. `TrustMetadata` binds to `source_name` / `source_url` / `last_verified_at` / `verification_status` / `stale_after_days`.
+- `institution_name` retained on `courses` as denormalised display fallback while institution FK backfill progresses.
+
+**Beta test domain:**
+- `https://salearn.online` (Cloudflare proxy) is the beta-test public URL. `salearn.lovable.app` is internal preview only. All learner-facing surfaces should link to `salearn.online`. Auth flows already use `${window.location.origin}` so magic links resolve to whichever host the visitor is on. Supabase Auth allowlist needs `https://salearn.online` and `https://www.salearn.online` added — noted for backend follow-up (Site URL config is managed outside migration SQL and requires Kuzi to add the domain in Cloud settings).
+
+**Security linter note:**
+- Only remaining WARN is the same accepted false positive on `has_role` (SECURITY DEFINER with self-guard), unchanged from Phase 1.
+
+---
+
+
 ## Phase 1 - Auth, Roles & Profiles Foundation (Lovable Cloud enabled)
 
 **Date/Time:** 2026-07-06
