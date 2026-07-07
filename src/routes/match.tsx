@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -13,33 +13,22 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
+import { evaluateMatch, type MatchGroup, type MatchResult } from "@/lib/match-engine.functions";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/match")({
-  head: () => ({
-    meta: [
-      { title: "Match - SA Learn" },
-      {
-        name: "description",
-        content:
-          "Enter your subjects and marks to see what you qualify for, and what to do if you almost qualify.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Match - SA Learn",
+      description:
+        "Enter your subjects and marks to see what you qualify for, and what to do if you almost qualify.",
+      path: "/match",
+      ogType: "website",
+    }),
   component: MatchPage,
 });
 
 type Subject = { name: string; mark: number };
-type MatchResult = {
-  title: string;
-  institution: string;
-  confidence: "Verified match" | "Partial match" | "Needs confirmation" | "Data outdated";
-  reason: string;
-  requirementsMet: string[];
-  requirementsMissing: string[];
-  additionalChecks: string[];
-  nextStep: string;
-};
-
 const SUBJECT_OPTIONS = [
   "Mathematics",
   "Mathematical Literacy",
@@ -132,6 +121,7 @@ function MatchPage() {
   const [interest, setInterest] = useState<string>("Health");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string>("");
+  const [profileConsent, setProfileConsent] = useState(false);
 
   const aps = useMemo(
     () =>
@@ -145,8 +135,14 @@ function MatchPage() {
   const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
 
   // Codex: Saved match profile
-  // Status: Saves learner-owned subjects and marks to Phase 1 learner_details; saved result cards wait for catalogue IDs.
+  // Status: Saves learner-owned subjects and marks only after explicit profile consent.
   async function saveLearnerProfile() {
+    if (!profileConsent) {
+      setSaveState("error");
+      setSaveMessage("Please consent before saving subjects and marks to your learner profile.");
+      return;
+    }
+
     setSaveState("saving");
     setSaveMessage("");
 
@@ -332,6 +328,18 @@ function MatchPage() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   Keep your APS, subjects and interests attached to your account for the next visit.
                 </p>
+                <label className="mt-3 flex max-w-2xl items-start gap-2 text-sm text-muted-foreground">
+                  <input
+                    type="checkbox"
+                    checked={profileConsent}
+                    onChange={(event) => setProfileConsent(event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-input"
+                  />
+                  <span>
+                    I consent to SA Learn saving these subjects, marks, APS and interest to my
+                    protected learner profile. This is not an application submission.
+                  </span>
+                </label>
                 {saveMessage && (
                   <p
                     className={`mt-2 text-sm ${saveState === "saved" ? "text-success" : "text-muted-foreground"}`}
@@ -349,7 +357,7 @@ function MatchPage() {
               <button
                 type="button"
                 onClick={saveLearnerProfile}
-                disabled={saveState === "saving"}
+                disabled={saveState === "saving" || !profileConsent}
                 className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
               >
                 <Save className="h-4 w-4" />
@@ -400,11 +408,13 @@ function Results({
   interest: string;
   subjects: Subject[];
 }) {
+  const [serverGroups, setServerGroups] = useState<MatchGroup[] | null>(null);
+  const [engineVersion, setEngineVersion] = useState("client-fallback");
   const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
   const mathsMark = markFor("Mathematics") ?? markFor("Mathematical Literacy") ?? 0;
   const englishMark = markFor("English HL") ?? markFor("English FAL") ?? 0;
   const lifeSciencesMark = markFor("Life Sciences") ?? 0;
-  const groups: Array<{
+  const fallbackGroups: Array<{
     title: string;
     tone: "success" | "warning" | "danger" | "growth";
     icon: React.ComponentType<{ className?: string }>;
@@ -551,6 +561,31 @@ function Results({
       ],
     },
   ];
+  const groups = serverGroups
+    ? serverGroups.map((group) => ({ ...group, icon: iconForTone(group.tone) }))
+    : fallbackGroups;
+
+  useEffect(() => {
+    let alive = true;
+
+    // Codex: Server-side match rules engine
+    // Status: Routes match evaluation through a versioned server function with client fallback.
+    evaluateMatch({ data: { aps, interest, subjects } })
+      .then((result) => {
+        if (!alive) return;
+        setServerGroups(result.groups);
+        setEngineVersion(result.engineVersion);
+      })
+      .catch(() => {
+        if (!alive) return;
+        setServerGroups(null);
+        setEngineVersion("client-fallback");
+      });
+
+    return () => {
+      alive = false;
+    };
+  }, [aps, interest, subjects]);
 
   function downloadReport() {
     const lines = [
@@ -586,7 +621,8 @@ function Results({
           <h2 className="text-xl font-semibold tracking-tight text-foreground">Your results</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Based on an APS of <span className="font-medium text-foreground">{aps}</span> and
-            interest in <span className="font-medium text-foreground">{interest}</span>.
+            interest in <span className="font-medium text-foreground">{interest}</span>. Engine:{" "}
+            <span className="font-medium text-foreground">{engineVersion}</span>.
           </p>
         </div>
         <button
@@ -606,6 +642,15 @@ function Results({
       ))}
     </div>
   );
+}
+
+function iconForTone(tone: "success" | "warning" | "danger" | "growth") {
+  return {
+    success: CheckCircle2,
+    warning: AlertTriangle,
+    danger: XCircle,
+    growth: Compass,
+  }[tone];
 }
 
 function Group({

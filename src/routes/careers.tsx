@@ -2,18 +2,17 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { ArrowRight, LineChart, TrendingUp } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CAREERS } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/careers")({
-  head: () => ({
-    meta: [
-      { title: "Careers - SA Learn" },
-      {
-        name: "description",
-        content:
-          "Explore careers and the study routes that get you there. Skills, subjects, salary and demand.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Careers - SA Learn",
+      description:
+        "Explore careers and the study routes that get you there. Skills, subjects, salary and demand.",
+      path: "/careers",
+      ogType: "website",
+    }),
   component: CareersPage,
 });
 

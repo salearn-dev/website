@@ -1,21 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
-import { COURSES, COURSE_CATEGORIES } from "@/lib/data";
+import { COURSES, COURSE_CATEGORIES, type Course } from "@/lib/data";
+import { loadApprovedCourses } from "@/lib/live-catalogue";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/courses")({
-  head: () => ({
-    meta: [
-      { title: "Courses - SA Learn" },
-      {
-        name: "description",
-        content:
-          "Browse every learning opportunity: universities, TVET, learnerships, short courses and more.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Courses - SA Learn",
+      description:
+        "Browse every learning opportunity: universities, TVET, learnerships, short courses and more.",
+      path: "/courses",
+      ogType: "website",
+    }),
   component: CoursesPage,
 });
 
@@ -27,19 +27,37 @@ function CoursesPage() {
   const [nqf, setNqf] = useState("All");
   const [cost, setCost] = useState("Any");
   const [delivery, setDelivery] = useState("Any");
+  const [courses, setCourses] = useState<Course[]>(COURSES);
+  const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
 
-  const provinceOptions = useMemo(() => ["All", ...unique(COURSES.map((c) => c.province))], []);
-  const cityOptions = useMemo(() => ["All", ...unique(COURSES.map((c) => c.city))], []);
+  useEffect(() => {
+    let alive = true;
+
+    // Codex: Live approved course catalogue bridge
+    // Status: Reads Lovable Phase 2 approved courses and falls back to static prototype data.
+    loadApprovedCourses().then((result) => {
+      if (!alive) return;
+      setCourses(result.items);
+      setCatalogueSource(result.source);
+    });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const provinceOptions = useMemo(() => ["All", ...unique(courses.map((c) => c.province))], [courses]);
+  const cityOptions = useMemo(() => ["All", ...unique(courses.map((c) => c.city))], [courses]);
   const nqfOptions = useMemo(
-    () => ["All", ...unique(COURSES.map((c) => (c.nqf ? `NQF ${c.nqf}` : "Not NQF-rated")))],
-    [],
+    () => ["All", ...unique(courses.map((c) => (c.nqf ? `NQF ${c.nqf}` : "Not NQF-rated")))],
+    [courses],
   );
-  const costOptions = useMemo(() => ["Any", ...unique(COURSES.map((c) => c.cost))], []);
-  const deliveryOptions = useMemo(() => ["Any", ...unique(COURSES.map((c) => c.deliveryMode))], []);
+  const costOptions = useMemo(() => ["Any", ...unique(courses.map((c) => c.cost))], [courses]);
+  const deliveryOptions = useMemo(() => ["Any", ...unique(courses.map((c) => c.deliveryMode))], [courses]);
 
   // Codex: Course explorer city and delivery filters
-  // Status: Public client-side filters use explicit prototype city/delivery fields; SAQA/DHET sync remains data-owned.
-  const filtered = COURSES.filter((c) => {
+  // Status: Public filters now run over live approved rows when available; SAQA/DHET sync remains data-owned.
+  const filtered = courses.filter((c) => {
     const haystack = `${c.title} ${c.institution} ${c.careers.join(" ")}`.toLowerCase();
     const matchesCat = !cat || c.category === cat;
     const matchesQ = !q || haystack.includes(q.toLowerCase());
@@ -154,7 +172,7 @@ function CoursesPage() {
 
       <p className="mb-4 text-sm text-muted-foreground" aria-live="polite">
         Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
-        {COURSES.length} prototype courses.
+        {courses.length} {catalogueSource === "live" ? "approved live" : "prototype"} courses.
       </p>
       <div className="grid gap-4 lg:grid-cols-2">
         {filtered.map((c) => (

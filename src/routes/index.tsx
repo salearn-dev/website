@@ -16,18 +16,17 @@ import {
 } from "lucide-react";
 import { CAREERS, COURSES, FUNDING, OPPORTUNITIES } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
-      {
-        name: "description",
-        content:
-          "Find courses, careers, funding and skills paths that match your results and goals.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "SA Learn - Gain Skills. Get Qualifications. Get Hired.",
+      description:
+        "Find courses, careers, funding and skills paths that match your results and goals.",
+      path: "/",
+      ogType: "website",
+    }),
   component: Landing,
 });
 

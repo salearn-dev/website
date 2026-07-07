@@ -1,18 +1,17 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, ListChecks } from "lucide-react";
+import { ArrowRight, BookOpen, ClipboardCheck, ListChecks } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides")({
-  head: () => ({
-    meta: [
-      { title: "Guides - SA Learn" },
-      {
-        name: "description",
-        content: "Confusing education terms - APS, NQF, SAQA, NSFAS - explained in plain English.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Guides - SA Learn",
+      description: "Confusing education terms - APS, NQF, SAQA, NSFAS - explained in plain English.",
+      path: "/guides",
+      ogType: "website",
+    }),
   component: GuidesPage,
 });
 
@@ -31,6 +30,33 @@ function GuidesPage() {
       title="Plain-English guides"
       description="Every confusing acronym, process and decision - explained simply. No jargon, no fluff."
     >
+      {/* Codex: Editorial workflow visibility
+         Status: Public guide cards expose draft/review/published states; persistent CMS remains backend-owned. */}
+      <section className="mb-10 rounded-2xl border border-border bg-card p-6 md:p-8">
+        <div className="flex items-center gap-2">
+          <ClipboardCheck className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
+            Editorial workflow
+          </h2>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {[
+            ["Draft", "Plain-language notes are written and checked against SA Learn principles."],
+            ["Review", "Claims, official links and risky wording are checked before publishing."],
+            ["Published", "Learner-facing guides can be linked from search, cards and reports."],
+          ].map(([state, description]) => (
+            <div key={state} className="rounded-xl border border-border bg-background p-4">
+              <p className="text-sm font-semibold text-foreground">{state}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          Current guides are published static records. A database-backed editor can replace this
+          display without changing the learner-facing card structure.
+        </p>
+      </section>
+
       {/* Codex: Plain-language glossary
          Status: Glossary terms now live directly on /guides and link to relevant guide detail pages. */}
       <section className="mb-10 rounded-2xl border border-border bg-card p-6 md:p-8">

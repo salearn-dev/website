@@ -1,31 +1,47 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
-import { INSTITUTIONS } from "@/lib/data";
+import { INSTITUTIONS, type Institution } from "@/lib/data";
+import { loadApprovedInstitutions } from "@/lib/live-catalogue";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/institutions")({
-  head: () => ({
-    meta: [
-      { title: "Institutions - SA Learn" },
-      {
-        name: "description",
-        content: "Verified South African universities, TVET colleges and private institutions.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Institutions - SA Learn",
+      description: "Verified South African universities, TVET colleges and private institutions.",
+      path: "/institutions",
+      ogType: "website",
+    }),
   component: InstitutionsPage,
 });
 
-const TYPES = [
-  "All",
-  "Public University",
-  "University of Technology",
-  "TVET College",
-  "Private College",
-];
-
 function InstitutionsPage() {
+  const [institutions, setInstitutions] = useState<Institution[]>(INSTITUTIONS);
+  const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
+  const [type, setType] = useState("All");
+
+  useEffect(() => {
+    let alive = true;
+
+    // Codex: Live approved institution catalogue bridge
+    // Status: Reads Lovable Phase 2 approved institutions and falls back to static prototype data.
+    loadApprovedInstitutions().then((result) => {
+      if (!alive) return;
+      setInstitutions(result.items);
+      setCatalogueSource(result.source);
+    });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const types = useMemo(() => ["All", ...unique(institutions.map((item) => item.type))], [institutions]);
+  const filtered = institutions.filter((item) => type === "All" || item.type === type);
+
   return (
     <PageShell
       eyebrow="Where can I study?"
@@ -33,18 +49,29 @@ function InstitutionsPage() {
       description="Verified universities, universities of technology, TVET colleges and private institutions across South Africa."
     >
       <div className="mb-6 flex flex-wrap gap-2">
-        {TYPES.map((t) => (
+        {types.map((t) => (
           <button
             key={t}
-            className="rounded-full border border-border bg-background px-4 py-2 text-sm text-foreground hover:bg-muted"
+            type="button"
+            onClick={() => setType(t)}
+            aria-pressed={type === t}
+            className={`rounded-full border px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+              type === t
+                ? "border-foreground/40 bg-muted text-foreground"
+                : "border-border bg-background text-foreground hover:bg-muted"
+            }`}
           >
             {t}
           </button>
         ))}
       </div>
+      <p className="mb-4 text-sm text-muted-foreground" aria-live="polite">
+        Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
+        {institutions.length} {catalogueSource === "live" ? "approved live" : "prototype"} institutions.
+      </p>
 
       <div className="grid gap-4 md:grid-cols-2">
-        {INSTITUTIONS.map((i) => (
+        {filtered.map((i) => (
           <article
             key={i.slug}
             className="rounded-2xl border border-border bg-card p-6 transition-shadow hover:shadow-[var(--shadow-card-hover)]"
@@ -99,4 +126,8 @@ function InstitutionsPage() {
       </div>
     </PageShell>
   );
+}
+
+function unique(values: string[]) {
+  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
 }

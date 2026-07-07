@@ -12,6 +12,7 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/institutions/$slug")({
   loader: ({ params }) => {
@@ -30,15 +31,12 @@ export const Route = createFileRoute("/institutions/$slug")({
       ? `${institution.name} profile with accreditation notes, campuses, application windows and source links.`
       : "Institution profile on SA Learn.";
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-      ],
-    };
+    return buildSeoHead({
+      title,
+      description,
+      path: institution ? `/institutions/${institution.slug}` : "/institutions",
+      ogType: "article",
+    });
   },
   component: InstitutionDetailPage,
 });

@@ -15,6 +15,28 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Working through autonomous frontend production-readiness lifts on top of Lovable Phase 1 user contracts and Bolt Phase 2 catalogue tables. Current focus is honest readiness movement without inventing unsupported ingestion, cron, POPIA, or source-sync claims.
 
+## 90% Production-Readiness Live Data and Consent Lift
+
+**Date/Time:** 2026-07-07 13:40 +02:00
+
+**Files Modified:**
+
+- `src/lib/live-catalogue.ts`
+- `src/lib/match-engine.functions.ts`
+- `src/routes/courses.tsx`
+- `src/routes/institutions.tsx`
+- `src/routes/funding.tsx`
+- `src/routes/opportunities.tsx`
+- `src/routes/match.tsx`
+- `src/routes/skills.tsx`
+- `src/routes/account.tsx`
+- `src/routes/guides.tsx`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added live catalogue bridges for Lovable Phase 2 approved courses, institutions, funding windows and opportunities, each with static fallback so local development and unseeded tables still render. Added a versioned server-side match engine function and routed `/match` results through it with client fallback. Added a POPIA-style consent checkbox before saving learner marks to `learner_details`. Added skill completion record downloads with clear wording that they are not accredited certificates. Added Google and Apple OAuth entry buttons on `/account` using Supabase redirects to the current origin. Added visible guide editorial workflow states. `/prod-readiness` now marks only those implemented checks complete and intentionally leaves testimonials, document upload/storage, ingestion pipelines, cron, public partner APIs and full multilingual UI unchecked.
+
 ## Checkout Summary - 2026-07-06
 
 **Date/Time:** 2026-07-06 23:00 +02:00

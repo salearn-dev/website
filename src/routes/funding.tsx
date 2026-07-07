@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CalendarClock,
   ArrowRight,
@@ -11,22 +11,43 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { FUNDING } from "@/lib/data";
+import { loadApprovedFunding } from "@/lib/live-catalogue";
+import { buildSeoHead } from "@/lib/seo";
+
+type FundingItem = (typeof FUNDING)[number];
 
 export const Route = createFileRoute("/funding")({
-  head: () => ({
-    meta: [
-      { title: "Funding - SA Learn" },
-      {
-        name: "description",
-        content:
-          "NSFAS, bursaries, scholarships and learnership funding - eligibility, coverage and deadlines in one place.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Funding - SA Learn",
+      description:
+        "NSFAS, bursaries, scholarships and learnership funding - eligibility, coverage and deadlines in one place.",
+      path: "/funding",
+      ogType: "website",
+    }),
   component: FundingPage,
 });
 
 function FundingPage() {
+  const [fundingItems, setFundingItems] = useState<FundingItem[]>(FUNDING);
+  const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
+
+  useEffect(() => {
+    let alive = true;
+
+    // Codex: Live approved funding-window bridge
+    // Status: Reads Lovable Phase 2 approved funding windows and falls back to static prototype data.
+    loadApprovedFunding().then((result) => {
+      if (!alive) return;
+      setFundingItems(result.items);
+      setCatalogueSource(result.source);
+    });
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <PageShell
       eyebrow="How will I pay?"
@@ -34,11 +55,11 @@ function FundingPage() {
       description="Clear, calm information about NSFAS, bursaries, scholarships and learnership funding - so cost is never the reason you don't apply."
     >
       <NsfasWizard />
-      <BursaryMatcher />
-      <DeadlineReminderHelper />
+      <BursaryMatcher fundingItems={fundingItems} />
+      <DeadlineReminderHelper fundingItems={fundingItems} catalogueSource={catalogueSource} />
 
       <div className="grid gap-4 md:grid-cols-2">
-        {FUNDING.map((f) => (
+        {fundingItems.map((f) => (
           <article
             key={f.slug}
             className="flex flex-col rounded-2xl border border-border bg-card p-6"
@@ -74,7 +95,13 @@ function FundingPage() {
   );
 }
 
-function DeadlineReminderHelper() {
+function DeadlineReminderHelper({
+  fundingItems,
+  catalogueSource,
+}: {
+  fundingItems: FundingItem[];
+  catalogueSource: "live" | "static";
+}) {
   // Codex: Funding deadline reminder helper
   // Status: Public email/WhatsApp reminder drafts only; automated delivery remains backend-owned.
   return (
@@ -89,16 +116,16 @@ function DeadlineReminderHelper() {
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             Pick a funding source and open a ready-made email or WhatsApp reminder message. SA Learn
-            does not send, store or schedule reminders from this prototype.
+            does not send, store or schedule reminders from this surface.
           </p>
         </div>
         <span className="inline-flex w-fit items-center rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
-          No saved profile
+          {catalogueSource === "live" ? "Approved live windows" : "Static fallback"}
         </span>
       </div>
 
       <div className="mt-6 grid gap-3 md:grid-cols-2">
-        {FUNDING.map((funding) => {
+        {fundingItems.map((funding) => {
           const reminderText = `SA Learn reminder: Check ${funding.name} funding deadline (${funding.deadline}). Confirm eligibility and documents on the official source before applying.`;
           const emailHref = `mailto:?subject=${encodeURIComponent(`Reminder: ${funding.name} deadline`)}&body=${encodeURIComponent(reminderText)}`;
           const whatsappHref = `https://wa.me/?text=${encodeURIComponent(reminderText)}`;
@@ -153,7 +180,7 @@ const MATCH_INSTITUTION_TYPES = [
   "Workplace route",
 ];
 
-function BursaryMatcher() {
+function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
   const [studyArea, setStudyArea] = useState("Any");
   const [fundingNeed, setFundingNeed] = useState("Full funding");
   const [institutionType, setInstitutionType] = useState("Any");
@@ -162,13 +189,13 @@ function BursaryMatcher() {
   // Status: Public client-side matching over prototype funding cards; saved profiles remain backend/POPIA-owned.
   const matches = useMemo(
     () =>
-      FUNDING.map((funding) => ({
+      fundingItems.map((funding) => ({
         funding,
         reasons: getFundingMatchReasons(funding.slug, studyArea, fundingNeed, institutionType),
       }))
         .filter((match) => match.reasons.length > 0)
         .sort((a, b) => b.reasons.length - a.reasons.length),
-    [studyArea, fundingNeed, institutionType],
+    [fundingItems, studyArea, fundingNeed, institutionType],
   );
 
   return (

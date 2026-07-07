@@ -5,18 +5,20 @@ import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { supabase } from "@/integrations/supabase/client";
 import { OPPORTUNITIES } from "@/lib/data";
+import { loadApprovedOpportunities } from "@/lib/live-catalogue";
+import { buildSeoHead } from "@/lib/seo";
+
+type Opportunity = (typeof OPPORTUNITIES)[number];
 
 export const Route = createFileRoute("/opportunities")({
-  head: () => ({
-    meta: [
-      { title: "Opportunities - SA Learn" },
-      {
-        name: "description",
-        content:
-          "Real, open opportunities: applications, learnerships, internships, bursaries and entry-level jobs across South Africa.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Opportunities - SA Learn",
+      description:
+        "Real, open opportunities: applications, learnerships, internships, bursaries and entry-level jobs across South Africa.",
+      path: "/opportunities",
+      ogType: "website",
+    }),
   component: OpportunitiesPage,
 });
 
@@ -27,17 +29,19 @@ function OpportunitiesPage() {
   const [savedReminders, setSavedReminders] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState("");
+  const [opportunities, setOpportunities] = useState<Opportunity[]>(OPPORTUNITIES);
+  const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
 
   const provinces = useMemo(
-    () => ["All", ...unique(OPPORTUNITIES.map((item) => item.province))],
-    [],
+    () => ["All", ...unique(opportunities.map((item) => item.province))],
+    [opportunities],
   );
-  const sectors = useMemo(() => ["All", ...unique(OPPORTUNITIES.map((item) => item.sector))], []);
-  const types = useMemo(() => ["All", ...unique(OPPORTUNITIES.map((item) => item.type))], []);
+  const sectors = useMemo(() => ["All", ...unique(opportunities.map((item) => item.sector))], [opportunities]);
+  const types = useMemo(() => ["All", ...unique(opportunities.map((item) => item.type))], [opportunities]);
 
   // Codex: Opportunity filtering
-  // Status: Client-side prototype filters by province, sector and type; live ingestion remains backend-owned.
-  const filtered = OPPORTUNITIES.filter((item) => {
+  // Status: Filters run over approved live rows when available; live ingestion remains backend-owned.
+  const filtered = opportunities.filter((item) => {
     const matchesProvince = province === "All" || item.province === province;
     const matchesSector = sector === "All" || item.sector === sector;
     const matchesType = type === "All" || item.type === type;
@@ -54,8 +58,13 @@ function OpportunitiesPage() {
   useEffect(() => {
     let alive = true;
 
-    async function loadSavedReminders() {
+    async function loadPageData() {
       try {
+        const catalogue = await loadApprovedOpportunities();
+        if (!alive) return;
+        setOpportunities(catalogue.items);
+        setCatalogueSource(catalogue.source);
+
         const { data: sessionData } = await supabase.auth.getSession();
         const user = sessionData.session?.user;
         if (!user) return;
@@ -75,7 +84,7 @@ function OpportunitiesPage() {
       }
     }
 
-    loadSavedReminders();
+    loadPageData();
     return () => {
       alive = false;
     };
@@ -157,7 +166,7 @@ function OpportunitiesPage() {
         </div>
         <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
           Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
-          {OPPORTUNITIES.length} prototype opportunities.{" "}
+          {opportunities.length} {catalogueSource === "live" ? "approved live" : "prototype"} opportunities.{" "}
           {saveMessage || "Signed-in learners can save reminder intent for deadlines."}
         </p>
       </div>

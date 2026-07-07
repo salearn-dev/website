@@ -2,10 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
+  Award,
   BookOpen,
   BriefcaseBusiness,
   CheckCircle2,
   Clock,
+  Download,
   ListChecks,
   Save,
   Signal,
@@ -13,18 +15,17 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/skills")({
-  head: () => ({
-    meta: [
-      { title: "Skills - SA Learn" },
-      {
-        name: "description",
-        content:
-          "Job-ready skills you can start learning today with curated tracks, practice tasks, related careers and course pathways.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Skills - SA Learn",
+      description:
+        "Job-ready skills you can start learning today with curated tracks, practice tasks, related careers and course pathways.",
+      path: "/skills",
+      ogType: "website",
+    }),
   component: SkillsPage,
 });
 
@@ -126,6 +127,32 @@ function SkillsPage() {
     }
   }
 
+  function downloadSkillCertificate(skillName: string, progress: string) {
+    const issuedAt = new Date().toLocaleDateString("en-ZA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const text = [
+      "SA Learn Skill Completion Record",
+      "",
+      `Skill: ${skillName}`,
+      `Progress: ${progress}`,
+      `Issued: ${issuedAt}`,
+      "",
+      "This record confirms learner-reported progress on an SA Learn skill track.",
+      "It is not an accredited qualification, SETA certificate, SAQA-registered award, or proof of formal competence.",
+      "Use it as a learning-progress summary while building a portfolio and applying through official providers.",
+    ].join("\n");
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `sa-learn-${skillName.toLowerCase().replace(/\s+/g, "-")}-record.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <PageShell
       eyebrow="What can I learn today?"
@@ -218,6 +245,33 @@ function SkillsPage() {
                     {progress}
                   </button>
                 ))}
+              </div>
+              <div className="mt-4 rounded-xl border border-dashed border-border bg-muted/35 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h5 className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+                      <Award className="h-4 w-4" aria-hidden="true" />
+                      Completion record
+                    </h5>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      Download a learner-owned progress record. It is not an accredited
+                      qualification or formal certificate.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      downloadSkillCertificate(
+                        skill.name,
+                        savedProgress[skill.slug] ?? "Not saved yet",
+                      )
+                    }
+                    className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                    Download record
+                  </button>
+                </div>
               </div>
             </section>
 

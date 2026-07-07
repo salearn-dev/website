@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
   BookmarkCheck,
+  KeyRound,
   Loader2,
   LogOut,
   Mail,
@@ -146,6 +147,26 @@ function AccountPage() {
     }
 
     setAuthLoading(false);
+  }
+
+  // Codex: OAuth provider entry points
+  // Status: Uses Supabase redirect flow; provider enablement and allowlist remain Lovable-owned.
+  async function signInWithProvider(provider: "google" | "apple") {
+    setAuthLoading(true);
+    setNotice(null);
+    setError(null);
+
+    const { error: providerError } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/account`,
+      },
+    });
+
+    if (providerError) {
+      setError(providerError.message);
+      setAuthLoading(false);
+    }
   }
 
   async function signOut() {
@@ -318,6 +339,25 @@ function AccountPage() {
               Saved match/profile editing remains intentionally limited until verified catalogue
               tables land in Phase 2.
             </p>
+            <div className="border-t border-border pt-3">
+              <p className="mb-2 text-xs font-medium text-muted-foreground">
+                Or continue with a configured provider
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(["google", "apple"] as const).map((provider) => (
+                  <button
+                    key={provider}
+                    type="button"
+                    onClick={() => signInWithProvider(provider)}
+                    disabled={authLoading}
+                    className="inline-flex h-10 items-center gap-2 rounded-md border border-input bg-background px-4 text-sm font-medium capitalize text-foreground hover:bg-muted disabled:opacity-60"
+                  >
+                    <KeyRound className="h-4 w-4" aria-hidden="true" />
+                    {provider}
+                  </button>
+                ))}
+              </div>
+            </div>
           </form>
         </section>
       )}

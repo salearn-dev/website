@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/careers/$slug")({
   loader: ({ params }) => {
@@ -33,15 +34,12 @@ export const Route = createFileRoute("/careers/$slug")({
       ? `${career.title} pathway with salary bands, demand outlook, helpful subjects, study routes, courses and skills.`
       : "Career detail page on SA Learn.";
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-      ],
-    };
+    return buildSeoHead({
+      title,
+      description,
+      path: career ? `/careers/${career.slug}` : "/careers",
+      ogType: "article",
+    });
   },
   component: CareerDetailPage,
 });

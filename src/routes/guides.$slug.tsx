@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/$slug")({
   loader: ({ params }) => {
@@ -20,15 +21,12 @@ export const Route = createFileRoute("/guides/$slug")({
     const title = guide ? `${guide.title} - SA Learn Guide` : "Guide - SA Learn";
     const description = guide?.summary ?? "Plain-language education guide on SA Learn.";
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-      ],
-    };
+    return buildSeoHead({
+      title,
+      description,
+      path: guide ? `/guides/${guide.slug}` : "/guides",
+      ogType: "article",
+    });
   },
   component: GuideDetailPage,
 });

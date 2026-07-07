@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, BookOpen, BriefcaseBusiness, GraduationCap } fro
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { COURSES } from "@/lib/data";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: ({ params }) => {
@@ -21,15 +22,12 @@ export const Route = createFileRoute("/courses/$slug")({
       ? `${course.title} at ${course.institution}. See qualification type, NQF level, funding notes, related careers and verification status.`
       : "Course detail page on SA Learn.";
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-      ],
-    };
+    return buildSeoHead({
+      title,
+      description,
+      path: course ? `/courses/${course.slug}` : "/courses",
+      ogType: "article",
+    });
   },
   component: CourseDetailPage,
 });
