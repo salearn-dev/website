@@ -14,6 +14,231 @@ export type Database = {
   }
   public: {
     Tables: {
+      courses: {
+        Row: {
+          accreditation: string | null
+          careers: string[] | null
+          category: string | null
+          city: string | null
+          cost: string | null
+          created_at: string
+          delivery_mode: string | null
+          duration: string | null
+          funding: string | null
+          id: string
+          institution_id: string | null
+          institution_name: string | null
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          nqf: number | null
+          province: string | null
+          qualification: string | null
+          qualification_id: string | null
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          title: string
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          accreditation?: string | null
+          careers?: string[] | null
+          category?: string | null
+          city?: string | null
+          cost?: string | null
+          created_at?: string
+          delivery_mode?: string | null
+          duration?: string | null
+          funding?: string | null
+          id?: string
+          institution_id?: string | null
+          institution_name?: string | null
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          nqf?: number | null
+          province?: string | null
+          qualification?: string | null
+          qualification_id?: string | null
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          title: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          accreditation?: string | null
+          careers?: string[] | null
+          category?: string | null
+          city?: string | null
+          cost?: string | null
+          created_at?: string
+          delivery_mode?: string | null
+          duration?: string | null
+          funding?: string | null
+          id?: string
+          institution_id?: string | null
+          institution_name?: string | null
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          nqf?: number | null
+          province?: string | null
+          qualification?: string | null
+          qualification_id?: string | null
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          title?: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "institutions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "courses_qualification_id_fkey"
+            columns: ["qualification_id"]
+            isOneToOne: false
+            referencedRelation: "qualifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      funding_windows: {
+        Row: {
+          best_for: string | null
+          coverage: string | null
+          created_at: string
+          deadline: string | null
+          eligibility: string | null
+          id: string
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          name: string
+          provider: string | null
+          short: string | null
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          best_for?: string | null
+          coverage?: string | null
+          created_at?: string
+          deadline?: string | null
+          eligibility?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          name: string
+          provider?: string | null
+          short?: string | null
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          best_for?: string | null
+          coverage?: string | null
+          created_at?: string
+          deadline?: string | null
+          eligibility?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          name?: string
+          provider?: string | null
+          short?: string | null
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
+      institutions: {
+        Row: {
+          accreditation_status: string | null
+          application_windows: Json | null
+          campuses: Json | null
+          created_at: string
+          funding_notes: string | null
+          id: string
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          name: string
+          province: string | null
+          register_links: Json | null
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          type: string | null
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+          website: string | null
+        }
+        Insert: {
+          accreditation_status?: string | null
+          application_windows?: Json | null
+          campuses?: Json | null
+          created_at?: string
+          funding_notes?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          name: string
+          province?: string | null
+          register_links?: Json | null
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          type?: string | null
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          website?: string | null
+        }
+        Update: {
+          accreditation_status?: string | null
+          application_windows?: Json | null
+          campuses?: Json | null
+          created_at?: string
+          funding_notes?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          name?: string
+          province?: string | null
+          register_links?: Json | null
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          type?: string | null
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          website?: string | null
+        }
+        Relationships: []
+      }
       learner_details: {
         Row: {
           aps: number | null
@@ -62,6 +287,72 @@ export type Database = {
         }
         Relationships: []
       }
+      opportunities: {
+        Row: {
+          category: string | null
+          closing_date: string | null
+          created_at: string
+          description: string | null
+          id: string
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          paid: string | null
+          provider: string | null
+          province: string | null
+          sector: string | null
+          slug: string | null
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          title: string
+          type: string | null
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          category?: string | null
+          closing_date?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          paid?: string | null
+          provider?: string | null
+          province?: string | null
+          sector?: string | null
+          slug?: string | null
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          title: string
+          type?: string | null
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          category?: string | null
+          closing_date?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          paid?: string | null
+          provider?: string | null
+          province?: string | null
+          sector?: string | null
+          slug?: string | null
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          title?: string
+          type?: string | null
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -89,6 +380,45 @@ export type Database = {
           id?: string
           province?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      qualifications: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          last_verified_at: string | null
+          name: string
+          nqf_level: number | null
+          slug: string
+          source_url: string | null
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_verified_at?: string | null
+          name: string
+          nqf_level?: number | null
+          slug: string
+          source_url?: string | null
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_verified_at?: string | null
+          name?: string
+          nqf_level?: number | null
+          slug?: string
+          source_url?: string | null
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
         }
         Relationships: []
       }
@@ -155,6 +485,7 @@ export type Database = {
     }
     Enums: {
       app_role: "learner" | "counsellor" | "institution" | "admin"
+      moderation_state: "draft" | "submitted" | "approved" | "rejected"
       saved_item_type:
         | "course"
         | "career"
@@ -163,6 +494,7 @@ export type Database = {
         | "funding"
         | "guide"
         | "skill"
+      verification_status: "unverified" | "provisional" | "verified" | "stale"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -291,6 +623,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["learner", "counsellor", "institution", "admin"],
+      moderation_state: ["draft", "submitted", "approved", "rejected"],
       saved_item_type: [
         "course",
         "career",
@@ -300,6 +633,7 @@ export const Constants = {
         "guide",
         "skill",
       ],
+      verification_status: ["unverified", "provisional", "verified", "stale"],
     },
   },
 } as const
