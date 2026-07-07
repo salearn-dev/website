@@ -38,9 +38,33 @@ function createSupabaseClient() {
       ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
       ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
     ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase to enable auth and data features.`;
+    if (import.meta.env.PROD || process.env.NODE_ENV === 'production') {
+      // Fail fast in production so misconfiguration surfaces immediately.
+      throw new Error(`[Supabase] ${message}`);
+    }
+    // In development, log a warning and return a deeply-nested proxy that throws only
+    // when a method is actually *called*, not when properties are accessed. This lets
+    // the app render static pages while auth/data calls fail with a clear message.
+    console.warn(`[Supabase] ${message}`);
+    function makeUnavailableProxy(path: string): unknown {
+      return new Proxy(
+        // Use a callable function as target so the proxy itself can be called too.
+        Object.assign(function () {
+          throw new Error(`[Supabase] ${message} (called ${path}())`);
+        }, {}),
+        {
+          get(_target, prop) {
+            if (prop === 'then') return undefined; // not a thenable/Promise
+            return makeUnavailableProxy(`${path}.${String(prop)}`);
+          },
+          apply(_target) {
+            throw new Error(`[Supabase] ${message} (called ${path}())`);
+          },
+        }
+      );
+    }
+    return makeUnavailableProxy('supabase') as ReturnType<typeof createClient<Database>>;
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {

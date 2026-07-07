@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Menu, X, Search, UserRound } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { SaFlagLogo } from "./sa-flag-logo";
@@ -31,9 +31,31 @@ function Logo() {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLElement>(null);
 
-  // Codex: WCAG presentational navigation pass
-  // Status: Header landmarks, button states and focus rings improved; full automated audit remains reviewer-owned.
+  // 2.2 — Close on Escape and return focus to the trigger button
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
+  // 2.2 — Move focus to first link inside the menu when it opens
+  useEffect(() => {
+    if (!open) return;
+    const firstFocusable = menuRef.current?.querySelector<HTMLElement>(
+      "a, button, [tabindex]:not([tabindex='-1'])",
+    );
+    firstFocusable?.focus();
+  }, [open]);
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
@@ -81,10 +103,11 @@ export function SiteHeader() {
         <div className="flex items-center gap-1 lg:hidden">
           <ThemeToggle />
           <button
+            ref={triggerRef}
             type="button"
             className="grid h-9 w-9 place-items-center rounded-md text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             onClick={() => setOpen((o) => !o)}
-            aria-label="Menu"
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="mobile-navigation"
           >
@@ -96,6 +119,7 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-border bg-background lg:hidden">
           <nav
+            ref={menuRef}
             id="mobile-navigation"
             aria-label="Mobile navigation"
             className="mx-auto flex max-w-7xl flex-col px-6 py-3"

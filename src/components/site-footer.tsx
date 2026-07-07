@@ -20,31 +20,35 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <FooterCol
-            title="Discover"
-            links={[
-              ["Courses", "/courses"],
-              ["Careers", "/careers"],
-              ["Institutions", "/institutions"],
-            ]}
-          />
-          <FooterCol
-            title="Plan"
-            links={[
-              ["Match", "/match"],
-              ["Funding", "/funding"],
-              ["Opportunities", "/opportunities"],
-              ["WhatsApp", "/whatsapp"],
-              ["Account", "/account"],
-            ]}
-          />
-          <FooterCol
-            title="Learn"
-            links={[
-              ["Skills", "/skills"],
-              ["Guides", "/guides"],
-            ]}
-          />
+          {/* 1.3 — Footer nav landmark: unique aria-label distinguishes it from the header navs */}
+          <nav aria-label="Footer navigation" className="contents">
+            <FooterCol
+              title="Discover"
+              links={[
+                ["Courses", "/courses"],
+                ["Careers", "/careers"],
+                ["Institutions", "/institutions"],
+                ["Institution portal", "/institutions/portal"],
+              ]}
+            />
+            <FooterCol
+              title="Plan"
+              links={[
+                ["Match", "/match"],
+                ["Funding", "/funding"],
+                ["Opportunities", "/opportunities"],
+                ["WhatsApp", "/whatsapp"],
+                ["Account", "/account"],
+              ]}
+            />
+            <FooterCol
+              title="Learn"
+              links={[
+                ["Skills", "/skills"],
+                ["Guides", "/guides"],
+              ]}
+            />
+          </nav>
         </div>
         <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:justify-between">
           <p>© {new Date().getFullYear()} SA Learn. Prototype - information not yet verified.</p>

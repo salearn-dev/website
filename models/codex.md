@@ -1,19 +1,60 @@
 # Codex Model Log
 
 **Model name:** Codex
-**Date:** 2026-07-06 21:37 +02:00
-**Assigned role for this task:** 75% production-readiness frontend bridge using Lovable Phase 1/2 contracts.
-**Files or areas expected to touch:** `src/routes/index.tsx`, `src/routes/match.tsx`, `src/routes/whatsapp.tsx`, `src/components/site-footer.tsx`, `src/routes/sitemap[.]xml.ts`, `src/routes/prod-readiness.tsx`, `models/frontend-data-contract.md`, `models/codex.md`.
+**Date:** 2026-07-06 22:28 +02:00
+**Assigned role for this task:** 75% to 80% production-readiness lift with backend-supported frontend features.
+**Files or areas expected to touch:** `src/routes/skills.tsx`, `src/routes/opportunities.tsx`, `src/routes/institutions.portal.tsx`, `src/routes/admin.data.tsx`, `src/components/site-footer.tsx`, `src/routes/prod-readiness.tsx`, `models/codex.md`.
 **Files or areas to avoid:** Auth, saved profiles, backend PDF services, ingestion, cron, reminders, partner APIs, RLS, POPIA enforcement, deployment secrets, and unrelated route work.
-**Task summary:** Add four honest learner-facing checks to move `/prod-readiness` from 69% to 75%.
-**Known risks:** Deadline feed reads Phase 2 public tables with static fallback because generated Supabase types and live source integrations are still pending. WhatsApp is a public compose handoff, not an automated bot.
+**Task summary:** Add four honest readiness checks using existing Phase 1/2 contracts: skill progress, saved opportunity reminders, institution self-serve, and admin moderation.
+**Known risks:** Opportunity reminders store learner intent but do not schedule delivery. Institution/admin writes rely on Lovable/Bolt RLS and generated Phase 2 types are still pending.
 **Completion report location:** This file.
 
 All Codex updates for SA Learn should be recorded here so other assigned AI models and developers can see what changed, when it changed, and where to continue.
 
 ## Current Focus
 
-Working through the first frontend bridge on top of Lovable Phase 1 auth/profile tables and Phase 2 verified catalogue tables. Current target is 75% production-readiness through learner-facing read/write surfaces that do not require backend privilege escalation.
+Working through autonomous frontend production-readiness lifts on top of Lovable Phase 1 user contracts and Bolt Phase 2 catalogue tables. Current focus is honest readiness movement without inventing unsupported ingestion, cron, POPIA, or source-sync claims.
+
+## Checkout Summary - 2026-07-06
+
+**Date/Time:** 2026-07-06 23:00 +02:00
+
+**Files Modified:**
+
+- `models/codex.md`
+
+**Short Plain English Description:**
+Checked out for the day after pushing the 80% production-readiness lift, syncing with the latest remote changes, and rereading the model/team context. Replit has joined as the accessibility model and completed Accessibility sections 1-3. Codex has been promoted to a junior backend-support role while Lovable remains lead backend owner. Tomorrow's stated target is to push SA Learn toward 95% production-readiness while keeping backend-sensitive changes documented and coordinated.
+
+## 80% Production-Readiness Backend-Supported Lift
+
+**Date/Time:** 2026-07-06 22:28 +02:00
+
+**Files Modified:**
+
+- `src/routes/skills.tsx`
+- `src/routes/opportunities.tsx`
+- `src/routes/institutions.portal.tsx`
+- `src/routes/admin.data.tsx`
+- `src/components/site-footer.tsx`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added signed-in skill progress tracking using `saved_items` with `item_type = skill`, so learners can save progress stages across visits. Added saved opportunity reminder intent using `saved_items` with `item_type = opportunity`, while clearly keeping scheduled email/WhatsApp delivery backend-owned. Added a role-gated `/institutions/portal` route where institution/admin users can submit provisional institution records for moderation. Upgraded `/admin/data` from a stats page into an admin-gated moderation surface that can review pending catalogue records and mark them verified or stale through existing Phase 2 RLS. `/prod-readiness` now marks these four checks complete, moving readiness from 75% toward 80% without claiming live ingestion, cron, POPIA document upload, or full SAQA/DHET sync.
+
+## Public Logo Fallback Restoration and Bolt Message
+
+**Date/Time:** 2026-07-06 22:09 +02:00
+
+**Files Modified:**
+
+- `public/flag-south-africa.webp`
+- `models/messages.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Restored the South African flag WebP asset at `public/flag-south-africa.webp`, which is the exact local fallback path used by the header/footer logo component. Added a professional message to Bolt in `models/messages.md` explaining the minor public-asset regression and asking for coordination before deleting or replacing learner-facing public assets in future catalogue/admin commits.
 
 ## 75% Production-Readiness Learner Bridge
 

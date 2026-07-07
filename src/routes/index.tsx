@@ -40,7 +40,7 @@ const QUICK = [
 
 function Landing() {
   return (
-    <main className="pb-16">
+    <main id="main-content" className="pb-16">
       {/* Hero */}
       <section className="mx-auto max-w-7xl px-6 pt-16 md:pt-24">
         <div className="mx-auto max-w-3xl text-center">

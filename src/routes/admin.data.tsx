@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Database,
   ExternalLink,
+  Lock,
   Loader2,
   RefreshCw,
   ShieldCheck,
@@ -28,6 +29,44 @@ type SecretsStatus = {
   configured: boolean;
 };
 
+type AccessState = "checking" | "signed-out" | "forbidden" | "admin";
+type ModerationRow = {
+  id: string;
+  label: string;
+  sourceUrl: string | null;
+  verificationStatus: string;
+};
+type RawModerationRow = {
+  id: string | number;
+  name?: string | null;
+  title?: string | null;
+  source_url?: string | null;
+  verification_status?: string | null;
+};
+type QueryResult<T> = {
+  data: T[] | null;
+  count: number | null;
+  error: Error | null;
+};
+type CatalogueSelectBuilder<T> = PromiseLike<QueryResult<T>> & {
+  eq: (column: string, value: string) => CatalogueSelectBuilder<T>;
+  in: (column: string, values: string[]) => CatalogueSelectBuilder<T>;
+  limit: (count: number) => Promise<QueryResult<T>>;
+};
+type CatalogueUpdateBuilder = {
+  eq: (column: string, value: string) => Promise<{ error: Error | null }>;
+};
+type CatalogueTableClient = {
+  select: <T = Record<string, unknown>>(
+    columns: string,
+    options?: { count?: "exact"; head?: boolean },
+  ) => CatalogueSelectBuilder<T>;
+  update: (payload: Record<string, unknown>) => CatalogueUpdateBuilder;
+};
+type CatalogueClient = {
+  from: (table: CatalogueTable) => CatalogueTableClient;
+};
+
 const CATALOGUE_TABLES = [
   "institutions",
   "courses",
@@ -37,13 +76,18 @@ const CATALOGUE_TABLES = [
   "careers",
   "skills",
   "guides",
-];
+] as const;
+
+type CatalogueTable = (typeof CATALOGUE_TABLES)[number];
 
 export const Route = createFileRoute("/admin/data")({
   head: () => ({
     meta: [
       { title: "Data Manager - SA Learn Admin" },
-      { name: "description", content: "Admin interface for SA Learn verified catalogue data management." },
+      {
+        name: "description",
+        content: "Admin interface for SA Learn verified catalogue data management.",
+      },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -51,14 +95,62 @@ export const Route = createFileRoute("/admin/data")({
 });
 
 function DataManagerPage() {
-  const [secrets, setSecrets] = useState<SecretsStatus>({ url: null, projectId: null, configured: false });
+  const [secrets, setSecrets] = useState<SecretsStatus>({
+    url: null,
+    projectId: null,
+    configured: false,
+  });
   const [tables, setTables] = useState<TableStats[]>([]);
+  const [accessState, setAccessState] = useState<AccessState>("checking");
+  const [selectedTable, setSelectedTable] = useState<CatalogueTable>("institutions");
+  const [moderationRows, setModerationRows] = useState<ModerationRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [moderationLoading, setModerationLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [moderationMessage, setModerationMessage] = useState("");
+  const catalogueClient = supabase as unknown as CatalogueClient;
 
   useEffect(() => {
-    loadData();
+    checkAccessAndLoad();
+    // Admin access should be checked once on mount; refresh button handles later reloads.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (accessState === "admin") loadModerationRows(selectedTable);
+    // Moderation rows should reload only when the selected table or access state changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessState, selectedTable]);
+
+  async function checkAccessAndLoad() {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setAccessState("signed-out");
+        setLoading(false);
+        return;
+      }
+
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin");
+
+      if (!roles || roles.length === 0) {
+        setAccessState("forbidden");
+        setLoading(false);
+        return;
+      }
+
+      setAccessState("admin");
+      await loadData();
+    } catch {
+      setAccessState("forbidden");
+      setLoading(false);
+    }
+  }
 
   async function loadData() {
     setLoading(true);
@@ -70,11 +162,11 @@ function DataManagerPage() {
     setSecrets({
       url: supabaseUrl || null,
       projectId: projectId || null,
-      configured: !!(supabaseUrl),
+      configured: !!supabaseUrl,
     });
 
     try {
-      const stats = await Promise.all(CATALOGUE_TABLES.map(fetchTableStats));
+      const stats = await Promise.all(CATALOGUE_TABLES.map((table) => fetchTableStats(table)));
       setTables(stats);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load table statistics");
@@ -84,31 +176,32 @@ function DataManagerPage() {
   }
 
   async function fetchTableStats(tableName: string): Promise<TableStats> {
-    const { count: rowCount, error: countError } = await supabase
-      .from(tableName as any)
+    const table = tableName as CatalogueTable;
+    const { count: rowCount, error: countError } = await catalogueClient
+      .from(table)
       .select("*", { count: "exact", head: true });
 
     if (countError) {
       return { name: tableName, rowCount: 0, verified: 0, provisional: 0, unverified: 0, stale: 0 };
     }
 
-    const { count: verified } = await supabase
-      .from(tableName as any)
+    const { count: verified } = await catalogueClient
+      .from(table)
       .select("*", { count: "exact", head: true })
       .eq("verification_status", "verified");
 
-    const { count: provisional } = await supabase
-      .from(tableName as any)
+    const { count: provisional } = await catalogueClient
+      .from(table)
       .select("*", { count: "exact", head: true })
       .eq("verification_status", "provisional");
 
-    const { count: unverified } = await supabase
-      .from(tableName as any)
+    const { count: unverified } = await catalogueClient
+      .from(table)
       .select("*", { count: "exact", head: true })
       .eq("verification_status", "unverified");
 
-    const { count: stale } = await supabase
-      .from(tableName as any)
+    const { count: stale } = await catalogueClient
+      .from(table)
       .select("*", { count: "exact", head: true })
       .eq("verification_status", "stale");
 
@@ -122,11 +215,91 @@ function DataManagerPage() {
     };
   }
 
+  // Codex: Admin moderation workflow
+  // Status: Admin-role users can review catalogue records and update verification status through Phase 2 RLS.
+  async function loadModerationRows(tableName: CatalogueTable) {
+    setModerationLoading(true);
+    setModerationMessage("");
+
+    try {
+      const { data, error: loadError } = await catalogueClient
+        .from(tableName)
+        .select<RawModerationRow>("id,name,title,source_url,verification_status")
+        .in("verification_status", ["unverified", "provisional", "stale"])
+        .limit(8);
+
+      if (loadError) throw loadError;
+
+      setModerationRows(
+        (data ?? []).map((row) => ({
+          id: String(row.id),
+          label: String(row.name ?? row.title ?? "Untitled record"),
+          sourceUrl: row.source_url ? String(row.source_url) : null,
+          verificationStatus: String(row.verification_status ?? "unverified"),
+        })),
+      );
+    } catch {
+      setModerationRows([]);
+      setModerationMessage("Moderation queue could not load for this table.");
+    } finally {
+      setModerationLoading(false);
+    }
+  }
+
+  async function updateVerificationStatus(row: ModerationRow, status: "verified" | "stale") {
+    setModerationMessage("");
+
+    try {
+      const { error: updateError } = await catalogueClient
+        .from(selectedTable)
+        .update({
+          verification_status: status,
+          ...(status === "verified" ? { last_verified_at: new Date().toISOString() } : {}),
+        })
+        .eq("id", row.id);
+
+      if (updateError) throw updateError;
+
+      setModerationRows((current) => current.filter((item) => item.id !== row.id));
+      setModerationMessage(`${row.label} marked ${status}.`);
+      loadData();
+    } catch {
+      setModerationMessage("Status update failed. Confirm admin role and RLS policy.");
+    }
+  }
+
   const totalRecords = tables.reduce((sum, t) => sum + t.rowCount, 0);
   const totalVerified = tables.reduce((sum, t) => sum + t.verified, 0);
   const totalProvisional = tables.reduce((sum, t) => sum + t.provisional, 0);
   const totalUnverified = tables.reduce((sum, t) => sum + t.unverified, 0);
   const totalStale = tables.reduce((sum, t) => sum + t.stale, 0);
+
+  if (accessState !== "admin") {
+    return (
+      <PageShell
+        eyebrow="Admin / Data Manager"
+        title="Verified catalogue data"
+        description="Admin-only catalogue statistics and moderation tools."
+      >
+        <section className="rounded-2xl border border-border bg-card p-6">
+          <div className="flex items-start gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-muted text-muted-foreground">
+              <Lock className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">
+                {accessState === "checking" ? "Checking admin access..." : "Admin access required"}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                This surface shows catalogue statistics and moderation actions, so it is gated by
+                the `admin` role in `user_roles`.
+              </p>
+            </div>
+          </div>
+        </section>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell
@@ -157,23 +330,33 @@ function DataManagerPage() {
 
           <div className="mt-6 space-y-3">
             <div className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Project ID</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Project ID
+              </p>
               <p className="mt-1 font-mono text-sm text-foreground">
                 {secrets.projectId || "Not configured"}
               </p>
             </div>
 
             <div className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Supabase URL</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Supabase URL
+              </p>
               <p className="mt-1 font-mono text-sm text-foreground break-all">
                 {secrets.url || "Not configured"}
               </p>
             </div>
 
             <div className="rounded-xl border border-border bg-background p-4">
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Environment Variables</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Environment Variables
+              </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {["VITE_SUPABASE_URL", "VITE_SUPABASE_PUBLISHABLE_KEY", "VITE_SUPABASE_PROJECT_ID"].map((key) => (
+                {[
+                  "VITE_SUPABASE_URL",
+                  "VITE_SUPABASE_PUBLISHABLE_KEY",
+                  "VITE_SUPABASE_PROJECT_ID",
+                ].map((key) => (
                   <span
                     key={key}
                     className="inline-flex items-center gap-1.5 rounded-md bg-success/10 px-2.5 py-1 text-xs font-medium text-success"
@@ -209,19 +392,23 @@ function DataManagerPage() {
                 <div>
                   <h2 className="text-lg font-semibold text-foreground">Catalogue Overview</h2>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {loading ? "Loading..." : `${totalRecords.toLocaleString()} records across ${tables.length} tables`}
+                    {loading
+                      ? "Loading..."
+                      : `${totalRecords.toLocaleString()} records across ${tables.length} tables`}
                   </p>
                 </div>
               </div>
               <button
+                type="button"
                 onClick={loadData}
                 disabled={loading}
-                className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60"
+                aria-label={loading ? "Refreshing data…" : "Refresh table statistics"}
+                className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : (
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-4 w-4" aria-hidden="true" />
                 )}
                 Refresh
               </button>
@@ -244,8 +431,8 @@ function DataManagerPage() {
             </header>
 
             {loading ? (
-              <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <div role="status" className="flex items-center justify-center py-12 text-sm text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                 Loading table statistics...
               </div>
             ) : (
@@ -254,7 +441,9 @@ function DataManagerPage() {
                   <div key={table.name} className="px-6 py-4">
                     <div className="flex items-center justify-between gap-4">
                       <div>
-                        <h3 className="font-mono text-sm font-medium text-foreground">{table.name}</h3>
+                        <h3 className="font-mono text-sm font-medium text-foreground">
+                          {table.name}
+                        </h3>
                         <p className="mt-0.5 text-xs text-muted-foreground">
                           {table.rowCount.toLocaleString()} records
                         </p>
@@ -320,21 +509,106 @@ function DataManagerPage() {
               </div>
             )}
           </section>
+
+          <section className="rounded-2xl border border-border bg-card">
+            <header className="flex flex-col gap-3 border-b border-border px-6 py-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Moderation Queue</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Review provisional, unverified and stale catalogue records.
+                </p>
+              </div>
+              <label className="text-xs font-medium text-muted-foreground">
+                Table
+                <select
+                  value={selectedTable}
+                  onChange={(event) => setSelectedTable(event.target.value as CatalogueTable)}
+                  className="ml-2 h-9 rounded-md border border-input bg-background px-2 text-sm text-foreground"
+                >
+                  {CATALOGUE_TABLES.map((table) => (
+                    <option key={table}>{table}</option>
+                  ))}
+                </select>
+              </label>
+            </header>
+
+            <div className="divide-y divide-border">
+              {moderationLoading ? (
+                <div className="px-6 py-8 text-sm text-muted-foreground">
+                  Loading moderation queue...
+                </div>
+              ) : moderationRows.length > 0 ? (
+                moderationRows.map((row) => (
+                  <article
+                    key={row.id}
+                    className="flex flex-col gap-3 px-6 py-4 md:flex-row md:items-center md:justify-between"
+                  >
+                    <div>
+                      <p className="font-medium text-foreground">{row.label}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {row.verificationStatus}{" "}
+                        {row.sourceUrl ? `- ${row.sourceUrl}` : "- no source URL"}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateVerificationStatus(row, "verified")}
+                        className="h-9 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                      >
+                        Mark verified
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateVerificationStatus(row, "stale")}
+                        className="h-9 rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Mark stale
+                      </button>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="px-6 py-8 text-sm text-muted-foreground">
+                  No pending records for this table.
+                </div>
+              )}
+            </div>
+            {moderationMessage && (
+              <p
+                className="border-t border-border px-6 py-4 text-sm text-muted-foreground"
+                aria-live="polite"
+              >
+                {moderationMessage}
+              </p>
+            )}
+          </section>
         </section>
       </div>
 
       <div className="mt-8 rounded-2xl border border-border bg-muted/35 p-5 text-sm text-muted-foreground">
         <p className="font-medium text-foreground">Bolt Data Aggregation Model</p>
         <p className="mt-2">
-          Verified catalogue tables seeded from prototype data in <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">src/lib/data.ts</code>.
-          All records include source tracking and verification status. Admin write access gated by <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">user_roles</code> table.
+          Verified catalogue tables seeded from prototype data in{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">src/lib/data.ts</code>.
+          All records include source tracking and verification status. Admin write access gated by{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">user_roles</code>{" "}
+          table.
         </p>
       </div>
     </PageShell>
   );
 }
 
-function StatusCard({ label, count, tone }: { label: string; count: number; tone: "success" | "primary" | "warning" | "muted" }) {
+function StatusCard({
+  label,
+  count,
+  tone,
+}: {
+  label: string;
+  count: number;
+  tone: "success" | "primary" | "warning" | "muted";
+}) {
   const toneClasses = {
     success: "text-success",
     primary: "text-primary",
@@ -345,9 +619,7 @@ function StatusCard({ label, count, tone }: { label: string; count: number; tone
   return (
     <div className="rounded-xl border border-border bg-background p-4">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className={`mt-1 text-2xl font-semibold ${toneClasses[tone]}`}>
-        {count.toLocaleString()}
-      </p>
+      <p className={`mt-1 text-2xl font-semibold ${toneClasses[tone]}`}>{count.toLocaleString()}</p>
     </div>
   );
 }
