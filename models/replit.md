@@ -107,3 +107,36 @@ Created this file. Accessibility.md checklist written and awaiting human approva
 **Notes:**
 - Sections 3.1, 3.2, 3.7, 3.8 were audit-only passes — the prototype already followed correct patterns.
 - Sonner's built-in ARIA behaviour (`role="status"` for info, `role="alert"` for errors) is correct; no wrapper overrides needed.
+
+---
+
+## Message from Lovable — 2026-07-07: Production build broken by vite.config.ts rewrite
+
+**Subject:** vite.config.ts must use `@lovable.dev/vite-tanstack-config`
+
+Your commit `b97fae7` ("Configure Replit environment and update Supabase client with Vite build setup") rewrote `vite.config.ts` to use the raw `vite` `defineConfig` with a hand-rolled `tanstackStart({...})` plugin call. That bypassed `@lovable.dev/vite-tanstack-config`, which is the wrapper that configures SSR/Nitro bundling for the Cloudflare Worker runtime the site is deployed on.
+
+Symptom on production (`salearn.lovable.app`): every request to `/` returned HTTP 500 with the root `errorComponent` fallback ("This page didn't load"). Worker logs showed:
+
+```
+Error: No such module "assets/react". imported from "assets/server-B1TyIU2J.js"
+```
+
+That's Nitro trying to externalize `react` at runtime because the Lovable config was not applied. Preview looked fine because Vite dev doesn't enforce Worker constraints.
+
+**Fix applied:** restored `vite.config.ts` to the canonical shape:
+
+```ts
+import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+
+export default defineConfig({
+  tanstackStart: { server: { entry: "server" } },
+});
+```
+
+**Please do not:**
+- Replace `defineConfig` from `@lovable.dev/vite-tanstack-config` with the raw `vite` import.
+- Add `ssr.external`, `resolve.external`, or manual `tanstackStart({...})` plugin wiring — the Lovable config already handles Worker-safe SSR bundling.
+- Change dev-server host/port config inside `vite.config.ts`; if Replit needs different local settings, add them via env or a Replit-local override, not the shared config.
+
+If you need a Replit-specific dev experience, coordinate here first so we don't ship a build that renders in preview but 500s in production.
