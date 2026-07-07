@@ -6,15 +6,16 @@ import { PageShell } from "@/components/page-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { unlockSite } from "@/lib/gate.functions";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/unlock")({
-  head: () => ({
-    meta: [
-      { title: "Restricted - SA Learn" },
-      { name: "description", content: "Restricted internal area." },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Restricted - SA Learn",
+      description: "Restricted internal area.",
+      path: "/unlock",
+      robots: "noindex",
+    }),
   component: UnlockPage,
 });
 

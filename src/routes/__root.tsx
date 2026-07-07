@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { buildSeoHead } from "../lib/seo";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
 import { ThemeProvider } from "../components/theme-provider";
@@ -65,30 +66,43 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
-      { name: "description", content: "Find courses, careers, funding and skills paths that match your results and goals." },
-      { name: "author", content: "SA Learn" },
-      { property: "og:title", content: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
-      { property: "og:description", content: "Find courses, careers, funding and skills paths that match your results and goals." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "SA Learn - Gain Skills. Get Qualifications. Get Hired." },
-      { name: "twitter:description", content: "Find courses, careers, funding and skills paths that match your results and goals." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/ozAKMf91cjOEQkPKNBlAsRvqGfr2/social-images/social-1783252848717-Flag-South-Africa.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/ozAKMf91cjOEQkPKNBlAsRvqGfr2/social-images/social-1783252848717-Flag-South-Africa.webp" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" },
-    ],
-  }),
+  head: () => {
+    const seoHead = buildSeoHead({
+      title: "SA Learn - Gain Skills. Get Qualifications. Get Hired.",
+      description: "Find courses, careers, funding and skills paths that match your results and goals.",
+      path: "/",
+      ogType: "website",
+      extraMeta: [
+        { name: "author", content: "SA Learn" },
+        {
+          property: "og:image",
+          content:
+            "https://storage.googleapis.com/gpt-engineer-file-uploads/ozAKMf91cjOEQkPKNBlAsRvqGfr2/social-images/social-1783252848717-Flag-South-Africa.webp",
+        },
+        {
+          name: "twitter:image",
+          content:
+            "https://storage.googleapis.com/gpt-engineer-file-uploads/ozAKMf91cjOEQkPKNBlAsRvqGfr2/social-images/social-1783252848717-Flag-South-Africa.webp",
+        },
+      ],
+    });
+
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        ...seoHead.meta,
+      ],
+      links: [
+        ...seoHead.links,
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

@@ -11,12 +11,14 @@ export function buildSeoHead({
   path = "/",
   ogType = "website",
   extraMeta = [],
+  robots = "index, follow",
 }: {
   title: string;
   description: string;
   path?: string;
   ogType?: string;
   extraMeta?: Array<{ name?: string; property?: string; content: string }>;
+  robots?: string;
 }) {
   const canonicalUrl = getCanonicalUrl(path);
 
@@ -32,9 +34,22 @@ export function buildSeoHead({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
-      { name: "robots", content: "index, follow" },
+      { name: "robots", content: robots },
       ...extraMeta,
     ],
     links: [{ rel: "canonical", href: canonicalUrl }],
   };
+}
+
+export function getLastModified(value?: string) {
+  if (!value || value === "Not yet verified") {
+    return undefined;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed.toISOString();
 }

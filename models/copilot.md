@@ -19,3 +19,24 @@ Contact
 - This file: /models/copilot
 - Role document: /roles/SEO.md
 - Team outline: /copilot.md
+
+## Current Focus
+
+Working through public SEO metadata coverage, canonicalisation, and sitemap trust-signal enrichment without changing unrelated route behaviour or backend-sensitive functionality.
+
+## SEO Implementation Lift — 2026-07-07
+
+**Date/Time:** 2026-07-07 17:20 +02:00
+
+**Files Modified:**
+
+- `src/lib/seo.ts`
+- `src/routes/__root.tsx`
+- `src/routes/account.tsx`
+- `src/routes/unlock.tsx`
+- `src/routes/sitemap[.]xml.ts`
+- `models/copilot.md`
+- `seo-report.md`
+
+**Short Plain English Description:**
+Added a shared SEO head helper with canonical URL generation and optional noindex support, wired the root route to use it for shared Open Graph metadata, applied the helper to private/internal surfaces, and extended sitemap generation to emit `<lastmod>` values when verified timestamps are available from trust metadata. Build remains green after the pass.

@@ -13,6 +13,7 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { buildSeoHead } from "@/lib/seo";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type LearnerDetails = Database["public"]["Tables"]["learner_details"]["Row"];
@@ -20,17 +21,13 @@ type SavedItem = Database["public"]["Tables"]["saved_items"]["Row"];
 type Role = Database["public"]["Tables"]["user_roles"]["Row"];
 
 export const Route = createFileRoute("/account")({
-  head: () => ({
-    meta: [
-      { title: "Account - SA Learn" },
-      {
-        name: "description",
-        content:
-          "SA Learn account foundation for learner profiles, saved items and role-aware access.",
-      },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "Account - SA Learn",
+      description: "SA Learn account foundation for learner profiles, saved items and role-aware access.",
+      path: "/account",
+      robots: "noindex, nofollow",
+    }),
   component: AccountPage,
 });
 

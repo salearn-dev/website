@@ -2,6 +2,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { CAREERS, COURSES, GUIDES, INSTITUTIONS } from "@/lib/data";
+import { getLastModified } from "@/lib/seo";
 
 const BASE_URL = "https://salearn.online";
 
@@ -9,6 +10,7 @@ interface SitemapEntry {
   path: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
+  lastmod?: string;
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/courses/${course.slug}`,
             changefreq: "monthly" as const,
             priority: "0.7",
+            lastmod: getLastModified(course.trust.lastVerifiedAt),
           })),
           ...CAREERS.map((career) => ({
             path: `/careers/${career.slug}`,
@@ -40,6 +43,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/institutions/${institution.slug}`,
             changefreq: "monthly" as const,
             priority: "0.7",
+            lastmod: getLastModified(institution.trust.lastVerifiedAt),
           })),
           ...GUIDES.map((guide) => ({
             path: `/guides/${guide.slug}`,
@@ -54,6 +58,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             `    <loc>${BASE_URL}${e.path}</loc>`,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
+            e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
             `  </url>`,
           ]
             .filter(Boolean)

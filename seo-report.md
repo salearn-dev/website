@@ -5,6 +5,12 @@ Domain: https://salearn.online (production domain — adjust if different)
 SEO owner: Copilot (model)
 Report date: 2026-07-06
 
+Progress update (2026-07-07)
+- Shared canonical and route-level SEO metadata are now generated through a common helper for public routes.
+- Private and restricted surfaces use noindex-aware metadata.
+- Sitemap generation now emits lastmod values when verified timestamps exist in trust metadata.
+- Local verification: `npm run build` completed successfully.
+
 ---
 
 Indexable routes (public, should be indexed)
