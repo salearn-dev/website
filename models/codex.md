@@ -13,7 +13,43 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 ## Current Focus
 
-Working through autonomous frontend production-readiness lifts on top of Lovable Phase 1 user contracts and Bolt Phase 2 catalogue tables. Current focus is honest readiness movement without inventing unsupported ingestion, cron, POPIA, or source-sync claims.
+Checked out for 2026-07-07 after pushing SA Learn to 97% production readiness, reviewing Codex-owned work, and leaving a project-wide directive for the next active models. Tomorrow's first priority is schema/migration reconciliation before final 100% polish.
+
+## Checkout Summary - 2026-07-07
+
+**Date/Time:** 2026-07-07 21:21 +02:00
+
+**Files Modified:**
+
+- `models/codex.md`
+- Earlier today: `models/messages.md`
+- Earlier today: `src/lib/live-catalogue.ts`
+- Earlier today: `src/lib/match-engine.functions.ts`
+- Earlier today: `src/routes/index.tsx`
+- Earlier today: `src/routes/account.tsx`
+- Earlier today: `src/routes/match.tsx`
+- Earlier today: `src/routes/courses.tsx`
+- Earlier today: `src/routes/institutions.tsx`
+- Earlier today: `src/routes/funding.tsx`
+- Earlier today: `src/routes/opportunities.tsx`
+- Earlier today: `src/routes/skills.tsx`
+- Earlier today: `src/routes/guides.tsx`
+- Earlier today: `src/routes/api.public.opportunities.ts`
+- Earlier today: `src/routes/prod-readiness.tsx`
+- Earlier today: `src/routeTree.gen.ts`
+- Earlier today: `supabase/migrations/20260707152000_stale_records_partner_documents.sql`
+
+**Short Plain English Description:**
+Checked out after rereading `plan.md`, `SA_Learn.md`, model logs, messages, and Codex-owned route/backend-support surfaces. Today Codex helped move SA Learn from the mid-readiness state to 97% by wiring approved live catalogue loaders with static fallback, adding a server-side match-engine path with client fallback, adding learner profile consent saving, adding account/OAuth entry points, adding skill progress and opportunity reminder intent through `saved_items`, adding role-gated institution/admin moderation surfaces, improving funding tools, adding a private document upload foundation with POPIA consent metadata, adding a moderated public partner opportunity API, adding stale-record cron support, adding isiZulu glossary explanations, and keeping `/prod-readiness` honest about the two remaining incomplete boxes: real learner testimonials and full five-language UI.
+
+**Verification:**
+`bunx tsc --noEmit --pretty false` passed during checkout. Earlier final readiness verification also passed production build and API/local route smoke checks after the TanStack Start API route pattern was corrected. At checkout time, the local dev server was not responding on `http://localhost:8080`, but no code edits were made to runtime config and the repo tree started clean.
+
+**Coordination Left Behind:**
+Added `models/messages.md` directive `Codex to All Models: Checkout Directive Under Kuzi's Orders` so Lovable, Bolt, Copilot, Replit, Codex, and the silent review model see the same blockers tomorrow. The message calls out the migration-chain conflict, 8-table versus 5-table catalogue drift, `.env` tracking, stale SEO report, Vite config boundary, and the need for Lovable review of Codex's backend-support batch.
+
+**Where I Left Off:**
+No active implementation is in progress. Tomorrow should start by reconciling the Supabase migration/source-of-truth issue, cleaning committed environment-file risk with Kuzi/Lovable approval, updating stale docs, and then finishing the last visible 3% toward 100% production readiness.
 
 ## 95% Production-Readiness Final Push
 
