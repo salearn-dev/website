@@ -2,7 +2,37 @@
 
 This log records changes made by the Lovable agent (lead AI dev on SA Learn) so other agents and human developers can see what changed, when, and where to continue.
 
+## Phase 2b — Catalogue reconciliation + careers / skills / guides tables
+
+**Date/Time:** 2026-07-08
+
+**Migration:** `20260708_phase2b_reconcile_catalogue_and_add_careers_skills_guides`
+
+**What it does:**
+- Makes the Phase 2 catalogue schema safe to replay against a database where Bolt's older `20260706181106` migration ran first with a slightly different shape. `verification_status` and `moderation_state` are re-declared with `DO $$ EXCEPTION WHEN duplicate_object THEN NULL`. Missing `moderation_state` / `stale_after_days` / `institution_name` columns are added with `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, defaulting `moderation_state` to `approved` on pre-existing rows so nothing already published disappears when the new "only-approved rows are public" policy kicks in.
+- Adds `careers`, `skills`, and `guides` to close the 8-table vs 5-table drift Codex flagged in `models/messages.md`. Every table follows the Phase 2 pattern: slug key, source + verification metadata, `moderation_state`, `stale_after_days`, `updated_at` trigger. `guides` also carries an `editorial_state` enum (`draft` / `in_review` / `published` / `archived`) so editors can move copy through review without touching moderation.
+- RLS: public sees only approved `careers` / `skills`, and guides that are BOTH `published` AND `approved`. Admins see and manage everything on all three tables.
+- Extends Codex's `mark_stale_catalogue_records()` weekly sweeper to also mark stale rows on `careers`, `skills`, `guides`. Execute stays revoked from `PUBLIC` / `anon` / `authenticated` and granted only to `service_role`.
+
+**Codex batch review (per Codex's 15:20 message):**
+- `supabase/migrations/20260707152000_stale_records_partner_documents.sql` — approved. Cron schedule is idempotent (guarded by `NOT EXISTS` in `cron.job`). Storage bucket upsert is fine. `document_consents` RLS is owner-only + admin read, which matches Phase 1 privacy posture.
+- `src/routes/api.public.opportunities.ts` — approved. Partner intake stays `moderation_state = submitted, verification_status = provisional` and is guarded by `SA_LEARN_PARTNER_API_KEY`. Please have Kuzi provision that key as a deployment secret (do not commit).
+- `src/routes/funding.tsx` document upload flow — approved. Private `learner-documents` bucket + POPIA consent metadata is the right shape.
+
+**Frontend contract:**
+- `/careers`, `/skills`, `/guides` loaders can now be swapped mechanically. Field names mirror `models/frontend-data-contract.md`. Keep static fallbacks in `src/lib/live-catalogue.ts` until Bolt seeds approved rows.
+- `admin.data.tsx` can now count all 8 catalogue tables without missing-relation errors.
+
+**Env hygiene (per Codex's 12:55 message):**
+- Added `.env.example` at project root as the onboarding template. `.gitignore` is a read-only workspace file — Kuzi (or Lovable Cloud deploy tooling) needs to add `.env` / `.env.*` (with an `!.env.example` exception) to the tracked ignore rules and then `git rm --cached .env` in a separate approved cleanup so the tracked file drops out of the repo. I have not deleted the tracked `.env` here because git state changes are out of my lane.
+
+**Security linter note:**
+- Same single `WARN` on `SECURITY DEFINER` executable by signed-in users. Both offending functions (`has_role` and `mark_stale_catalogue_records`) self-guard: `has_role` restricts non-admins to querying their own roles, and `mark_stale_catalogue_records` has `EXECUTE` revoked from `PUBLIC` / `anon` / `authenticated` and granted only to `service_role`. Accepted false positive, unchanged posture.
+
+---
+
 ## Phase 2 - Verified Catalogue Tables
+
 
 **Date/Time:** 2026-07-07
 
