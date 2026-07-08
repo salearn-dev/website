@@ -13,7 +13,53 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 ## Current Focus
 
-Checked out for 2026-07-07 after pushing SA Learn to 97% production readiness, reviewing Codex-owned work, and leaving a project-wide directive for the next active models. Tomorrow's first priority is schema/migration reconciliation before final 100% polish.
+Production-readiness role complete. Future Codex work on SA Learn should begin from a new role assignment such as maintenance, updates, audits, bug fixes, product polish, or backend-support tasks explicitly approved by Kuzi/Lovable.
+
+## Final Role Checkout - 0% to 100% Production Readiness
+
+**Date/Time:** 2026-07-08 13:09 +02:00
+
+**Files Modified:**
+
+- `models/codex.md`
+- `models/messages.md`
+
+**Short Plain English Description:**
+Codex's production-readiness role is complete. I left a project-wide message in `models/messages.md` telling all models that my part is done, summarising what I shipped, and assigning follow-up review surfaces to Lovable, Bolt, Copilot, Replit, v0/design models and the public review model.
+
+**Comprehensive Role Summary:**
+Codex joined SA Learn as a frontend/product implementation model, then grew into a junior backend-support role under Lovable. Across the 0-to-100 readiness push, I focused on what learners see and understand while documenting every backend-sensitive move.
+
+Major Codex contributions:
+
+1. Restored localhost reliability for `/prod-readiness` and the SA flag logo fallback.
+2. Added trust metadata across learner-facing static records.
+3. Built explanatory match-result surfaces, NBT/additional-test awareness and downloadable match reports.
+4. Added detail pages and SEO/structured-data surfaces for courses, careers, institutions and guides.
+5. Added guide glossary and structured how-to pages.
+6. Added opportunity filters, funding wizards, bursary matcher and reminder drafts.
+7. Added account foundation, signed-in dashboard, OAuth entry points, learner-profile consent saving and saved item flows.
+8. Added skill progress tracking and opportunity reminder intent through `saved_items`.
+9. Added institution self-serve submission and admin moderation surfaces.
+10. Wired public live-catalogue loaders to Lovable's approved catalogue tables with static fallback.
+11. Added backend-support migrations and APIs where approved: stale-record cron, document consent/storage foundation, partner opportunity API and real learner testimonial moderation pipeline.
+12. Added bilingual glossary content and final five-language global UI support for English, isiZulu, Afrikaans, isiXhosa and Sesotho.
+13. Kept `/prod-readiness` honest as features landed, ending with no unchecked boxes.
+14. Coordinated with Lovable, Bolt, Copilot, Replit and other models through `models/messages.md`, including calling out migration drift, env hygiene and build/runtime boundaries.
+
+**Verification:**
+Final pushed role state after commit `59134fb` passed `bunx tsc --noEmit --pretty false` and `bun run build` after rebasing onto Lovable's catalogue reconciliation commit. Known operational caveat: localhost dev server was unreliable from the Codex shell, but production build succeeded.
+
+**Remaining Watch Items For The Next Role:**
+
+- Lovable should apply/review the new `learner_testimonials` migration and finish `.env` tracking cleanup after Kuzi's approval/rotation.
+- Kuzi or Lovable still need to provision `SA_LEARN_PARTNER_API_KEY` as a deployment secret.
+- Copilot should refresh stale SEO documentation and consider canonical metadata for `/whatsapp`.
+- Replit should audit the new language selector and testimonial form for WCAG 2.1 AA.
+- Bolt should seed only real, consented testimonial data if Kuzi provides it; no fake quotes.
+
+**Where I Left Off:**
+No active implementation is in progress. This Codex role is complete. The next time Codex returns to SA Learn, it should treat the work as a new assignment with a new scope, not a continuation of the production-readiness role.
 
 ## 100% Production-Readiness Final Surface Pass
 
