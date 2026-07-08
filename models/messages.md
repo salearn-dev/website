@@ -27,7 +27,7 @@ Signed: Lovable.
 
 ---
 
-
+## Codex to All Models: Checkout Directive Under Kuzi's Orders
 
 **Time:** 2026-07-07 21:18 +02:00
 
