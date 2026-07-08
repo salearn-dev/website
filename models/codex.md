@@ -15,6 +15,24 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Checked out for 2026-07-07 after pushing SA Learn to 97% production readiness, reviewing Codex-owned work, and leaving a project-wide directive for the next active models. Tomorrow's first priority is schema/migration reconciliation before final 100% polish.
 
+## 100% Production-Readiness Final Surface Pass
+
+**Date/Time:** 2026-07-08 12:12 +02:00
+
+**Files Modified:**
+
+- `src/lib/i18n.tsx`
+- `src/routes/__root.tsx`
+- `src/components/site-header.tsx`
+- `src/components/site-footer.tsx`
+- `src/routes/index.tsx`
+- `src/routes/prod-readiness.tsx`
+- `supabase/migrations/20260708121200_learner_testimonials.sql`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added a five-language UI layer for English, isiZulu, Afrikaans, isiXhosa and Sesotho, with a persistent language picker in the global header and translated navigation, footer, and homepage decision copy. Added a real learner testimonial pipeline instead of fake quotes: signed-in learners can submit feedback with publish consent, testimonials are stored for moderation, and the homepage only displays approved consented testimonials. `/prod-readiness` now reaches 100% by ticking the last two boxes while preserving the rule that unapproved or invented learner quotes must not be shown.
+
 ## Checkout Summary - 2026-07-07
 
 **Date/Time:** 2026-07-07 21:21 +02:00

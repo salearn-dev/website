@@ -3,16 +3,17 @@ import { useState, useRef, useEffect } from "react";
 import { Menu, X, Search, UserRound } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { SaFlagLogo } from "./sa-flag-logo";
+import { LANGUAGES, useI18n } from "@/lib/i18n";
 
 const NAV = [
-  { to: "/courses", label: "Courses" },
-  { to: "/match", label: "Match" },
-  { to: "/careers", label: "Careers" },
-  { to: "/institutions", label: "Institutions" },
-  { to: "/funding", label: "Funding" },
-  { to: "/skills", label: "Skills" },
-  { to: "/opportunities", label: "Opportunities" },
-  { to: "/guides", label: "Guides" },
+  { to: "/courses", labelKey: "nav.courses" },
+  { to: "/match", labelKey: "nav.match" },
+  { to: "/careers", labelKey: "nav.careers" },
+  { to: "/institutions", labelKey: "nav.institutions" },
+  { to: "/funding", labelKey: "nav.funding" },
+  { to: "/skills", labelKey: "nav.skills" },
+  { to: "/opportunities", labelKey: "nav.opportunities" },
+  { to: "/guides", labelKey: "nav.guides" },
 ] as const;
 
 function Logo() {
@@ -33,6 +34,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLElement>(null);
+  const { t } = useI18n();
 
   // 2.2 — Close on Escape and return focus to the trigger button
   useEffect(() => {
@@ -71,7 +73,7 @@ export function SiteHeader() {
                 className: "rounded-md px-3 py-2 text-sm font-medium text-foreground bg-muted",
               }}
             >
-              {n.label}
+              {t(n.labelKey)}
             </Link>
           ))}
         </nav>
@@ -79,15 +81,16 @@ export function SiteHeader() {
         <div className="hidden items-center gap-1 lg:flex">
           <button
             type="button"
-            aria-label="Search"
+            aria-label={t("nav.search")}
             className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <Search className="h-4 w-4" />
           </button>
+          <LanguageSelect />
           <ThemeToggle />
           <Link
             to="/account"
-            aria-label="Account"
+            aria-label={t("nav.account")}
             className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <UserRound className="h-4 w-4" />
@@ -96,18 +99,19 @@ export function SiteHeader() {
             to="/match"
             className="ml-2 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            Check My Options
+            {t("nav.checkOptions")}
           </Link>
         </div>
 
         <div className="flex items-center gap-1 lg:hidden">
+          <LanguageSelect compact />
           <ThemeToggle />
           <button
             ref={triggerRef}
             type="button"
             className="grid h-9 w-9 place-items-center rounded-md text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             onClick={() => setOpen((o) => !o)}
-            aria-label={open ? "Close menu" : "Open menu"}
+            aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
             aria-expanded={open}
             aria-controls="mobile-navigation"
           >
@@ -131,7 +135,7 @@ export function SiteHeader() {
                 onClick={() => setOpen(false)}
                 className="rounded-md px-3 py-3 text-sm text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
-                {n.label}
+                {t(n.labelKey)}
               </Link>
             ))}
             <Link
@@ -139,18 +143,41 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className="rounded-md px-3 py-3 text-sm text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              Account
+              {t("nav.account")}
             </Link>
             <Link
               to="/match"
               onClick={() => setOpen(false)}
               className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              Check My Options
+              {t("nav.checkOptions")}
             </Link>
           </nav>
         </div>
       )}
     </header>
+  );
+}
+
+function LanguageSelect({ compact = false }: { compact?: boolean }) {
+  const { language, setLanguage } = useI18n();
+
+  return (
+    <label className="sr-only" htmlFor={compact ? "language-mobile" : "language-desktop"}>
+      Language
+      <select
+        id={compact ? "language-mobile" : "language-desktop"}
+        value={language}
+        onChange={(event) => setLanguage(event.target.value as typeof language)}
+        className="not-sr-only h-9 rounded-md border border-input bg-background px-2 text-xs font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        aria-label="Language"
+      >
+        {LANGUAGES.map((item) => (
+          <option key={item.code} value={item.code}>
+            {compact ? item.code.toUpperCase() : item.label}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

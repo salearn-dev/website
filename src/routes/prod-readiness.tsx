@@ -34,7 +34,7 @@ const GROUPS: Group[] = [
       { label: "Dynamic dark mode (light / dark / system) with anti-flash script", done: true },
       { label: "Personalised dashboard when signed in", done: true },
       { label: "Live application deadlines feed", done: true },
-      { label: "Testimonials from real learners", done: false },
+      { label: "Testimonials from real learners", done: true },
     ],
   },
   {
@@ -149,7 +149,7 @@ const GROUPS: Group[] = [
       { label: "WCAG 2.1 AA compliance audit", done: true },
       { label: "POPIA-compliant data handling and consent flows", done: true },
       { label: "WhatsApp entry point for core flows", done: true },
-      { label: "Multilingual UI (English, isiZulu, Afrikaans, isiXhosa, Sesotho)", done: false },
+      { label: "Multilingual UI (English, isiZulu, Afrikaans, isiXhosa, Sesotho)", done: true },
     ],
   },
 ];

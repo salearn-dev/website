@@ -10,6 +10,7 @@ import {
   HelpCircle,
   Landmark,
   MessageCircle,
+  ShieldCheck,
   Target,
   UserRound,
   Wallet,
@@ -17,6 +18,7 @@ import {
 import { CAREERS, COURSES, FUNDING, OPPORTUNITIES } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n, type LanguageCode } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -38,36 +40,37 @@ const QUICK = [
 ];
 
 function Landing() {
+  const { t } = useI18n();
+
   return (
     <main id="main-content" className="pb-16">
       {/* Hero */}
       <section className="mx-auto max-w-7xl px-6 pt-16 md:pt-24">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-5 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            South African education, made clear
+            {t("landing.eyebrow")}
           </p>
           <h1 className="text-4xl font-semibold tracking-tight text-foreground md:text-6xl">
             SA Learn
           </h1>
           <p className="mt-4 text-lg text-foreground md:text-xl">
-            Gain Skills. Get Qualifications. Get Hired.
+            {t("landing.tagline")}
           </p>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-            Find courses, careers, funding and skills paths that match your results and your goals -
-            all in one calm, verified place.
+            {t("landing.description")}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/match"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
-              Check My Options <ArrowRight className="h-4 w-4" />
+              {t("nav.checkOptions")} <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/courses"
               className="inline-flex h-11 items-center rounded-md border border-input bg-background px-6 text-sm font-medium text-foreground hover:bg-muted"
             >
-              Browse Courses
+              {t("landing.browseCourses")}
             </Link>
           </div>
         </div>
@@ -76,6 +79,8 @@ function Landing() {
       <SignedInDashboard />
 
       <LiveDeadlineFeed />
+
+      <LearnerTestimonials />
 
       {/* Quick answers */}
       <section className="mx-auto mt-20 max-w-7xl px-6">
@@ -89,7 +94,7 @@ function Landing() {
               <Icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-foreground" />
               <p className="mt-6 text-lg font-medium tracking-tight text-foreground">{q}</p>
               <p className="mt-4 inline-flex items-center gap-1 text-sm text-muted-foreground group-hover:text-foreground">
-                Explore <ArrowRight className="h-3.5 w-3.5" />
+                {t("landing.quickExplore")} <ArrowRight className="h-3.5 w-3.5" />
               </p>
             </Link>
           ))}
@@ -97,22 +102,19 @@ function Landing() {
       </section>
 
       {/* Mission */}
-      <Section title="Our mission" eyebrow="Why SA Learn">
+      <Section title={t("landing.missionTitle")} eyebrow={t("landing.missionEyebrow")}>
         <div className="grid gap-8 md:grid-cols-2">
           <p className="text-lg leading-relaxed text-foreground">
-            To become South Africa's most trusted education discovery platform - making post-school
-            opportunities simple, transparent and accessible.
+            {t("landing.missionLead")}
           </p>
           <p className="text-base leading-relaxed text-muted-foreground">
-            We don't just help you pick a course. We help you build a realistic path towards
-            employment: study routes, funding, live opportunities and job-ready skills, all
-            connected.
+            {t("landing.missionBody")}
           </p>
         </div>
       </Section>
 
       {/* How it works */}
-      <Section title="How it works" eyebrow="Three simple steps">
+      <Section title={t("landing.stepsTitle")} eyebrow={t("landing.stepsEyebrow")}>
         <div className="grid gap-4 md:grid-cols-3">
           {[
             {
@@ -417,6 +419,7 @@ const STATIC_DEADLINES: DeadlineItem[] = [
 function LiveDeadlineFeed() {
   const [deadlines, setDeadlines] = useState<DeadlineItem[]>(STATIC_DEADLINES);
   const [isLive, setIsLive] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     let alive = true;
@@ -474,10 +477,10 @@ function LiveDeadlineFeed() {
       <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="mb-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Applications and funding
+            {t("landing.deadlinesEyebrow")}
           </p>
           <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            Deadline watch
+            {t("landing.deadlinesTitle")}
           </h2>
         </div>
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
@@ -535,6 +538,217 @@ function LiveDeadlineFeed() {
         </Link>
       </div>
     </section>
+  );
+}
+
+type LearnerTestimonial = {
+  id: string;
+  display_name: string;
+  province: string | null;
+  quote: string;
+  language: LanguageCode;
+  created_at: string;
+};
+
+type TestimonialSelectBuilder = {
+  eq: (column: string, value: string | boolean) => TestimonialSelectBuilder;
+  order: (
+    column: string,
+    options: { ascending: boolean },
+  ) => {
+    limit: (count: number) => Promise<{ data: LearnerTestimonial[] | null; error: Error | null }>;
+  };
+};
+
+type TestimonialClient = {
+  from: (table: "learner_testimonials") => {
+    select: (columns: string) => TestimonialSelectBuilder;
+    insert: (row: {
+      user_id: string;
+      display_name: string;
+      province: string | null;
+      quote: string;
+      language: LanguageCode;
+      consent_to_publish: boolean;
+      moderation_state: "submitted";
+    }) => Promise<{ error: Error | null }>;
+  };
+};
+
+// Codex: Real learner testimonial pipeline
+// Status: Approved testimonials render publicly; signed-in learner submissions wait for admin moderation.
+function LearnerTestimonials() {
+  const { t, language } = useI18n();
+  const [items, setItems] = useState<LearnerTestimonial[]>([]);
+  const [form, setForm] = useState({ displayName: "", province: "", quote: "", consent: false });
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const testimonialClient = supabase as unknown as TestimonialClient;
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadTestimonials() {
+      try {
+        const { data } = await testimonialClient
+          .from("learner_testimonials")
+          .select("id,display_name,province,quote,language,created_at")
+          .eq("moderation_state", "approved")
+          .eq("consent_to_publish", true)
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        if (alive) setItems(data ?? []);
+      } catch {
+        if (alive) setItems([]);
+      }
+    }
+
+    loadTestimonials();
+    return () => {
+      alive = false;
+    };
+  }, [testimonialClient]);
+
+  async function submitTestimonial(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMessage("");
+
+    if (!form.consent || form.quote.trim().length < 20 || !form.displayName.trim()) {
+      setMessage("Add a display name, write at least 20 characters, and confirm consent.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setMessage(t("landing.testimonialSignIn"));
+        return;
+      }
+
+      const { error } = await testimonialClient.from("learner_testimonials").insert({
+        user_id: user.id,
+        display_name: form.displayName.trim().slice(0, 80),
+        province: form.province.trim() || null,
+        quote: form.quote.trim().slice(0, 700),
+        language,
+        consent_to_publish: true,
+        moderation_state: "submitted",
+      });
+
+      if (error) throw error;
+      setForm({ displayName: "", province: "", quote: "", consent: false });
+      setMessage("Thank you. Your feedback was submitted for moderation.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Feedback could not be submitted.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <Section title={t("landing.testimonialsTitle")} eyebrow={t("landing.testimonialsEyebrow")}>
+      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-4 md:grid-cols-2">
+          {items.length > 0 ? (
+            items.map((item) => (
+              <figure key={item.id} className="rounded-2xl border border-border bg-card p-6">
+                <ShieldCheck className="h-5 w-5 text-success" aria-hidden="true" />
+                <blockquote className="mt-4 text-sm leading-relaxed text-foreground">
+                  "{item.quote}"
+                </blockquote>
+                <figcaption className="mt-4 text-xs text-muted-foreground">
+                  {item.display_name}
+                  {item.province ? `, ${item.province}` : ""} · {item.language.toUpperCase()}
+                </figcaption>
+              </figure>
+            ))
+          ) : (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-6 md:col-span-2">
+              <ShieldCheck className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                {t("landing.testimonialsEmpty")}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <form onSubmit={submitTestimonial} className="rounded-2xl border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold text-foreground">{t("landing.testimonialSubmit")}</h3>
+          <div className="mt-4 space-y-3">
+            <TextInput
+              label={t("landing.testimonialName")}
+              value={form.displayName}
+              onChange={(displayName) => setForm((current) => ({ ...current, displayName }))}
+            />
+            <TextInput
+              label={t("landing.testimonialProvince")}
+              value={form.province}
+              onChange={(province) => setForm((current) => ({ ...current, province }))}
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium text-muted-foreground">
+                {t("landing.testimonialQuote")}
+              </span>
+              <textarea
+                value={form.quote}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, quote: event.target.value }))
+                }
+                rows={4}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </label>
+            <label className="flex items-start gap-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                checked={form.consent}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, consent: event.target.checked }))
+                }
+                className="mt-1 h-4 w-4 rounded border-input"
+              />
+              <span>{t("landing.testimonialConsent")}</span>
+            </label>
+          </div>
+          <button
+            type="submit"
+            disabled={submitting || !form.consent}
+            className="mt-5 inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+          >
+            {submitting ? "Submitting..." : t("landing.testimonialSubmitButton")}
+          </button>
+          {message && (
+            <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
+    </Section>
+  );
+}
+
+function TextInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block text-sm">
+      <span className="mb-1.5 block font-medium text-muted-foreground">{label}</span>
+      <input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      />
+    </label>
   );
 }
 

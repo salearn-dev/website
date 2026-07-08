@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { SaFlagLogo } from "./sa-flag-logo";
+import { useI18n } from "@/lib/i18n";
 
 export function SiteFooter() {
+  const { t } = useI18n();
+
   return (
     <footer className="mt-24 border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-6 py-14">
@@ -16,43 +19,43 @@ export function SiteFooter() {
               </span>
             </div>
             <p className="mt-3 text-sm text-muted-foreground">
-              Gain Skills. Get Qualifications. Get Hired.
+              {t("landing.tagline")}
             </p>
           </div>
 
           {/* 1.3 — Footer nav landmark: unique aria-label distinguishes it from the header navs */}
           <nav aria-label="Footer navigation" className="contents">
             <FooterCol
-              title="Discover"
+              title={t("footer.discover")}
               links={[
-                ["Courses", "/courses"],
-                ["Careers", "/careers"],
-                ["Institutions", "/institutions"],
+                [t("nav.courses"), "/courses"],
+                [t("nav.careers"), "/careers"],
+                [t("nav.institutions"), "/institutions"],
                 ["Institution portal", "/institutions/portal"],
               ]}
             />
             <FooterCol
-              title="Plan"
+              title={t("footer.plan")}
               links={[
-                ["Match", "/match"],
-                ["Funding", "/funding"],
-                ["Opportunities", "/opportunities"],
+                [t("nav.match"), "/match"],
+                [t("nav.funding"), "/funding"],
+                [t("nav.opportunities"), "/opportunities"],
                 ["WhatsApp", "/whatsapp"],
-                ["Account", "/account"],
+                [t("nav.account"), "/account"],
               ]}
             />
             <FooterCol
-              title="Learn"
+              title={t("footer.learn")}
               links={[
-                ["Skills", "/skills"],
-                ["Guides", "/guides"],
+                [t("nav.skills"), "/skills"],
+                [t("nav.guides"), "/guides"],
               ]}
             />
           </nav>
         </div>
         <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} SA Learn. Prototype - information not yet verified.</p>
-          <p>Sources: SAQA, DHET, NSFAS, SETAs and institutional publications.</p>
+          <p>© {new Date().getFullYear()} SA Learn. {t("footer.prototype")}</p>
+          <p>{t("footer.sources")}</p>
         </div>
       </div>
     </footer>

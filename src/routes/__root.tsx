@@ -17,6 +17,7 @@ import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
 import { ThemeProvider } from "../components/theme-provider";
 import { Toaster } from "../components/ui/sonner";
+import { I18nProvider } from "../lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -132,7 +133,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <div className="flex min-h-screen flex-col bg-background">
+        <I18nProvider>
+          <div className="flex min-h-screen flex-col bg-background">
           {/* 1.1 — Skip-to-content: visually hidden until focused, lets keyboard/AT users bypass the header */}
           <a
             href="#main-content"
@@ -147,7 +149,8 @@ function RootComponent() {
           <SiteFooter />
           {/* 3.6 — Toaster: Sonner renders role="status" for info toasts and role="alert" for errors automatically */}
           <Toaster />
-        </div>
+          </div>
+        </I18nProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
