@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      careers: {
+        Row: {
+          created_at: string
+          demand_outlook: string | null
+          entry_roles: Json
+          id: string
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          related_course_slugs: string[]
+          related_skill_slugs: string[]
+          salary_band_max: number | null
+          salary_band_min: number | null
+          salary_currency: string
+          sector: string | null
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          summary: string | null
+          timeline_steps: Json
+          title: string
+          typical_work: Json
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          created_at?: string
+          demand_outlook?: string | null
+          entry_roles?: Json
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          related_course_slugs?: string[]
+          related_skill_slugs?: string[]
+          salary_band_max?: number | null
+          salary_band_min?: number | null
+          salary_currency?: string
+          sector?: string | null
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          summary?: string | null
+          timeline_steps?: Json
+          title: string
+          typical_work?: Json
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          created_at?: string
+          demand_outlook?: string | null
+          entry_roles?: Json
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          related_course_slugs?: string[]
+          related_skill_slugs?: string[]
+          salary_band_max?: number | null
+          salary_band_min?: number | null
+          salary_currency?: string
+          sector?: string | null
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          summary?: string | null
+          timeline_steps?: Json
+          title?: string
+          typical_work?: Json
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           accreditation: string | null
@@ -168,6 +243,72 @@ export type Database = {
           source_name?: string | null
           source_url?: string | null
           stale_after_days?: number
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
+      guides: {
+        Row: {
+          body_markdown: string | null
+          category: string | null
+          created_at: string
+          editorial_state: Database["public"]["Enums"]["editorial_state"]
+          glossary: Json
+          id: string
+          key_points: Json
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          related_terms: Json
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          steps: Json
+          summary: string | null
+          title: string
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          body_markdown?: string | null
+          category?: string | null
+          created_at?: string
+          editorial_state?: Database["public"]["Enums"]["editorial_state"]
+          glossary?: Json
+          id?: string
+          key_points?: Json
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          related_terms?: Json
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          steps?: Json
+          summary?: string | null
+          title: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          body_markdown?: string | null
+          category?: string | null
+          created_at?: string
+          editorial_state?: Database["public"]["Enums"]["editorial_state"]
+          glossary?: Json
+          id?: string
+          key_points?: Json
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          related_terms?: Json
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          steps?: Json
+          summary?: string | null
+          title?: string
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
         }
@@ -449,6 +590,69 @@ export type Database = {
         }
         Relationships: []
       }
+      skills: {
+        Row: {
+          created_at: string
+          difficulty: string | null
+          id: string
+          last_verified_at: string | null
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          practice_tasks: Json
+          related_career_slugs: string[]
+          related_course_slugs: string[]
+          slug: string
+          source_name: string | null
+          source_url: string | null
+          stale_after_days: number
+          steps: Json
+          summary: string | null
+          time_estimate: string | null
+          title: string
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          practice_tasks?: Json
+          related_career_slugs?: string[]
+          related_course_slugs?: string[]
+          slug: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          steps?: Json
+          summary?: string | null
+          time_estimate?: string | null
+          title: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          created_at?: string
+          difficulty?: string | null
+          id?: string
+          last_verified_at?: string | null
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          practice_tasks?: Json
+          related_career_slugs?: string[]
+          related_course_slugs?: string[]
+          slug?: string
+          source_name?: string | null
+          source_url?: string | null
+          stale_after_days?: number
+          steps?: Json
+          summary?: string | null
+          time_estimate?: string | null
+          title?: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -482,9 +686,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_stale_catalogue_records: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "learner" | "counsellor" | "institution" | "admin"
+      editorial_state: "draft" | "in_review" | "published" | "archived"
       moderation_state: "draft" | "submitted" | "approved" | "rejected"
       saved_item_type:
         | "course"
@@ -623,6 +829,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["learner", "counsellor", "institution", "admin"],
+      editorial_state: ["draft", "in_review", "published", "archived"],
       moderation_state: ["draft", "submitted", "approved", "rejected"],
       saved_item_type: [
         "course",
