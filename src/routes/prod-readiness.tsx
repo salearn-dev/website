@@ -25,16 +25,13 @@ const GROUPS: Group[] = [
     route: "/",
     title: "Landing",
     features: [
-      {
-        label: "Static hero with tagline 'Gain Skills. Get Qualifications. Get Hired.'",
-        done: true,
-      },
+      { label: "Static hero with tagline 'Gain Skills. Get Qualifications. Get Hired.'", done: true },
       { label: "Mission section and FAQ", done: true },
       { label: "Global site header and footer with SA flag branding", done: true },
       { label: "Dynamic dark mode (light / dark / system) with anti-flash script", done: true },
       { label: "Personalised dashboard when signed in", done: true },
-      { label: "Live application deadlines feed", done: true },
-      { label: "Testimonials from real learners", done: true },
+      { label: "Live application deadlines feed (approved rows fallback to static)", done: true },
+      { label: "Testimonials from real learners", done: false },
     ],
   },
   {
@@ -44,11 +41,11 @@ const GROUPS: Group[] = [
       { label: "4-step flow: Subjects, Marks, Interests, Results", done: true },
       { label: "Client-side APS calculator (best 6 excluding LO)", done: true },
       { label: "Grouped results: Qualify, Almost, Do not qualify, Alternatives", done: true },
-      { label: "Server-side rules engine per institution and faculty", done: true },
-      { label: "Saved learner profiles with subjects and marks", done: true },
-      { label: "Downloadable PDF match report", done: true },
       { label: "Explanations for every result (why / why not)", done: true },
-      { label: "NBT flags and additional-test awareness", done: true },
+      { label: "Server-side rules engine per institution and faculty (real rules, not prototype)", done: false },
+      { label: "Saved learner profiles with subjects and marks (write UI)", done: false },
+      { label: "Downloadable PDF match report", done: false },
+      { label: "NBT flags and additional-test awareness (real dataset)", done: false },
     ],
   },
   {
@@ -58,11 +55,12 @@ const GROUPS: Group[] = [
       { label: "Filterable static course list", done: true },
       { label: "Search by keyword", done: true },
       { label: "Category filters (TVET, University, Short course)", done: true },
-      { label: "Live catalogue loader for SAQA / DHET-ready course records", done: true },
-      { label: "Filter by NQF level, cost, city, delivery mode", done: true },
+      { label: "Live catalogue loader with static fallback", done: true },
       { label: "Per-course detail pages with SEO metadata", done: true },
       { label: "'Last verified' badges with source URL", done: true },
-      { label: "JSON-LD Course structured data", done: true },
+      { label: "Filter by NQF level, cost, city, delivery mode", done: false },
+      { label: "JSON-LD Course structured data", done: false },
+      { label: "Seeded verified catalogue rows (approved & sourced)", done: false },
     ],
   },
   {
@@ -73,8 +71,9 @@ const GROUPS: Group[] = [
       { label: "Mapping careers to required subjects and study routes", done: true },
       { label: "O*NET-style detail pages", done: true },
       { label: "Salary bands per experience level", done: true },
-      { label: "Demand and growth-outlook signals", done: true },
+      { label: "Demand and growth-outlook signals (prototype copy)", done: true },
       { label: "Links from career to matching courses and skills", done: true },
+      { label: "Sourced salary/demand data with citations", done: false },
     ],
   },
   {
@@ -82,11 +81,11 @@ const GROUPS: Group[] = [
     title: "Institutions",
     features: [
       { label: "Static institution list", done: true },
-      { label: "Verified institution profiles", done: true },
-      { label: "Accreditation status and register linkage", done: true },
-      { label: "Application windows and deadlines", done: true },
-      { label: "Institution self-serve portal (gated by role)", done: true },
-      { label: "Admin moderation workflow", done: true },
+      { label: "Institution self-serve portal shell (gated by role)", done: true },
+      { label: "Admin moderation workflow (moderation_state schema)", done: true },
+      { label: "Verified institution profiles with sourced data", done: false },
+      { label: "Accreditation status pulled from register", done: false },
+      { label: "Application windows sourced from official calendars", done: false },
     ],
   },
   {
@@ -94,10 +93,12 @@ const GROUPS: Group[] = [
     title: "Funding",
     features: [
       { label: "Static funding cards (NSFAS, bursaries, loans)", done: true },
-      { label: "NSFAS eligibility wizard", done: true },
-      { label: "Bursary matcher based on profile", done: true },
-      { label: "Deadline reminders (email + WhatsApp)", done: true },
-      { label: "Document upload (transcripts, ID) with POPIA consent", done: true },
+      { label: "NSFAS eligibility wizard (UI only, no persistence)", done: true },
+      { label: "Bursary matcher based on profile (UI only)", done: true },
+      { label: "Document upload storage bucket with POPIA consent record", done: true },
+      { label: "Deadline reminders (email)", done: false },
+      { label: "Deadline reminders (WhatsApp)", done: false },
+      { label: "Rules-based bursary matcher with saved learner profile", done: false },
     ],
   },
   {
@@ -105,10 +106,11 @@ const GROUPS: Group[] = [
     title: "Skills",
     features: [
       { label: "Static skill list", done: true },
-      { label: "Curated learning tracks", done: true },
-      { label: "Progress tracking per learner", done: true },
-      { label: "Certificates of completion", done: true },
+      { label: "Curated learning tracks (static content)", done: true },
       { label: "Skill-to-career mapping", done: true },
+      { label: "Progress tracking per learner (schema + RLS)", done: true },
+      { label: "Progress tracking UI on skill cards", done: false },
+      { label: "Certificates of completion (PDF)", done: false },
     ],
   },
   {
@@ -116,11 +118,11 @@ const GROUPS: Group[] = [
     title: "Opportunities",
     features: [
       { label: "Static opportunities list", done: true },
-      { label: "Moderated partner intake pipeline for live opportunities", done: true },
-      { label: "Weekly cron to flag stale records (>90 days)", done: true },
-      { label: "Public API for institution partners to push windows", done: true },
-      { label: "Reminders for saved opportunity deadlines", done: true },
       { label: "Filtering by province, sector and type", done: true },
+      { label: "Moderated partner intake pipeline (moderation_state)", done: true },
+      { label: "Public API for institution partners to push windows", done: true },
+      { label: "Weekly cron to flag stale records (>90 days) scheduled via pg_cron", done: true },
+      { label: "Reminders for saved opportunity deadlines", done: false },
     ],
   },
   {
@@ -128,10 +130,10 @@ const GROUPS: Group[] = [
     title: "Guides",
     features: [
       { label: "Static explainer content", done: true },
-      { label: "Editorial workflow with draft / review / publish states", done: true },
+      { label: "Editorial workflow schema (draft / in_review / published / archived)", done: true },
       { label: "Plain-language glossary", done: true },
-      { label: "Structured how-tos with JSON-LD", done: true },
-      { label: "Bilingual content (English + isiZulu first)", done: true },
+      { label: "Structured how-tos with JSON-LD", done: false },
+      { label: "Bilingual content (English + isiZulu first) - full page bodies", done: false },
     ],
   },
   {
@@ -142,14 +144,18 @@ const GROUPS: Group[] = [
       { label: "Tailwind v4 design system with semantic tokens", done: true },
       { label: "Route-level SEO metadata on every page", done: true },
       { label: "Dynamic sitemap.xml and robots.txt", done: true },
-      { label: "Lovable Cloud backend (Postgres, auth, storage)", done: true },
+      { label: "Lovable Cloud backend (Postgres, auth)", done: true },
+      { label: "Lovable Cloud storage buckets configured", done: true },
       { label: "User roles (learner, counsellor, institution, admin) via has_role()", done: true },
       { label: "Row Level Security on every user table", done: true },
-      { label: "Email + Google / Apple sign-in", done: true },
-      { label: "WCAG 2.1 AA compliance audit", done: true },
-      { label: "POPIA-compliant data handling and consent flows", done: true },
-      { label: "WhatsApp entry point for core flows", done: true },
-      { label: "Multilingual UI (English, isiZulu, Afrikaans, isiXhosa, Sesotho)", done: true },
+      { label: "Email magic-link sign-in", done: true },
+      { label: "Google sign-in wired and provider enabled", done: true },
+      { label: "Apple sign-in wired and provider enabled", done: false },
+      { label: "WhatsApp compose entry points (wa.me deep links)", done: true },
+      { label: "Multilingual UI shell (header/footer strings translated)", done: true },
+      { label: "Full-page multilingual content across routes", done: false },
+      { label: "WCAG 2.1 AA compliance audit (documented report)", done: false },
+      { label: "POPIA-compliant data handling and consent flows (audited)", done: false },
     ],
   },
 ];
@@ -218,7 +224,7 @@ function ProdReadinessPage() {
             </p>
           </div>
           <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
-            Prototype v1
+            Beta - honest checklist
           </span>
         </div>
         <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-muted">

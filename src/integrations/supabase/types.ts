@@ -89,6 +89,36 @@ export type Database = {
         }
         Relationships: []
       }
+      consent_records: {
+        Row: {
+          consent_type: string
+          consent_version: string
+          context: Json | null
+          created_at: string
+          granted: boolean
+          id: string
+          user_id: string
+        }
+        Insert: {
+          consent_type: string
+          consent_version?: string
+          context?: Json | null
+          created_at?: string
+          granted?: boolean
+          id?: string
+          user_id: string
+        }
+        Update: {
+          consent_type?: string
+          consent_version?: string
+          context?: Json | null
+          created_at?: string
+          granted?: boolean
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           accreditation: string | null
@@ -187,6 +217,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      deadline_reminders: {
+        Row: {
+          channel: string
+          created_at: string
+          id: string
+          item_slug: string
+          item_type: string
+          remind_at: string
+          sent_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          id?: string
+          item_slug: string
+          item_type: string
+          remind_at: string
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          id?: string
+          item_slug?: string
+          item_type?: string
+          remind_at?: string
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       funding_windows: {
         Row: {
@@ -590,6 +659,42 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_progress: {
+        Row: {
+          completed_at: string | null
+          completed_steps: number
+          created_at: string
+          id: string
+          skill_slug: string
+          status: string
+          total_steps: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_steps?: number
+          created_at?: string
+          id?: string
+          skill_slug: string
+          status?: string
+          total_steps?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_steps?: number
+          created_at?: string
+          id?: string
+          skill_slug?: string
+          status?: string
+          total_steps?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       skills: {
         Row: {
           created_at: string
@@ -650,6 +755,39 @@ export type Database = {
           title?: string
           updated_at?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          approved: boolean
+          created_at: string
+          id: string
+          learner_name: string
+          province: string | null
+          quote: string
+          role_or_school: string | null
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          learner_name: string
+          province?: string | null
+          quote: string
+          role_or_school?: string | null
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          learner_name?: string
+          province?: string | null
+          quote?: string
+          role_or_school?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
