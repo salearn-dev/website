@@ -224,7 +224,7 @@ function ProdReadinessPage() {
             </p>
           </div>
           <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
-            Prototype v1
+            Beta - honest checklist
           </span>
         </div>
         <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-muted">
