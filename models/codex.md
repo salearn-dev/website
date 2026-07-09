@@ -15,6 +15,19 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Match Non-Matric Qualification Path
+
+**Date/Time:** 2026-07-09 15:05 +02:00
+
+**Files Modified:**
+
+- `src/routes/match.tsx`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Expanded `/match` so matric subjects remain the primary/default path, while learners who already have a degree, diploma, higher certificate, postgraduate qualification or other NQF-level credential can enter that qualification and get career/course/skill direction. The qualification path avoids APS language, produces career-guidance result groups, includes articulation/professional-body warnings, saves the profile shape with consent, and includes the qualification/NQF details in the downloadable PDF report.
+
 ## Corrective Readiness Pass - 69% to 86%
 
 **Date/Time:** 2026-07-09 14:20 +02:00

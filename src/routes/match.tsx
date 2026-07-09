@@ -13,6 +13,7 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
+import { CAREERS, COURSES, SKILLS } from "@/lib/data";
 import { evaluateMatch, type MatchGroup, type MatchResult } from "@/lib/match-engine.functions";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n } from "@/lib/i18n";
@@ -30,6 +31,13 @@ export const Route = createFileRoute("/match")({
 });
 
 type Subject = { name: string; mark: number };
+type LearnerPath = "subjects" | "qualification";
+type QualificationProfile = {
+  type: "Higher Certificate" | "Diploma" | "Degree" | "Postgraduate" | "Other";
+  nqf: number;
+  field: string;
+  title: string;
+};
 const SUBJECT_OPTIONS = [
   "Mathematics",
   "Mathematical Literacy",
@@ -108,10 +116,13 @@ function saveBlob(blob: Blob, filename: string) {
 }
 
 const STEP_LABELS = ["Subjects", "Marks", "Interests", "Results"];
+const QUALIFICATION_TYPES = ["Higher Certificate", "Diploma", "Degree", "Postgraduate", "Other"] as const;
+const QUALIFICATION_FIELDS = ["Technology", "Business", "Health", "Engineering", "Education", "Creative", "Law", "General"];
 
 function MatchPage() {
   const { t } = useI18n();
   const [step, setStep] = useState(1);
+  const [learnerPath, setLearnerPath] = useState<LearnerPath>("subjects");
   const [subjects, setSubjects] = useState<Subject[]>([
     { name: "Mathematics", mark: 62 },
     { name: "English HL", mark: 71 },
@@ -120,6 +131,12 @@ function MatchPage() {
     { name: "Life Orientation", mark: 68 },
     { name: "Geography", mark: 64 },
   ]);
+  const [qualification, setQualification] = useState<QualificationProfile>({
+    type: "Diploma",
+    nqf: 6,
+    field: "Business",
+    title: "",
+  });
   const [interest, setInterest] = useState<string>("Health");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveMessage, setSaveMessage] = useState<string>("");
@@ -136,8 +153,10 @@ function MatchPage() {
 
   const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
 
+  const activeStepLabels = learnerPath === "subjects" ? STEP_LABELS : ["Path", "Qualification", "Interests", "Results"];
+
   // Codex: Saved match profile
-  // Status: Saves learner-owned subjects and marks only after explicit profile consent.
+  // Status: Saves learner-owned subjects/marks or non-matric qualification profile after explicit consent.
   async function saveLearnerProfile() {
     if (!profileConsent) {
       setSaveState("error");
@@ -157,19 +176,32 @@ function MatchPage() {
         return;
       }
 
-      const mathsMark = markFor("Mathematics") ?? markFor("Mathematical Literacy") ?? null;
-      const englishMark = markFor("English HL") ?? markFor("English FAL") ?? null;
-      const lifeSciencesMark = markFor("Life Sciences") ?? null;
+      const isSubjectPath = learnerPath === "subjects";
+      const mathsMark = isSubjectPath ? (markFor("Mathematics") ?? markFor("Mathematical Literacy") ?? null) : null;
+      const englishMark = isSubjectPath ? (markFor("English HL") ?? markFor("English FAL") ?? null) : null;
+      const lifeSciencesMark = isSubjectPath ? (markFor("Life Sciences") ?? null) : null;
+      const profileSubjects = isSubjectPath
+        ? subjects
+        : [
+            {
+              name: qualification.title.trim() || qualification.type,
+              mark: qualification.nqf,
+              qualificationType: qualification.type,
+              nqf: qualification.nqf,
+              field: qualification.field,
+            },
+          ];
 
       const { error } = await supabase.from("learner_details").upsert(
         {
           user_id: user.id,
-          aps,
-          subjects: subjects as unknown as Json,
+          aps: isSubjectPath ? aps : null,
+          subjects: profileSubjects as unknown as Json,
           maths_mark: mathsMark,
           english_mark: englishMark,
           life_sciences_mark: lifeSciencesMark,
           interests: [interest],
+          preferred_study_mode: isSubjectPath ? "Matric subjects" : qualification.type,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "user_id" },
@@ -194,13 +226,13 @@ function MatchPage() {
       {/* 3.4 — Screen-reader live region: announces step changes and results without requiring navigation */}
       <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {step < 4
-          ? `Step ${step} of 4: ${STEP_LABELS[step - 1]}`
+          ? `Step ${step} of 4: ${activeStepLabels[step - 1]}`
           : "Results loaded. Step 4 of 4: your match results are ready below."}
       </p>
 
       {/* Stepper */}
       <ol className="mb-8 flex flex-wrap gap-2 text-xs">
-        {["Subjects", "Marks", "Interests", "Results"].map((label, i) => {
+        {activeStepLabels.map((label, i) => {
           const n = i + 1;
           const active = step === n;
           const done = step > n;
@@ -222,11 +254,31 @@ function MatchPage() {
         {step === 1 && (
           <div>
             <h2 className="text-xl font-semibold tracking-tight text-foreground">
-              Step 1 - Pick your subjects
+              Step 1 - Choose your starting point
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Add or remove the subjects that appear on your report.
+              Subjects and APS remain primary. If you already have a qualification, use the NQF path for career direction.
             </p>
+            <div className="mt-6 grid gap-3 md:grid-cols-2">
+              {[
+                ["subjects", "Matric subjects", "Use subjects and marks to estimate APS and compare study options."],
+                ["qualification", "I already have a qualification", "Use a degree, diploma, higher certificate or NQF level to explore career direction."],
+              ].map(([value, title, description]) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={learnerPath === value}
+                  onClick={() => setLearnerPath(value as LearnerPath)}
+                  className={`rounded-2xl border p-5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                    learnerPath === value ? "border-foreground/40 bg-muted/60" : "border-border bg-background hover:border-foreground/20"
+                  }`}
+                >
+                  <p className="text-base font-semibold text-foreground">{title}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+                </button>
+              ))}
+            </div>
+            {learnerPath === "subjects" && (
             <div className="mt-6 flex flex-wrap gap-2">
               {SUBJECT_OPTIONS.map((s) => {
                 const on = subjects.some((x) => x.name === s);
@@ -247,45 +299,99 @@ function MatchPage() {
                 );
               })}
             </div>
+            )}
           </div>
         )}
 
         {step === 2 && (
           <div>
             <h2 className="text-xl font-semibold tracking-tight text-foreground">
-              Step 2 - Enter your marks
+              {learnerPath === "subjects" ? "Step 2 - Enter your marks" : "Step 2 - Add your qualification"}
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Type the percentage for each subject.
+              {learnerPath === "subjects"
+                ? "Type the percentage for each subject."
+                : "Tell us the highest qualification or NQF level you already hold. SA Learn will use this for career direction, not APS admission matching."}
             </p>
-            <div className="mt-6 divide-y divide-border rounded-xl border border-border">
-              {subjects.map((s, i) => (
-                <div key={s.name} className="flex items-center justify-between px-4 py-3">
-                  <span className="text-sm font-medium text-foreground">{s.name}</span>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={s.mark}
-                      aria-label={`${s.name} mark (percentage)`}
-                      onChange={(e) => {
-                        const v = Math.max(0, Math.min(100, Number(e.target.value) || 0));
-                        setSubjects((prev) =>
-                          prev.map((x, j) => (j === i ? { ...x, mark: v } : x)),
-                        );
-                      }}
-                      className="h-10 w-20 rounded-md border border-input bg-background px-3 text-right text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                    <span className="text-sm text-muted-foreground">%</span>
-                  </div>
+            {learnerPath === "qualification" ? (
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <MatchSelect
+                  label="Qualification type"
+                  value={qualification.type}
+                  onChange={(value) =>
+                    setQualification((current) => ({
+                      ...current,
+                      type: value as QualificationProfile["type"],
+                    }))
+                  }
+                  options={[...QUALIFICATION_TYPES]}
+                />
+                <label className="block text-sm">
+                  <span className="mb-1.5 block font-medium text-muted-foreground">NQF level</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={qualification.nqf}
+                    onChange={(event) =>
+                      setQualification((current) => ({
+                        ...current,
+                        nqf: Math.max(1, Math.min(10, Number(event.target.value) || 1)),
+                      }))
+                    }
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                </label>
+                <MatchSelect
+                  label="Closest field"
+                  value={qualification.field}
+                  onChange={(field) => setQualification((current) => ({ ...current, field }))}
+                  options={QUALIFICATION_FIELDS}
+                />
+                <label className="block text-sm">
+                  <span className="mb-1.5 block font-medium text-muted-foreground">Qualification name</span>
+                  <input
+                    value={qualification.title}
+                    onChange={(event) =>
+                      setQualification((current) => ({ ...current, title: event.target.value }))
+                    }
+                    placeholder="Example: Diploma in Business Management"
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                </label>
+              </div>
+            ) : (
+              <>
+                <div className="mt-6 divide-y divide-border rounded-xl border border-border">
+                  {subjects.map((s, i) => (
+                    <div key={s.name} className="flex items-center justify-between px-4 py-3">
+                      <span className="text-sm font-medium text-foreground">{s.name}</span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={s.mark}
+                          aria-label={`${s.name} mark (percentage)`}
+                          onChange={(e) => {
+                            const v = Math.max(0, Math.min(100, Number(e.target.value) || 0));
+                            setSubjects((prev) =>
+                              prev.map((x, j) => (j === i ? { ...x, mark: v } : x)),
+                            );
+                          }}
+                          className="h-10 w-20 rounded-md border border-input bg-background px-3 text-right text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        />
+                        <span className="text-sm text-muted-foreground">%</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="mt-6 flex items-center justify-between rounded-xl bg-muted/60 px-4 py-3 text-sm">
-              <span className="text-muted-foreground">Estimated APS (best 6, excluding LO)</span>
-              <span className="text-lg font-semibold text-foreground">{aps}</span>
-            </div>
+                <div className="mt-6 flex items-center justify-between rounded-xl bg-muted/60 px-4 py-3 text-sm">
+                  <span className="text-muted-foreground">Estimated APS (best 6, excluding LO)</span>
+                  <span className="text-lg font-semibold text-foreground">{aps}</span>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -318,7 +424,15 @@ function MatchPage() {
           </div>
         )}
 
-        {step === 4 && <Results aps={aps} interest={interest} subjects={subjects} />}
+        {step === 4 && (
+          <Results
+            aps={aps}
+            interest={interest}
+            subjects={subjects}
+            learnerPath={learnerPath}
+            qualification={qualification}
+          />
+        )}
 
         {step === 4 && (
           <div className="mt-8 rounded-2xl border border-border bg-background p-5">
@@ -328,7 +442,7 @@ function MatchPage() {
                   Save this learner profile
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Keep your APS, subjects and interests attached to your account for the next visit.
+                  Keep this match profile attached to your account for the next visit.
                 </p>
                 <label className="mt-3 flex max-w-2xl items-start gap-2 text-sm text-muted-foreground">
                   <input
@@ -338,8 +452,8 @@ function MatchPage() {
                     className="mt-1 h-4 w-4 rounded border-input"
                   />
                   <span>
-                    I consent to SA Learn saving these subjects, marks, APS and interest to my
-                    protected learner profile. This is not an application submission.
+                    I consent to SA Learn saving this profile to my protected learner record. This
+                    is not an application submission.
                   </span>
                 </label>
                 {saveMessage && (
@@ -401,14 +515,45 @@ function MatchPage() {
   );
 }
 
+function MatchSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+}) {
+  return (
+    <label className="block text-sm">
+      <span className="mb-1.5 block font-medium text-muted-foreground">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function Results({
   aps,
   interest,
   subjects,
+  learnerPath,
+  qualification,
 }: {
   aps: number;
   interest: string;
   subjects: Subject[];
+  learnerPath: LearnerPath;
+  qualification: QualificationProfile;
 }) {
   const [serverGroups, setServerGroups] = useState<MatchGroup[] | null>(null);
   const [engineVersion, setEngineVersion] = useState("client-fallback");
@@ -563,11 +708,24 @@ function Results({
       ],
     },
   ];
-  const groups = serverGroups
-    ? serverGroups.map((group) => ({ ...group, icon: iconForTone(group.tone) }))
-    : fallbackGroups;
+  const qualificationGroups = useMemo(
+    () => buildQualificationGroups(qualification, interest),
+    [qualification, interest],
+  );
+  const groups =
+    learnerPath === "qualification"
+      ? qualificationGroups.map((group) => ({ ...group, icon: iconForTone(group.tone) }))
+      : serverGroups
+        ? serverGroups.map((group) => ({ ...group, icon: iconForTone(group.tone) }))
+        : fallbackGroups;
 
   useEffect(() => {
+    if (learnerPath === "qualification") {
+      setServerGroups(null);
+      setEngineVersion("qualification-career-v1");
+      return;
+    }
+
     let alive = true;
 
     // Codex: Server-side match rules engine
@@ -587,16 +745,21 @@ function Results({
     return () => {
       alive = false;
     };
-  }, [aps, interest, subjects]);
+  }, [aps, interest, learnerPath, subjects]);
 
   function downloadReport() {
     const lines = [
       "SA Learn Match Report",
       "",
-      `Estimated APS: ${aps}`,
+      learnerPath === "subjects"
+        ? `Estimated APS: ${aps}`
+        : `Qualification path: ${qualification.type}, NQF ${qualification.nqf}`,
+      learnerPath === "qualification"
+        ? `Qualification name: ${qualification.title || "Not specified"}`
+        : `Subjects: ${subjects.map((subject) => `${subject.name} ${subject.mark}%`).join(", ")}`,
       `Selected interest: ${interest}`,
       "",
-      "Important: This is a prototype report. Confirm requirements, deadlines, NBT rules and additional tests with official providers before applying.",
+      "Important: This is a prototype report. Confirm requirements, deadlines, NBT rules, articulation rules and additional tests with official providers before applying.",
       "",
       ...groups.flatMap((group) => [
         group.title,
@@ -606,7 +769,7 @@ function Results({
           `  Why: ${result.reason}`,
           `  Met: ${result.requirementsMet.join("; ")}`,
           `  Missing/unverified: ${result.requirementsMissing.join("; ")}`,
-          `  NBT/additional checks: ${result.additionalChecks.join("; ")}`,
+          `  Additional checks: ${result.additionalChecks.join("; ")}`,
           `  Next step: ${result.nextStep}`,
           "",
         ]),
@@ -622,8 +785,19 @@ function Results({
         <div>
           <h2 className="text-xl font-semibold tracking-tight text-foreground">Your results</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Based on an APS of <span className="font-medium text-foreground">{aps}</span> and
-            interest in <span className="font-medium text-foreground">{interest}</span>. Engine:{" "}
+            {learnerPath === "subjects" ? (
+              <>
+                Based on an APS of <span className="font-medium text-foreground">{aps}</span> and
+                interest in <span className="font-medium text-foreground">{interest}</span>.
+              </>
+            ) : (
+              <>
+                Based on <span className="font-medium text-foreground">{qualification.type}</span>{" "}
+                at NQF <span className="font-medium text-foreground">{qualification.nqf}</span> in{" "}
+                <span className="font-medium text-foreground">{qualification.field}</span>.
+              </>
+            )}{" "}
+            Engine:{" "}
             <span className="font-medium text-foreground">{engineVersion}</span>.
           </p>
         </div>
@@ -644,6 +818,90 @@ function Results({
       ))}
     </div>
   );
+}
+
+function buildQualificationGroups(
+  qualification: QualificationProfile,
+  interest: string,
+): MatchGroup[] {
+  const field = qualification.field.toLowerCase();
+  const type = qualification.type.toLowerCase();
+  const matchedCareers = CAREERS.filter((career) => {
+    const text = `${career.title} ${career.short} ${career.routes.join(" ")} ${career.skills.join(" ")} ${career.subjects.join(" ")}`.toLowerCase();
+    return (
+      text.includes(field) ||
+      text.includes(interest.toLowerCase()) ||
+      career.routes.some((route) => route.toLowerCase().includes(type))
+    );
+  }).slice(0, 4);
+  const careerPool = matchedCareers.length > 0 ? matchedCareers : CAREERS.slice(0, 4);
+  const relatedCourseSlugs = new Set(careerPool.flatMap((career) => career.relatedCourseSlugs));
+  const relatedSkillSlugs = new Set(careerPool.flatMap((career) => career.relatedSkillSlugs));
+  const relatedCourses = COURSES.filter((course) => relatedCourseSlugs.has(course.slug)).slice(0, 4);
+  const relatedSkills = SKILLS.filter((skill) => relatedSkillSlugs.has(skill.slug)).slice(0, 4);
+
+  return [
+    {
+      tone: "growth",
+      title: "Career directions",
+      results: careerPool.map((career) => ({
+        title: career.title,
+        institution: "Career explorer",
+        confidence: "Needs confirmation",
+        reason: `${career.title} appears relevant to a ${qualification.type} / NQF ${qualification.nqf} profile in ${qualification.field}.`,
+        requirementsMet: [
+          `${qualification.type} captured at NQF ${qualification.nqf}.`,
+          `Interest selected: ${interest}.`,
+          `Related route examples: ${career.routes.join(", ")}.`,
+        ],
+        requirementsMissing: [
+          "Employer, professional-body, postgraduate and articulation requirements still need confirmation.",
+        ],
+        additionalChecks: [
+          "Check whether your qualification is recognised by employers or professional bodies in this field.",
+          "Confirm whether bridging, honours, PGCE, articles, trade test or vendor certification is required.",
+        ],
+        nextStep: `Open the ${career.title} career page and compare linked courses, skills and entry roles.`,
+      })),
+    },
+    {
+      tone: "success",
+      title: "Study or upskilling options",
+      results: [
+        ...relatedCourses.map((course) => ({
+          title: course.title,
+          institution: course.institution,
+          confidence: "Needs confirmation" as const,
+          reason: `This course connects to careers that match your ${qualification.field} qualification path.`,
+          requirementsMet: [
+            `Course level: ${course.nqf ? `NQF ${course.nqf}` : "Not NQF-rated in prototype data"}.`,
+            `Delivery: ${course.deliveryMode}; city: ${course.city}.`,
+          ],
+          requirementsMissing: [
+            "Credit transfer, recognition of prior learning and current admission rules are not verified yet.",
+          ],
+          additionalChecks: [
+            "Ask the provider about articulation from your current qualification.",
+            "Confirm accreditation, cost and deadlines before paying or applying.",
+          ],
+          nextStep: `Review the ${course.title} course detail page and official source link.`,
+        })),
+        ...relatedSkills.map((skill) => ({
+          title: skill.name,
+          institution: "SA Learn skills",
+          confidence: "Partial match" as const,
+          reason: `This skill can help convert your qualification into visible job evidence.`,
+          requirementsMet: [`Track duration: ${skill.time}.`, `Difficulty: ${skill.diff}.`],
+          requirementsMissing: ["This is not an accredited qualification or employer guarantee."],
+          additionalChecks: [
+            "Use projects or portfolio evidence alongside formal qualifications.",
+            "Check whether employers in your target field request specific tools or certificates.",
+          ],
+          nextStep: `Open Skills and start the ${skill.name} track.`,
+        })),
+      ].slice(0, 6),
+    },
+  ];
 }
 
 function iconForTone(tone: "success" | "warning" | "danger" | "growth") {

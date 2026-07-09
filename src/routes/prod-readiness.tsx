@@ -42,6 +42,7 @@ const GROUPS: Group[] = [
       { label: "Client-side APS calculator (best 6 excluding LO)", done: true },
       { label: "Grouped results: Qualify, Almost, Do not qualify, Alternatives", done: true },
       { label: "Explanations for every result (why / why not)", done: true },
+      { label: "Non-matric qualification and NQF career guidance path", done: true },
       { label: "Server-side rules engine per institution and faculty (real rules, not prototype)", done: false },
       { label: "Saved learner profiles with subjects and marks (write UI)", done: true },
       { label: "Downloadable PDF match report", done: true },
