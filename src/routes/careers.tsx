@@ -3,6 +3,7 @@ import { ArrowRight, LineChart, TrendingUp } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { CAREERS } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/careers")({
   head: () =>
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/careers")({
 });
 
 function CareersPage() {
+  const { t } = useI18n();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   // Codex: Career detail route outlet
@@ -27,9 +29,9 @@ function CareersPage() {
 
   return (
     <PageShell
-      eyebrow="Where does this lead?"
-      title="Career pathways"
-      description="Start from a career you want, and see the subjects, study routes and skills that get you there."
+      eyebrow={t("route.careers.eyebrow")}
+      title={t("route.careers.title")}
+      description={t("route.careers.description")}
     >
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {CAREERS.map((c) => (

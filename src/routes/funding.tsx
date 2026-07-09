@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FUNDING } from "@/lib/data";
 import { loadApprovedFunding } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 type FundingItem = (typeof FUNDING)[number];
 
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/funding")({
 });
 
 function FundingPage() {
+  const { t } = useI18n();
   const [fundingItems, setFundingItems] = useState<FundingItem[]>(FUNDING);
   const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
 
@@ -52,9 +54,9 @@ function FundingPage() {
 
   return (
     <PageShell
-      eyebrow="How will I pay?"
-      title="Funding your studies"
-      description="Clear, calm information about NSFAS, bursaries, scholarships and learnership funding - so cost is never the reason you don't apply."
+      eyebrow={t("route.funding.eyebrow")}
+      title={t("route.funding.title")}
+      description={t("route.funding.description")}
     >
       <NsfasWizard />
       <BursaryMatcher fundingItems={fundingItems} />
@@ -237,8 +239,52 @@ function DeadlineReminderHelper({
   fundingItems: FundingItem[];
   catalogueSource: "live" | "static";
 }) {
+  const [saved, setSaved] = useState<Record<string, string>>({});
+  const [savingKey, setSavingKey] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+
   // Codex: Funding deadline reminder helper
-  // Status: Public email/WhatsApp reminder drafts only; automated delivery remains backend-owned.
+  // Status: Saves pending email/WhatsApp reminder records; delivery workers remain backend-owned.
+  async function saveFundingReminder(funding: FundingItem, channel: "email" | "whatsapp") {
+    const key = `${funding.slug}-${channel}`;
+    setSavingKey(key);
+    setMessage("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setMessage("Sign in from Account to save funding deadline reminders.");
+        return;
+      }
+
+      const remindAt = fundingReminderDateFromDeadline(funding.deadline);
+      const { error } = await supabase.from("deadline_reminders").upsert(
+        {
+          user_id: user.id,
+          item_type: "funding",
+          item_slug: funding.slug,
+          channel,
+          remind_at: remindAt.toISOString(),
+          status: "pending",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,item_type,item_slug,channel" },
+      );
+      if (error) throw error;
+
+      setSaved((current) => ({
+        ...current,
+        [key]: `${channel} reminder saved for ${remindAt.toLocaleDateString("en-ZA")}`,
+      }));
+      setMessage(`Saved ${channel} reminder for ${funding.name}.`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Reminder could not be saved.");
+    } finally {
+      setSavingKey(null);
+    }
+  }
+
   return (
     <section className="mb-8 rounded-2xl border border-border bg-card p-6 md:p-8">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -250,9 +296,14 @@ function DeadlineReminderHelper({
             Create a reminder draft
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            Pick a funding source and open a ready-made email or WhatsApp reminder message. SA Learn
-            does not send, store or schedule reminders from this surface.
+            Pick a funding source to save a pending email or WhatsApp reminder record. You can also
+            open a ready-made message immediately while delivery workers are being hardened.
           </p>
+          {message && (
+            <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
+              {message}
+            </p>
+          )}
         </div>
         <span className="inline-flex w-fit items-center rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
           {catalogueSource === "live" ? "Approved live windows" : "Static fallback"}
@@ -279,6 +330,24 @@ function DeadlineReminderHelper({
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => saveFundingReminder(funding, "email")}
+                    disabled={savingKey === `${funding.slug}-email`}
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-xs font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    {saved[`${funding.slug}-email`] ? "Email saved" : "Save email"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => saveFundingReminder(funding, "whatsapp")}
+                    disabled={savingKey === `${funding.slug}-whatsapp`}
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-xs font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    {saved[`${funding.slug}-whatsapp`] ? "WhatsApp saved" : "Save WhatsApp"}
+                  </button>
                   <a
                     href={emailHref}
                     className="inline-flex h-9 items-center gap-2 rounded-md border border-input bg-background px-3 text-xs font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -305,6 +374,19 @@ function DeadlineReminderHelper({
   );
 }
 
+function fundingReminderDateFromDeadline(deadline: string) {
+  const parsed = Date.parse(deadline);
+  if (Number.isNaN(parsed)) {
+    const fallback = new Date();
+    fallback.setDate(fallback.getDate() + 30);
+    return fallback;
+  }
+
+  const date = new Date(parsed);
+  date.setDate(date.getDate() - 7);
+  return date;
+}
+
 const STUDY_AREAS = ["Any", "Teaching", "Engineering", "Science", "Business", "Trades"];
 const FUNDING_NEEDS = ["Full funding", "Tuition help", "Stipend / earn while learning"];
 const MATCH_INSTITUTION_TYPES = [
@@ -319,9 +401,11 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
   const [studyArea, setStudyArea] = useState("Any");
   const [fundingNeed, setFundingNeed] = useState("Full funding");
   const [institutionType, setInstitutionType] = useState("Any");
+  const [profileState, setProfileState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [profileMessage, setProfileMessage] = useState("");
 
   // Codex: Bursary matcher
-  // Status: Public client-side matching over prototype funding cards; saved profiles remain backend/POPIA-owned.
+  // Status: Rules-based matching can save broad funding preferences to learner_details under RLS.
   const matches = useMemo(
     () =>
       fundingItems.map((funding) => ({
@@ -332,6 +416,41 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
         .sort((a, b) => b.reasons.length - a.reasons.length),
     [fundingItems, studyArea, fundingNeed, institutionType],
   );
+
+  async function saveMatcherProfile() {
+    setProfileState("saving");
+    setProfileMessage("");
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        setProfileState("error");
+        setProfileMessage("Sign in from Account to save this funding profile.");
+        return;
+      }
+
+      const budgetMaxPerYear =
+        fundingNeed === "Full funding" ? 0 : fundingNeed === "Tuition help" ? 45_000 : 20_000;
+      const { error } = await supabase.from("learner_details").upsert(
+        {
+          user_id: user.id,
+          interests: studyArea === "Any" ? [] : [studyArea],
+          budget_max_per_year: budgetMaxPerYear,
+          preferred_study_mode: institutionType,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" },
+      );
+
+      if (error) throw error;
+      setProfileState("saved");
+      setProfileMessage("Saved broad funding preferences to your learner profile.");
+    } catch (error) {
+      setProfileState("error");
+      setProfileMessage(error instanceof Error ? error.message : "Funding profile could not be saved.");
+    }
+  }
 
   return (
     <section className="mb-8 rounded-2xl border border-border bg-card p-6 md:p-8">
@@ -345,7 +464,7 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             Choose broad study and funding needs to see which prototype funding cards may be worth
-            checking. This is a public guide and does not store your profile.
+            checking. Signed-in learners can save these broad preferences to their learner profile.
           </p>
 
           <div className="mt-6 grid gap-3">
@@ -368,6 +487,20 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
               options={MATCH_INSTITUTION_TYPES}
             />
           </div>
+          <button
+            type="button"
+            onClick={saveMatcherProfile}
+            disabled={profileState === "saving"}
+            className="mt-4 inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+          >
+            <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+            {profileState === "saving" ? "Saving..." : "Save matcher profile"}
+          </button>
+          {profileMessage && (
+            <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
+              {profileMessage}
+            </p>
+          )}
         </div>
 
         <div className="space-y-3">

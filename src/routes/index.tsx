@@ -543,10 +543,11 @@ function LiveDeadlineFeed() {
 
 type LearnerTestimonial = {
   id: string;
-  display_name: string;
+  learner_name: string;
   province: string | null;
   quote: string;
   language: LanguageCode;
+  role_or_school: string | null;
   created_at: string;
 };
 
@@ -561,22 +562,23 @@ type TestimonialSelectBuilder = {
 };
 
 type TestimonialClient = {
-  from: (table: "learner_testimonials") => {
+  from: (table: "testimonials") => {
     select: (columns: string) => TestimonialSelectBuilder;
     insert: (row: {
-      user_id: string;
-      display_name: string;
+      submitter_user_id: string;
+      learner_name: string;
       province: string | null;
       quote: string;
+      role_or_school: string;
       language: LanguageCode;
       consent_to_publish: boolean;
-      moderation_state: "submitted";
+      approved: false;
     }) => Promise<{ error: Error | null }>;
   };
 };
 
-// Codex: Real learner testimonial pipeline
-// Status: Approved testimonials render publicly; signed-in learner submissions wait for admin moderation.
+// Codex: Canonical learner testimonial pipeline
+// Status: Uses public.testimonials; learner submissions stay unapproved until admin moderation.
 function LearnerTestimonials() {
   const { t, language } = useI18n();
   const [items, setItems] = useState<LearnerTestimonial[]>([]);
@@ -591,9 +593,9 @@ function LearnerTestimonials() {
     async function loadTestimonials() {
       try {
         const { data } = await testimonialClient
-          .from("learner_testimonials")
-          .select("id,display_name,province,quote,language,created_at")
-          .eq("moderation_state", "approved")
+          .from("testimonials")
+          .select("id,learner_name,province,quote,language,role_or_school,created_at")
+          .eq("approved", true)
           .eq("consent_to_publish", true)
           .order("created_at", { ascending: false })
           .limit(6);
@@ -628,14 +630,15 @@ function LearnerTestimonials() {
         return;
       }
 
-      const { error } = await testimonialClient.from("learner_testimonials").insert({
-        user_id: user.id,
-        display_name: form.displayName.trim().slice(0, 80),
+      const { error } = await testimonialClient.from("testimonials").insert({
+        submitter_user_id: user.id,
+        learner_name: form.displayName.trim().slice(0, 80),
         province: form.province.trim() || null,
         quote: form.quote.trim().slice(0, 700),
+        role_or_school: "Learner submission",
         language,
         consent_to_publish: true,
-        moderation_state: "submitted",
+        approved: false,
       });
 
       if (error) throw error;
@@ -660,7 +663,7 @@ function LearnerTestimonials() {
                   "{item.quote}"
                 </blockquote>
                 <figcaption className="mt-4 text-xs text-muted-foreground">
-                  {item.display_name}
+                  {item.learner_name}
                   {item.province ? `, ${item.province}` : ""} · {item.language.toUpperCase()}
                 </figcaption>
               </figure>

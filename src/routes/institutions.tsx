@@ -6,6 +6,7 @@ import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS, type Institution } from "@/lib/data";
 import { loadApprovedInstitutions } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/institutions")({
   head: () =>
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/institutions")({
 });
 
 function InstitutionsPage() {
+  const { t } = useI18n();
   const [institutions, setInstitutions] = useState<Institution[]>(INSTITUTIONS);
   const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
   const [type, setType] = useState("All");
@@ -44,9 +46,9 @@ function InstitutionsPage() {
 
   return (
     <PageShell
-      eyebrow="Where can I study?"
-      title="Institutions"
-      description="Verified universities, universities of technology, TVET colleges and private institutions across South Africa."
+      eyebrow={t("route.institutions.eyebrow")}
+      title={t("route.institutions.title")}
+      description={t("route.institutions.description")}
     >
       <div className="mb-6 flex flex-wrap gap-2">
         {types.map((t) => (

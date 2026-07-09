@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, ClipboardCheck, ListChecks } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 const ISIZULU_GLOSSARY: Record<string, string> = {
   APS: "Amaphuzu asiza izikhungo ukubheka ukuthi imiphumela yakho iyahlangabezana yini nezidingo zokungena.",
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/guides")({
 });
 
 function GuidesPage() {
+  const { t } = useI18n();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   // Codex: Guide detail route outlet
@@ -40,9 +42,9 @@ function GuidesPage() {
 
   return (
     <PageShell
-      eyebrow="Understand the system"
-      title="Plain-English guides"
-      description="Every confusing acronym, process and decision - explained simply. No jargon, no fluff."
+      eyebrow={t("route.guides.eyebrow")}
+      title={t("route.guides.title")}
+      description={t("route.guides.description")}
     >
       {/* Codex: Editorial workflow visibility
          Status: Public guide cards expose draft/review/published states; persistent CMS remains backend-owned. */}

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { OPPORTUNITIES } from "@/lib/data";
 import { loadApprovedOpportunities } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 type Opportunity = (typeof OPPORTUNITIES)[number];
 
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/opportunities")({
 });
 
 function OpportunitiesPage() {
+  const { t } = useI18n();
   const [province, setProvince] = useState("All");
   const [sector, setSector] = useState("All");
   const [type, setType] = useState("All");
@@ -70,14 +72,20 @@ function OpportunitiesPage() {
         if (!user) return;
 
         const { data } = await supabase
-          .from("saved_items")
-          .select("item_slug, notes")
+          .from("deadline_reminders")
+          .select("item_slug, channel, remind_at")
           .eq("user_id", user.id)
-          .eq("item_type", "opportunity");
+          .eq("item_type", "opportunity")
+          .eq("status", "pending");
 
         if (!alive) return;
         setSavedReminders(
-          Object.fromEntries((data ?? []).map((item) => [item.item_slug, item.notes ?? "Saved"])),
+          Object.fromEntries(
+            (data ?? []).map((item) => [
+              item.item_slug,
+              `${item.channel} reminder set for ${new Date(item.remind_at).toLocaleDateString("en-ZA")}`,
+            ]),
+          ),
         );
       } catch {
         if (alive) setSaveMessage("Sign in from Account to save opportunity reminders.");
@@ -91,7 +99,7 @@ function OpportunitiesPage() {
   }, []);
 
   // Codex: Saved opportunity deadline reminders
-  // Status: Saves reminder intent to saved_items notes; scheduled email/WhatsApp delivery remains backend-owned.
+  // Status: Creates learner-owned pending records in public.deadline_reminders; delivery workers remain backend-owned.
   async function saveReminder(id: string, title: string, closes: string) {
     setSavingId(id);
     setSaveMessage("");
@@ -104,32 +112,25 @@ function OpportunitiesPage() {
         return;
       }
 
-      const { data: existing } = await supabase
-        .from("saved_items")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_type", "opportunity")
-        .eq("item_slug", id)
-        .maybeSingle();
-
-      const notes = `Reminder requested - ${title} closes ${closes}. Confirm the official deadline before applying.`;
-      if (existing?.id) {
-        const { error } = await supabase
-          .from("saved_items")
-          .update({ notes })
-          .eq("id", existing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("saved_items").insert({
+      const remindAt = reminderDateFromDeadline(closes);
+      const { error } = await supabase.from("deadline_reminders").upsert(
+        {
           user_id: user.id,
           item_type: "opportunity",
           item_slug: id,
-          notes,
-        });
-        if (error) throw error;
-      }
+          channel: "email",
+          remind_at: remindAt.toISOString(),
+          status: "pending",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,item_type,item_slug,channel" },
+      );
+      if (error) throw error;
 
-      setSavedReminders((current) => ({ ...current, [id]: notes }));
+      setSavedReminders((current) => ({
+        ...current,
+        [id]: `email reminder set for ${remindAt.toLocaleDateString("en-ZA")}`,
+      }));
       setSaveMessage(`Saved reminder for ${title}.`);
     } catch {
       setSaveMessage("Reminder could not be saved yet. Please try again.");
@@ -140,9 +141,9 @@ function OpportunitiesPage() {
 
   return (
     <PageShell
-      eyebrow="What can I apply for right now?"
-      title="Open opportunities"
-      description="Real listings with real deadlines. Filter by province, sector and opportunity type."
+      eyebrow={t("route.opportunities.eyebrow")}
+      title={t("route.opportunities.title")}
+      description={t("route.opportunities.description")}
     >
       <div className="mb-8 rounded-2xl border border-border bg-card p-4">
         <div className="grid gap-3 md:grid-cols-4">
@@ -229,6 +230,19 @@ function OpportunitiesPage() {
       </div>
     </PageShell>
   );
+}
+
+function reminderDateFromDeadline(deadline: string) {
+  const parsed = Date.parse(deadline);
+  if (Number.isNaN(parsed)) {
+    const fallback = new Date();
+    fallback.setDate(fallback.getDate() + 30);
+    return fallback;
+  }
+
+  const date = new Date(parsed);
+  date.setDate(date.getDate() - 7);
+  return date;
 }
 
 function unique(values: string[]) {

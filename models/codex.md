@@ -13,7 +13,41 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 ## Current Focus
 
-Production-readiness role complete. Future Codex work on SA Learn should begin from a new role assignment such as maintenance, updates, audits, bug fixes, product polish, or backend-support tasks explicitly approved by Kuzi/Lovable.
+Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
+
+## Corrective Readiness Pass - 69% to 86%
+
+**Date/Time:** 2026-07-09 14:20 +02:00
+
+**Files Modified:**
+
+- `src/routes/index.tsx`
+- `src/routes/skills.tsx`
+- `src/routes/opportunities.tsx`
+- `src/routes/funding.tsx`
+- `src/routes/prod-readiness.tsx`
+- `src/lib/i18n.tsx`
+- `src/routes/courses.tsx`
+- `src/routes/careers.tsx`
+- `src/routes/institutions.tsx`
+- `src/routes/guides.tsx`
+- `src/routes/match.tsx`
+- `supabase/migrations/20260709142000_reconcile_testimonials_contract.sql`
+- `audits/wcag-2.1-aa-presentational-audit-2026-07-09.md`
+- `audits/popia-consent-flow-audit-2026-07-09.md`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Worked from the review reset instead of re-ticking everything. Reconciled testimonials onto the reviewed `public.testimonials` table, added learner-submission consent fields/policies, moved skills progress to `skill_progress`, moved opportunity and funding reminders to `deadline_reminders`, made the funding matcher save broad profile preferences to `learner_details`, changed skill completion downloads from text to PDF progress records, added WCAG and POPIA audit artifacts, expanded route-level multilingual copy for core learner routes, and reticked only the boxes now backed by implementation evidence.
+
+**Production-Readiness Result:**
+`/prod-readiness` now reports 66 of 77 complete, approximately 86%. The remaining 11 boxes stay false because they require real source data, enabled provider confirmation, full page-body translation, real approved learner testimonial data, or external backend/provider work.
+
+**Verification:**
+`bunx tsc --noEmit --pretty false` passed. `bun run build` passed outside the sandbox with the expected Vite/Tailwind Windows native permission requirement.
+
+**Intentionally Still False:**
+Real server-side admission rules, real NBT/additional-test dataset, seeded verified catalogue rows, sourced career salary/demand citations, verified institution profile source data, accreditation register pull, official application windows, real approved learner testimonials, Apple provider enablement, full-page multilingual content across every route, and source/data-heavy production claims that cannot be completed honestly from frontend code alone.
 
 ## Final Role Checkout - 0% to 100% Production Readiness
 

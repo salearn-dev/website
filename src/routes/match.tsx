@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { evaluateMatch, type MatchGroup, type MatchResult } from "@/lib/match-engine.functions";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/match")({
   head: () =>
@@ -109,6 +110,7 @@ function saveBlob(blob: Blob, filename: string) {
 const STEP_LABELS = ["Subjects", "Marks", "Interests", "Results"];
 
 function MatchPage() {
+  const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [subjects, setSubjects] = useState<Subject[]>([
     { name: "Mathematics", mark: 62 },
@@ -185,9 +187,9 @@ function MatchPage() {
 
   return (
     <PageShell
-      eyebrow="What do I qualify for?"
-      title="Check your options"
-      description="A calm, four-step check based on your matric subjects and interests. No account needed."
+      eyebrow={t("route.match.eyebrow")}
+      title={t("route.match.title")}
+      description={t("route.match.description")}
     >
       {/* 3.4 — Screen-reader live region: announces step changes and results without requiring navigation */}
       <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">

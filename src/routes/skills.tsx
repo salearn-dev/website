@@ -16,6 +16,7 @@ import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/skills")({
   head: () =>
@@ -30,13 +31,14 @@ export const Route = createFileRoute("/skills")({
 });
 
 function SkillsPage() {
+  const { t } = useI18n();
   const [userId, setUserId] = useState<string | null>(null);
   const [savedProgress, setSavedProgress] = useState<Record<string, string>>({});
   const [savingSlug, setSavingSlug] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
 
   // Codex: Curated skill tracks, mapping and learner progress
-  // Status: Public tracks map to careers/courses; signed-in learners can save track progress in saved_items notes.
+  // Status: Public tracks map to careers/courses; signed-in learners save progress in public.skill_progress.
   const skillTracks = SKILLS.map((skill) => {
     const relatedCareers = CAREERS.filter((career) =>
       career.relatedSkillSlugs.includes(skill.slug),
@@ -59,15 +61,20 @@ function SkillsPage() {
         if (!user) return;
 
         const { data } = await supabase
-          .from("saved_items")
-          .select("item_slug, notes")
+          .from("skill_progress")
+          .select("skill_slug, status, completed_steps, total_steps")
           .eq("user_id", user.id)
-          .eq("item_type", "skill");
+          .order("updated_at", { ascending: false });
 
         if (!alive) return;
         setUserId(user.id);
         setSavedProgress(
-          Object.fromEntries((data ?? []).map((item) => [item.item_slug, item.notes ?? "Started"])),
+          Object.fromEntries(
+            (data ?? []).map((item) => [
+              item.skill_slug,
+              `${progressLabelFromStatus(item.status)} - ${item.completed_steps}/${item.total_steps} steps`,
+            ]),
+          ),
         );
       } catch {
         if (alive) setStatusMessage("Sign in from Account to save skill progress.");
@@ -92,33 +99,32 @@ function SkillsPage() {
         return;
       }
 
-      const { data: existing } = await supabase
-        .from("saved_items")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_type", "skill")
-        .eq("item_slug", slug)
-        .maybeSingle();
+      const totalSteps = SKILLS.find((skill) => skill.slug === slug)?.track.length ?? 3;
+      const completedSteps =
+        progress === "Ready to show" ? totalSteps : progress === "Practising" ? Math.max(1, totalSteps - 1) : 1;
+      const status =
+        progress === "Ready to show"
+          ? "completed"
+          : progress === "Practising"
+            ? "practising"
+            : "started";
 
-      const notes = `${progress} - ${title}`;
-      if (existing?.id) {
-        const { error } = await supabase
-          .from("saved_items")
-          .update({ notes })
-          .eq("id", existing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("saved_items").insert({
+      const { error } = await supabase.from("skill_progress").upsert(
+        {
           user_id: user.id,
-          item_type: "skill",
-          item_slug: slug,
-          notes,
-        });
-        if (error) throw error;
-      }
+          skill_slug: slug,
+          completed_steps: completedSteps,
+          total_steps: totalSteps,
+          status,
+          completed_at: status === "completed" ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,skill_slug" },
+      );
+      if (error) throw error;
 
       setUserId(user.id);
-      setSavedProgress((current) => ({ ...current, [slug]: notes }));
+      setSavedProgress((current) => ({ ...current, [slug]: `${progress} - ${completedSteps}/${totalSteps} steps` }));
       setStatusMessage(`Saved ${title} progress.`);
     } catch {
       setStatusMessage("Progress could not be saved yet. Please try again.");
@@ -144,20 +150,20 @@ function SkillsPage() {
       "It is not an accredited qualification, SETA certificate, SAQA-registered award, or proof of formal competence.",
       "Use it as a learning-progress summary while building a portfolio and applying through official providers.",
     ].join("\n");
-    const blob = new Blob([text], { type: "text/plain" });
+    const blob = makeSkillPdfBlob(text);
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `sa-learn-${skillName.toLowerCase().replace(/\s+/g, "-")}-record.txt`;
+    link.download = `sa-learn-${skillName.toLowerCase().replace(/\s+/g, "-")}-progress-record.pdf`;
     link.click();
     URL.revokeObjectURL(url);
   }
 
   return (
     <PageShell
-      eyebrow="What can I learn today?"
-      title="Job-ready skills"
-      description="Practical skills that make you employable - start now, mostly free, and connect each skill to real career and study routes."
+      eyebrow={t("route.skills.eyebrow")}
+      title={t("route.skills.title")}
+      description={t("route.skills.description")}
     >
       <section className="mb-6 rounded-2xl border border-border bg-card p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -302,6 +308,56 @@ function SkillsPage() {
       </div>
     </PageShell>
   );
+}
+
+function makeSkillPdfBlob(text: string) {
+  const lines = text.split("\n").flatMap((line) => {
+    if (line.length <= 88) return [line];
+    return line.match(/.{1,88}(\s|$)/g)?.map((part) => part.trim()) ?? [line];
+  });
+  const content = [
+    "BT",
+    "/F1 11 Tf",
+    "50 780 Td",
+    "14 TL",
+    ...lines.flatMap((line) => [`(${escapePdfText(line)}) Tj`, "T*"]),
+    "ET",
+  ].join("\n");
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+  ];
+  const parts = ["%PDF-1.4\n"];
+  const offsets = [0];
+
+  objects.forEach((object, index) => {
+    offsets.push(parts.join("").length);
+    parts.push(`${index + 1} 0 obj\n${object}\nendobj\n`);
+  });
+
+  const xrefOffset = parts.join("").length;
+  parts.push(`xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`);
+  offsets.slice(1).forEach((offset) => {
+    parts.push(`${String(offset).padStart(10, "0")} 00000 n \n`);
+  });
+  parts.push(
+    `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`,
+  );
+
+  return new Blob(parts, { type: "application/pdf" });
+}
+
+function escapePdfText(value: string) {
+  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+
+function progressLabelFromStatus(status: string) {
+  if (status === "completed") return "Ready to show";
+  if (status === "practising") return "Practising";
+  return "Started";
 }
 
 function LinkGroup({

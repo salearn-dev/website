@@ -6,6 +6,7 @@ import { TrustMetadata } from "@/components/trust-metadata";
 import { COURSES, COURSE_CATEGORIES, type Course } from "@/lib/data";
 import { loadApprovedCourses } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/courses")({
   head: () =>
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/courses")({
 });
 
 function CoursesPage() {
+  const { t } = useI18n();
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | null>(null);
   const [province, setProvince] = useState("All");
@@ -90,9 +92,9 @@ function CoursesPage() {
 
   return (
     <PageShell
-      eyebrow="What can I study?"
-      title="Explore every learning opportunity"
-      description="Universities, TVET colleges, private colleges, learnerships and short courses - filter by what matters to you."
+      eyebrow={t("route.courses.eyebrow")}
+      title={t("route.courses.title")}
+      description={t("route.courses.description")}
     >
       <section aria-labelledby="course-search-heading" className="mb-10">
         <h2 id="course-search-heading" className="sr-only">
