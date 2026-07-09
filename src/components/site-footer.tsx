@@ -38,6 +38,7 @@ export function SiteFooter() {
               title={t("footer.plan")}
               links={[
                 [t("nav.match"), "/match"],
+                [t("nav.ask"), "/ask"],
                 [t("nav.funding"), "/funding"],
                 [t("nav.opportunities"), "/opportunities"],
                 ["WhatsApp", "/whatsapp"],

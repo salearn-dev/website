@@ -15,6 +15,24 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Ask SA Learn Data-First Guidance Route
+
+**Date/Time:** 2026-07-09 15:05 +02:00
+
+**Files Modified:**
+
+- `src/routes/ask.tsx`
+- `src/components/site-header.tsx`
+- `src/components/site-footer.tsx`
+- `src/lib/i18n.tsx`
+- `src/routeTree.gen.ts`
+- `src/routes/sitemap[.]xml.ts`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added `/ask` as a separate, data-first guidance route. The page takes learner questions and renders matching SA Learn cards from existing courses, careers, funding, opportunities, guides, skills and institutions data instead of pretending a live AI model is connected. Added navigation/footer access, sitemap coverage, readiness evidence and kept the future Groq/model layer as a grounded adapter boundary.
+
 ## Match Non-Matric Qualification Path
 
 **Date/Time:** 2026-07-09 15:05 +02:00

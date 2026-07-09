@@ -138,6 +138,13 @@ const GROUPS: Group[] = [
     ],
   },
   {
+    route: "/ask",
+    title: "Ask SA Learn",
+    features: [
+      { label: "Data-first guidance route that renders SA Learn cards", done: true },
+    ],
+  },
+  {
     route: "Platform",
     title: "Platform, infrastructure and trust",
     features: [

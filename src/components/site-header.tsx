@@ -14,6 +14,7 @@ const NAV = [
   { to: "/skills", labelKey: "nav.skills" },
   { to: "/opportunities", labelKey: "nav.opportunities" },
   { to: "/guides", labelKey: "nav.guides" },
+  { to: "/ask", labelKey: "nav.ask" },
 ] as const;
 
 function Logo() {

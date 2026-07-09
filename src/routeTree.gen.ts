@@ -21,6 +21,7 @@ import { Route as GuidesRouteImport } from './routes/guides'
 import { Route as FundingRouteImport } from './routes/funding'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as CareersRouteImport } from './routes/careers'
+import { Route as AskRouteImport } from './routes/ask'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InstitutionsPortalRouteImport } from './routes/institutions.portal'
@@ -91,6 +92,11 @@ const CareersRoute = CareersRouteImport.update({
   path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AskRoute = AskRouteImport.update({
+  id: '/ask',
+  path: '/ask',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
@@ -140,6 +146,7 @@ const ApiPublicOpportunitiesRoute = ApiPublicOpportunitiesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/ask': typeof AskRoute
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/ask': typeof AskRoute
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/ask': typeof AskRoute
   '/careers': typeof CareersRouteWithChildren
   '/courses': typeof CoursesRouteWithChildren
   '/funding': typeof FundingRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
+    | '/ask'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
+    | '/ask'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/account'
+    | '/ask'
     | '/careers'
     | '/courses'
     | '/funding'
@@ -282,6 +294,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
+  AskRoute: typeof AskRoute
   CareersRoute: typeof CareersRouteWithChildren
   CoursesRoute: typeof CoursesRouteWithChildren
   FundingRoute: typeof FundingRoute
@@ -382,6 +395,13 @@ declare module '@tanstack/react-router' {
       path: '/careers'
       fullPath: '/careers'
       preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ask': {
+      id: '/ask'
+      path: '/ask'
+      fullPath: '/ask'
+      preLoaderRoute: typeof AskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account': {
@@ -500,6 +520,7 @@ const InstitutionsRouteWithChildren = InstitutionsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
+  AskRoute: AskRoute,
   CareersRoute: CareersRouteWithChildren,
   CoursesRoute: CoursesRouteWithChildren,
   FundingRoute: FundingRoute,
