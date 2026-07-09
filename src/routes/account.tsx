@@ -147,17 +147,27 @@ function AccountPage() {
   }
 
   // Codex: OAuth provider entry points
-  // Status: Uses Supabase redirect flow; provider enablement and allowlist remain Lovable-owned.
+  // Google routes through the Lovable broker (iframe-safe web_message flow).
   async function signInWithProvider(provider: "google" | "apple") {
     setAuthLoading(true);
     setNotice(null);
     setError(null);
 
+    if (provider === "google") {
+      const { lovable } = await import("@/integrations/lovable");
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result?.error) {
+        setError(result.error instanceof Error ? result.error.message : String(result.error));
+      }
+      setAuthLoading(false);
+      return;
+    }
+
     const { error: providerError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/account`,
-      },
+      options: { redirectTo: `${window.location.origin}/account` },
     });
 
     if (providerError) {
