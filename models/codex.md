@@ -15,6 +15,21 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Review Remediation - Quality Gate Baseline
+
+**Date/Time:** 2026-07-11 15:55 +02:00
+
+**Files Modified:**
+
+- `README.md`
+- `package.json`
+- `package-lock.json`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Started patching the latest repository review by adding a conventional operational README, declaring Bun as the canonical package manager, removing the npm lockfile, adding explicit `typecheck`, `test` and `check` scripts, and tracking these quality gates on `/prod-readiness`. `check` enforces typecheck plus build for now. Lint remains configured but incomplete because the current repo fails on existing Prettier CRLF line-ending debt. The patch deliberately leaves lint cleanup, real unit/integration/browser tests, CI enforcement, and RLS/public API runtime tests as incomplete rather than pretending they exist.
+
 ## Role Update - Full-Stack Senior Dev
 
 **Date/Time:** 2026-07-11 15:50 +02:00

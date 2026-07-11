@@ -158,6 +158,20 @@ const GROUPS: Group[] = [
     ],
   },
   {
+    route: "Quality gates",
+    title: "Engineering quality gates",
+    features: [
+      { label: "Conventional README with setup, env, verification and release guidance", done: true },
+      { label: "Canonical Bun package manager policy with single lockfile", done: true },
+      { label: "Dedicated typecheck script", done: true },
+      { label: "Combined local check script for typecheck and build", done: true },
+      { label: "Lint passes on a clean checkout", done: false },
+      { label: "Automated unit, integration and browser test suite", done: false },
+      { label: "CI enforcing typecheck, lint, build and tests", done: false },
+      { label: "RLS and public API runtime test harness", done: false },
+    ],
+  },
+  {
     route: "Platform",
     title: "Platform, infrastructure and trust",
     features: [
