@@ -15,6 +15,18 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Checkout - Institution Images and Readiness State
+
+**Date/Time:** 2026-07-11 19:05 +02:00
+
+**Files Modified:**
+
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Updated `/prod-readiness` to honestly reflect the institution image work: Cloudinary-backed images and graceful no-image rendering are complete at 62 of 76 sourced public institutions, while full 76 of 76 image coverage remains incomplete. Current review distance is no longer basic institution breadth; the largest gaps are verified institutional facts, complete image curation, sourced application/accreditation records, clean lint/CI/test evidence, and runtime proof for backend/RLS/API claims.
+
 ## Institution Hero Image Pipeline
 
 **Date/Time:** 2026-07-11 18:50 +02:00
