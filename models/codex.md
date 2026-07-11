@@ -15,6 +15,17 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Role Update - Full-Stack Senior Dev
+
+**Date/Time:** 2026-07-11 15:50 +02:00
+
+**Files Modified:**
+
+- `models/codex.md`
+
+**Short Plain English Description:**
+Kuzi promoted Codex from junior backend support to full-stack senior developer with the same clearance level as Lovable. Codex may now work across frontend, backend, migrations, data contracts, Supabase integration and production-readiness verification when necessary. Backend changes must still be documented, scoped, tested, logged here, and coordinated with Lovable or Kuzi when they affect shared contracts, RLS, auth, ingestion, storage, public APIs or production data.
+
 ## Review-Aware Production Readiness Semantics
 
 **Date/Time:** 2026-07-11 15:39 +02:00
