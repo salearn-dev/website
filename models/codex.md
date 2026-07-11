@@ -15,6 +15,18 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Review-Aware Production Readiness Semantics
+
+**Date/Time:** 2026-07-11 15:39 +02:00
+
+**Files Modified:**
+
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Updated `/prod-readiness` so it no longer implies checked items are fully production-proven just because they are implemented. The page now shows implementation progress separately from 100% accountability coverage, adds evidence levels for every feature, calls out proof still needed, and surfaces P0 trust/security/data-sensitive items for senior review. This aligns the readiness dashboard with the latest repository review without falsely ticking unfinished data, RLS, provider or runtime-verification work.
+
 ## Ask SA Learn Data-First Guidance Route
 
 **Date/Time:** 2026-07-09 15:05 +02:00

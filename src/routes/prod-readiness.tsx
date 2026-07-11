@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check } from "lucide-react";
+import { AlertTriangle, Check, ShieldCheck } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { getProdReadinessGate } from "@/lib/gate.functions";
 
@@ -18,7 +18,20 @@ export const Route = createFileRoute("/prod-readiness")({
 
 type Feature = { label: string; done: boolean };
 type Group = { route: string; title: string; features: Feature[] };
-type FeatureMeta = { owner: string; priority: "P0" | "P1" | "P2"; status: string };
+type EvidenceLevel =
+  | "Implemented"
+  | "Implemented - prototype data"
+  | "Documented audit"
+  | "Needs data verification"
+  | "Needs runtime proof"
+  | "Provider blocked"
+  | "Planned";
+type FeatureMeta = {
+  owner: string;
+  priority: "P0" | "P1" | "P2";
+  status: string;
+  evidence: EvidenceLevel;
+};
 
 const GROUPS: Group[] = [
   {
@@ -168,14 +181,55 @@ const GROUPS: Group[] = [
   },
 ];
 
-// Codex: Multi-developer production readiness metadata
-// Status: Route checklist now exposes inferred priority, owner, status, and next incomplete item.
+// Codex: Review-aware production readiness metadata
+// Status: Readiness now separates implementation progress from evidence and production proof.
 function getFeatureMeta(group: Group, feature: Feature): FeatureMeta {
-  if (feature.done) {
-    return { owner: "Team", priority: "P2", status: "Built" };
-  }
-
   const label = feature.label.toLowerCase();
+
+  if (feature.done) {
+    if (
+      label.includes("static") ||
+      label.includes("prototype") ||
+      label.includes("fallback") ||
+      label.includes("ui only")
+    ) {
+      return {
+        owner: "Team",
+        priority: "P1",
+        status: "Implemented with learner-facing caveats",
+        evidence: "Implemented - prototype data",
+      };
+    }
+
+    if (
+      label.includes("row level security") ||
+      label.includes("public api") ||
+      label.includes("cron") ||
+      label.includes("cloud") ||
+      label.includes("storage") ||
+      label.includes("provider") ||
+      label.includes("google sign-in") ||
+      label.includes("email magic-link")
+    ) {
+      return {
+        owner: "Team",
+        priority: "P0",
+        status: "Implemented; needs runtime/security proof",
+        evidence: "Needs runtime proof",
+      };
+    }
+
+    if (label.includes("wcag") || label.includes("popia")) {
+      return {
+        owner: "Team",
+        priority: "P0",
+        status: "Documented; independent verification still advised",
+        evidence: "Documented audit",
+      };
+    }
+
+    return { owner: "Team", priority: "P2", status: "Implemented in code", evidence: "Implemented" };
+  }
 
   if (
     label.includes("source") ||
@@ -186,7 +240,21 @@ function getFeatureMeta(group: Group, feature: Feature): FeatureMeta {
     label.includes("auth") ||
     label.includes("live")
   ) {
-    return { owner: "Unassigned", priority: "P0", status: "Blocked by backend/data" };
+    return {
+      owner: "Unassigned",
+      priority: "P0",
+      status: "Blocked by backend/data",
+      evidence: "Needs data verification",
+    };
+  }
+
+  if (label.includes("apple") || label.includes("provider")) {
+    return {
+      owner: "Unassigned",
+      priority: "P1",
+      status: "Blocked by provider confirmation",
+      evidence: "Provider blocked",
+    };
   }
 
   if (
@@ -196,10 +264,15 @@ function getFeatureMeta(group: Group, feature: Feature): FeatureMeta {
     label.includes("deadline") ||
     label.includes("cms")
   ) {
-    return { owner: "Unassigned", priority: "P1", status: "Ready for implementation" };
+    return {
+      owner: "Unassigned",
+      priority: "P1",
+      status: "Ready for implementation",
+      evidence: "Planned",
+    };
   }
 
-  return { owner: "Unassigned", priority: "P2", status: "Planned" };
+  return { owner: "Unassigned", priority: "P2", status: "Planned", evidence: "Planned" };
 }
 
 function nextIncomplete(group: Group) {
@@ -211,18 +284,26 @@ function ProdReadinessPage() {
   const done = all.filter((f) => f.done).length;
   const total = all.length;
   const pct = Math.round((done / total) * 100);
+  const metas = GROUPS.flatMap((group) =>
+    group.features.map((feature) => getFeatureMeta(group, feature)),
+  );
+  const p0Count = metas.filter((meta) => meta.priority === "P0").length;
+  const proofNeeded = metas.filter(
+    (meta) => meta.evidence === "Needs runtime proof" || meta.evidence === "Needs data verification",
+  ).length;
+  const accountabilityPct = total > 0 ? 100 : 0;
 
   return (
     <PageShell
       eyebrow="Production readiness"
-      title="Road to production"
-      description="A live checklist of everything SA Learn needs to graduate from prototype to a production-ready platform, grouped by route. Checked items are built and working today."
+      title="Road to production proof"
+      description="A live checklist of SA Learn's production work. Checked items are implemented in the current codebase; runtime, security, provider and data verification may still be required."
     >
       <section className="mb-10 rounded-3xl border border-border bg-card p-6 md:p-8">
-        <div className="flex items-baseline justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              Overall progress
+              Implementation progress
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
               <span className="text-2xl font-semibold text-foreground">{pct}%</span>
@@ -232,7 +313,7 @@ function ProdReadinessPage() {
             </p>
           </div>
           <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
-            Beta - honest checklist
+            Beta - evidence-aware checklist
           </span>
         </div>
         <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-muted">
@@ -249,6 +330,41 @@ function ProdReadinessPage() {
         <div className="mt-3 flex justify-between text-xs text-muted-foreground">
           <span>0%</span>
           <span>100%</span>
+        </div>
+      </section>
+
+      <section className="mb-10 grid gap-4 md:grid-cols-3">
+        <MetricCard
+          title="Accountability coverage"
+          value={`${accountabilityPct}%`}
+          description={`${total} of ${total} items are tracked with owner, priority, status and evidence level.`}
+        />
+        <MetricCard
+          title="Proof still needed"
+          value={String(proofNeeded)}
+          description="Items that are implemented or planned but still need runtime, security or data-verification evidence."
+        />
+        <MetricCard
+          title="P0 watchlist"
+          value={String(p0Count)}
+          description="Trust, data, auth, RLS, public API or compliance-sensitive items that need senior review."
+        />
+      </section>
+
+      <section className="mb-10 rounded-2xl border border-warning/30 bg-warning/10 p-5">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="mt-0.5 h-5 w-5 text-warning-foreground" aria-hidden="true" />
+          <div>
+            <h2 className="text-base font-semibold tracking-tight text-foreground">
+              Review baseline
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              This page now treats 100% readiness as 100% accountability, not a claim that every
+              production risk is resolved. The next patch series should focus on verification:
+              package-manager policy, typecheck/test scripts, RLS/API proof, and source-backed
+              catalogue data.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -317,6 +433,10 @@ function ProdReadinessPage() {
                         <span className="rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
                           {meta.status}
                         </span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-muted-foreground">
+                          <ShieldCheck className="h-3 w-3" aria-hidden="true" />
+                          {meta.evidence}
+                        </span>
                       </div>
                     </li>
                   );
@@ -327,5 +447,25 @@ function ProdReadinessPage() {
         })}
       </div>
     </PageShell>
+  );
+}
+
+function MetricCard({
+  title,
+  value,
+  description,
+}: {
+  title: string;
+  value: string;
+  description: string;
+}) {
+  return (
+    <article className="rounded-2xl border border-border bg-card p-5">
+      <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+        {title}
+      </p>
+      <p className="mt-2 text-2xl font-semibold text-foreground">{value}</p>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+    </article>
   );
 }
