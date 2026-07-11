@@ -15,6 +15,18 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Institution Detail Route Outlet Fix
+
+**Date/Time:** 2026-07-11 17:20 +02:00
+
+**Files Modified:**
+
+- `src/routes/institutions.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Fixed the local routing issue where `/institutions/cput` changed the URL but still rendered the `/institutions` list. The institutions parent route now yields to the child outlet for `/institutions/:slug`, allowing the dedicated institution profile template to render correctly. Verified locally that `/institutions/cput` shows the Cape Peninsula University of Technology profile rather than the full institution list.
+
 ## Public Institution Catalogue Baseline
 
 **Date/Time:** 2026-07-11 17:01 +02:00

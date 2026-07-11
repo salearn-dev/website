@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/institutions")({
 
 function InstitutionsPage() {
   const { t } = useI18n();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [institutions, setInstitutions] = useState<Institution[]>(INSTITUTIONS);
   const [catalogueSource, setCatalogueSource] = useState<"live" | "static">("static");
   const [type, setType] = useState("All");
@@ -43,6 +44,12 @@ function InstitutionsPage() {
 
   const types = useMemo(() => ["All", ...unique(institutions.map((item) => item.type))], [institutions]);
   const filtered = institutions.filter((item) => type === "All" || item.type === type);
+
+  // Codex: Institution detail route outlet
+  // Status: Parent route yields to /institutions/:slug so detail pages replace the list view.
+  if (pathname !== "/institutions") {
+    return <Outlet />;
+  }
 
   return (
     <PageShell
