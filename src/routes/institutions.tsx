@@ -83,52 +83,63 @@ function InstitutionsPage() {
         {filtered.map((i) => (
           <article
             key={i.slug}
-            className="rounded-2xl border border-border bg-card p-6 transition-shadow hover:shadow-[var(--shadow-card-hover)]"
+            className="overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-[var(--shadow-card-hover)]"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs text-muted-foreground">{i.type}</p>
-                <h3 className="mt-1 text-lg font-semibold tracking-tight text-foreground">
-                  {i.name}
-                </h3>
-                <p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5" /> {i.province}
-                </p>
+            {i.heroImage ? (
+              <img
+                src={i.heroImage.url}
+                alt={i.heroImage.alt}
+                className="h-44 w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : null}
+            <div className="p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs text-muted-foreground">{i.type}</p>
+                  <h3 className="mt-1 text-lg font-semibold tracking-tight text-foreground">
+                    {i.name}
+                  </h3>
+                  <p className="mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5" /> {i.province}
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
+                  <CheckCircle2 className="h-3 w-3" /> Listed
+                </span>
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
-                <CheckCircle2 className="h-3 w-3" /> Listed
-              </span>
-            </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4 text-sm">
-              <div>
-                <p className="text-xs text-muted-foreground">Courses on SA Learn</p>
-                <p className="font-medium text-foreground">{i.courses}</p>
+              <div className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4 text-sm">
+                <div>
+                  <p className="text-xs text-muted-foreground">Courses on SA Learn</p>
+                  <p className="font-medium text-foreground">{i.courses}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Funding</p>
+                  <p className="font-medium text-foreground">{i.funding}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Funding</p>
-                <p className="font-medium text-foreground">{i.funding}</p>
+
+              <TrustMetadata trust={i.trust} />
+
+              <div className="mt-5 flex items-center justify-between">
+                <a
+                  href={`https://${i.website}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {i.website} <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+                <Link
+                  to="/institutions/$slug"
+                  params={{ slug: i.slug }}
+                  className="text-sm font-medium text-foreground hover:underline"
+                >
+                  View institution
+                </Link>
               </div>
-            </div>
-
-            <TrustMetadata trust={i.trust} />
-
-            <div className="mt-5 flex items-center justify-between">
-              <a
-                href={`https://${i.website}`}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-              >
-                {i.website} <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-              <Link
-                to="/institutions/$slug"
-                params={{ slug: i.slug }}
-                className="text-sm font-medium text-foreground hover:underline"
-              >
-                View institution
-              </Link>
             </div>
           </article>
         ))}

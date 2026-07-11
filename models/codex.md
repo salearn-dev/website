@@ -15,6 +15,24 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Institution Hero Image Pipeline
+
+**Date/Time:** 2026-07-11 18:50 +02:00
+
+**Files Modified:**
+
+- `package.json`
+- `scripts/collect-institution-images.mjs`
+- `src/lib/institution-images.ts`
+- `src/lib/data.ts`
+- `src/lib/live-catalogue.ts`
+- `src/routes/institutions.tsx`
+- `src/routes/institutions.$slug.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Added a Cloudinary-backed institution image catalogue and wired optional institution hero images into `/institutions` cards and `/institutions/:slug` profiles. Uploaded 62 sourced institution images to Cloudinary using the `salearn` unsigned preset under cloud `csntwfsm`. Cards and detail pages continue to render cleanly when an institution has no image, so the remaining 14 image gaps do not break layout or navigation. Added a reusable collector/import script that supports curated JSON links and keeps local screenshot capture disabled unless explicitly requested.
+
 ## Institution Detail Route Outlet Fix
 
 **Date/Time:** 2026-07-11 17:20 +02:00

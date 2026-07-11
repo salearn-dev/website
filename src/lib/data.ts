@@ -2,6 +2,8 @@
 // All values are illustrative. Real deployment requires verification against
 // SAQA / DHET / institutional sources before display.
 
+import { INSTITUTION_IMAGES, type InstitutionImage } from "./institution-images";
+
 export const LAST_VERIFIED = "Not yet verified";
 
 export type TrustMeta = {
@@ -509,6 +511,7 @@ export type Institution = {
   accreditationStatus: string;
   registerLinks: Array<{ label: string; url: string }>;
   applicationWindows: Array<{ label: string; period: string; status: string }>;
+  heroImage?: InstitutionImage;
   trust: TrustMeta;
 };
 
@@ -641,6 +644,7 @@ function publicInstitution(seed: InstitutionSeed): Institution {
         status: "Needs confirmation",
       },
     ],
+    heroImage: INSTITUTION_IMAGES[seed.slug],
     trust: {
       sourceName: isTvet ? "DHET TVET branch reference" : "Universities South Africa member reference",
       sourceUrl: nationalSource,

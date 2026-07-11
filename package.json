@@ -12,6 +12,7 @@
     "test": "bun run typecheck",
     "check": "bun run typecheck && bun run build",
     "seed:institutions": "bun run scripts/seed-public-institutions.ts",
+    "collect:institution-images": "node scripts/collect-institution-images.mjs",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

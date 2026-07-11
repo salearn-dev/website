@@ -8,6 +8,7 @@ import {
   type Institution,
   type TrustMeta,
 } from "@/lib/data";
+import { INSTITUTION_IMAGES } from "@/lib/institution-images";
 
 type Funding = (typeof FUNDING)[number];
 type Opportunity = (typeof OPPORTUNITIES)[number];
@@ -124,6 +125,7 @@ export async function loadApprovedInstitutions(): Promise<CatalogueResult<Instit
                 (item): item is { label: string; period: string; status: string } => Boolean(item),
               )
           : [],
+        heroImage: INSTITUTION_IMAGES[row.slug],
         trust: trustFromCatalogue(row),
       })),
     };
