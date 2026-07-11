@@ -95,6 +95,8 @@ const GROUPS: Group[] = [
     title: "Institutions",
     features: [
       { label: "Static institution list", done: true },
+      { label: "Comprehensive public institution fallback: 26 universities and 50 TVET colleges", done: true },
+      { label: "Supabase public institution seed script", done: true },
       { label: "Institution self-serve portal shell (gated by role)", done: true },
       { label: "Admin moderation workflow (moderation_state schema)", done: true },
       { label: "Verified institution profiles with sourced data", done: false },

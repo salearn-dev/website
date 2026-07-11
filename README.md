@@ -63,6 +63,12 @@ SUPABASE_URL=
 SUPABASE_PUBLISHABLE_KEY=
 ```
 
+Controlled seed/admin scripts may also require:
+
+```text
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
 Never place service-role or secret Supabase keys in `VITE_` variables. Browser code must only receive publishable keys.
 
 ## Important Routes
@@ -99,6 +105,14 @@ Matching outcomes must be described as guidance until real institution and facul
 ## Backend And Supabase
 
 Supabase migrations live in `supabase/migrations`.
+
+Seed the public institution baseline after adding `SUPABASE_SERVICE_ROLE_KEY` to a local, uncommitted environment file:
+
+```bash
+bun run seed:institutions
+```
+
+The seed script upserts the 26 public universities and 50 public TVET colleges as approved but provisional records. They are visible to learners but still labelled as needing confirmation until field-level verification is complete.
 
 Backend-sensitive changes require extra care when they touch:
 

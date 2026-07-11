@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit --pretty false",
     "test": "bun run typecheck",
     "check": "bun run typecheck && bun run build",
+    "seed:institutions": "bun run scripts/seed-public-institutions.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

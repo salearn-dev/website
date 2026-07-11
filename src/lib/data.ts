@@ -512,257 +512,147 @@ export type Institution = {
   trust: TrustMeta;
 };
 
+type InstitutionSeed = {
+  slug: string;
+  name: string;
+  type: "Public University" | "University of Technology" | "TVET College";
+  province: string;
+  website: string;
+  campuses: string[];
+};
+
+const PUBLIC_UNIVERSITY_SOURCE = "https://www.usaf.ac.za/";
+const TVET_SOURCE = "https://www.dhet.gov.za/SitePages/TVETColleges.aspx";
+
+export const PUBLIC_UNIVERSITY_SEEDS: InstitutionSeed[] = [
+  { slug: "cput", name: "Cape Peninsula University of Technology", type: "University of Technology", province: "Western Cape", website: "cput.ac.za", campuses: ["Cape Town", "Bellville"] },
+  { slug: "cut", name: "Central University of Technology", type: "University of Technology", province: "Free State", website: "cut.ac.za", campuses: ["Bloemfontein", "Welkom"] },
+  { slug: "dut", name: "Durban University of Technology", type: "University of Technology", province: "KwaZulu-Natal", website: "dut.ac.za", campuses: ["Durban", "Pietermaritzburg"] },
+  { slug: "mut", name: "Mangosuthu University of Technology", type: "University of Technology", province: "KwaZulu-Natal", website: "mut.ac.za", campuses: ["Umlazi"] },
+  { slug: "nmu", name: "Nelson Mandela University", type: "Public University", province: "Eastern Cape", website: "mandela.ac.za", campuses: ["Gqeberha", "George"] },
+  { slug: "nwu", name: "North-West University", type: "Public University", province: "North West", website: "nwu.ac.za", campuses: ["Mahikeng", "Potchefstroom", "Vanderbijlpark"] },
+  { slug: "rhodes", name: "Rhodes University", type: "Public University", province: "Eastern Cape", website: "ru.ac.za", campuses: ["Makhanda"] },
+  { slug: "smu", name: "Sefako Makgatho Health Sciences University", type: "Public University", province: "Gauteng", website: "smu.ac.za", campuses: ["Ga-Rankuwa"] },
+  { slug: "spu", name: "Sol Plaatje University", type: "Public University", province: "Northern Cape", website: "spu.ac.za", campuses: ["Kimberley"] },
+  { slug: "stellenbosch", name: "Stellenbosch University", type: "Public University", province: "Western Cape", website: "sun.ac.za", campuses: ["Stellenbosch", "Tygerberg", "Bellville", "Worcester"] },
+  { slug: "tut", name: "Tshwane University of Technology", type: "University of Technology", province: "Gauteng", website: "tut.ac.za", campuses: ["Pretoria", "Soshanguve", "Ga-Rankuwa", "Mbombela", "Polokwane", "eMalahleni"] },
+  { slug: "uct", name: "University of Cape Town", type: "Public University", province: "Western Cape", website: "uct.ac.za", campuses: ["Cape Town"] },
+  { slug: "ufh", name: "University of Fort Hare", type: "Public University", province: "Eastern Cape", website: "ufh.ac.za", campuses: ["Alice", "East London", "Bhisho"] },
+  { slug: "ufs", name: "University of the Free State", type: "Public University", province: "Free State", website: "ufs.ac.za", campuses: ["Bloemfontein", "Qwaqwa", "South Campus"] },
+  { slug: "uj", name: "University of Johannesburg", type: "Public University", province: "Gauteng", website: "uj.ac.za", campuses: ["Auckland Park", "Doornfontein", "Soweto"] },
+  { slug: "ukzn", name: "University of KwaZulu-Natal", type: "Public University", province: "KwaZulu-Natal", website: "ukzn.ac.za", campuses: ["Durban", "Pietermaritzburg", "Pinetown", "Westville"] },
+  { slug: "ul", name: "University of Limpopo", type: "Public University", province: "Limpopo", website: "ul.ac.za", campuses: ["Mankweng"] },
+  { slug: "ump", name: "University of Mpumalanga", type: "Public University", province: "Mpumalanga", website: "ump.ac.za", campuses: ["Mbombela", "Siyabuswa"] },
+  { slug: "up", name: "University of Pretoria", type: "Public University", province: "Gauteng", website: "up.ac.za", campuses: ["Pretoria", "Mamelodi", "Onderstepoort"] },
+  { slug: "unisa", name: "University of South Africa", type: "Public University", province: "Gauteng", website: "unisa.ac.za", campuses: ["Distance education", "Pretoria", "Regional centres"] },
+  { slug: "univen", name: "University of Venda", type: "Public University", province: "Limpopo", website: "univen.ac.za", campuses: ["Thohoyandou"] },
+  { slug: "uwc", name: "University of the Western Cape", type: "Public University", province: "Western Cape", website: "uwc.ac.za", campuses: ["Bellville"] },
+  { slug: "wits", name: "University of the Witwatersrand", type: "Public University", province: "Gauteng", website: "wits.ac.za", campuses: ["Johannesburg"] },
+  { slug: "unizulu", name: "University of Zululand", type: "Public University", province: "KwaZulu-Natal", website: "unizulu.ac.za", campuses: ["KwaDlangezwa", "Richards Bay"] },
+  { slug: "vut", name: "Vaal University of Technology", type: "University of Technology", province: "Gauteng", website: "vut.ac.za", campuses: ["Vanderbijlpark", "Secunda", "Upington"] },
+  { slug: "wsu", name: "Walter Sisulu University", type: "Public University", province: "Eastern Cape", website: "wsu.ac.za", campuses: ["Mthatha", "Butterworth", "Buffalo City", "Queenstown"] },
+];
+
+export const TVET_COLLEGE_SEEDS: InstitutionSeed[] = [
+  { slug: "boland-tvet", name: "Boland TVET College", type: "TVET College", province: "Western Cape", website: "bolandcollege.com", campuses: ["Boland region"] },
+  { slug: "buffalo-city-tvet", name: "Buffalo City TVET College", type: "TVET College", province: "Eastern Cape", website: "bccollege.co.za", campuses: ["East London", "Mdantsane", "King Street"] },
+  { slug: "capricorn-tvet", name: "Capricorn TVET College", type: "TVET College", province: "Limpopo", website: "capricorncollege.edu.za", campuses: ["Polokwane", "Seshego", "Senwabarwana", "Ramokgopa"] },
+  { slug: "central-johannesburg-tvet", name: "Central Johannesburg TVET College", type: "TVET College", province: "Gauteng", website: "cjc.edu.za", campuses: ["Johannesburg"] },
+  { slug: "coastal-tvet", name: "Coastal TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "coastalkzn.co.za", campuses: ["Durban", "KwaMakhutha", "Umlazi", "Swinton"] },
+  { slug: "college-of-cape-town-tvet", name: "College of Cape Town for TVET", type: "TVET College", province: "Western Cape", website: "cct.edu.za", campuses: ["Cape Town"] },
+  { slug: "eastcape-midlands-tvet", name: "Eastcape Midlands TVET College", type: "TVET College", province: "Eastern Cape", website: "emcol.co.za", campuses: ["Uitenhage", "Graaff-Reinet", "Gqeberha"] },
+  { slug: "ehlanzeni-tvet", name: "Ehlanzeni TVET College", type: "TVET College", province: "Mpumalanga", website: "ehlanzenicollege.co.za", campuses: ["Mbombela", "Barberton", "Mlumati", "Mapulaneng"] },
+  { slug: "ekurhuleni-east-tvet", name: "Ekurhuleni East TVET College", type: "TVET College", province: "Gauteng", website: "eec.edu.za", campuses: ["Ekurhuleni"] },
+  { slug: "ekurhuleni-west-tvet", name: "Ekurhuleni West TVET College", type: "TVET College", province: "Gauteng", website: "ewc.edu.za", campuses: ["Ekurhuleni"] },
+  { slug: "elangeni-tvet", name: "Elangeni TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "elangeni.edu.za", campuses: ["Durban", "Pinetown", "KwaMashu", "Ntuzuma"] },
+  { slug: "esayidi-tvet", name: "Esayidi TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "esayidifet.co.za", campuses: ["Port Shepstone", "Kokstad", "Harding"] },
+  { slug: "false-bay-tvet", name: "False Bay TVET College", type: "TVET College", province: "Western Cape", website: "falsebaycollege.co.za", campuses: ["Fish Hoek", "Muizenberg", "Mitchells Plain", "Khayelitsha", "Westlake"] },
+  { slug: "flavius-mareka-tvet", name: "Flavius Mareka TVET College", type: "TVET College", province: "Free State", website: "flaviusmareka.net", campuses: ["Sasolburg", "Kroonstad", "Mphohadi"] },
+  { slug: "gert-sibande-tvet", name: "Gert Sibande TVET College", type: "TVET College", province: "Mpumalanga", website: "gscollege.edu.za", campuses: ["Ermelo", "Standerton", "Evander", "Balfour"] },
+  { slug: "goldfields-tvet", name: "Goldfields TVET College", type: "TVET College", province: "Free State", website: "goldfieldstvet.edu.za", campuses: ["Welkom", "Tosa", "Skills Academy"] },
+  { slug: "ikhala-tvet", name: "Ikhala TVET College", type: "TVET College", province: "Eastern Cape", website: "ikhala.edu.za", campuses: ["Queenstown", "Aliwal North", "Ezibeleni", "Sterkspruit"] },
+  { slug: "ingwe-tvet", name: "Ingwe TVET College", type: "TVET College", province: "Eastern Cape", website: "ingwecollege.edu.za", campuses: ["Mount Frere", "Maluti", "Ngqungqushe", "Siteto"] },
+  { slug: "king-hintsa-tvet", name: "King Hintsa TVET College", type: "TVET College", province: "Eastern Cape", website: "kinghintsacollege.edu.za", campuses: ["Teko", "Dutywa", "Centane", "Msobomvu"] },
+  { slug: "ksd-tvet", name: "King Sabata Dalindyebo TVET College", type: "TVET College", province: "Eastern Cape", website: "ksdcollege.edu.za", campuses: ["Mthatha", "Libode", "Ngcobo"] },
+  { slug: "lephalale-tvet", name: "Lephalale TVET College", type: "TVET College", province: "Limpopo", website: "lephalalefetcollege.co.za", campuses: ["Lephalale"] },
+  { slug: "letaba-tvet", name: "Letaba TVET College", type: "TVET College", province: "Limpopo", website: "letcol.co.za", campuses: ["Tzaneen", "Giyani", "Maake"] },
+  { slug: "lovedale-tvet", name: "Lovedale TVET College", type: "TVET College", province: "Eastern Cape", website: "lovedalecollege.co.za", campuses: ["Alice", "King William's Town", "Zwelitsha"] },
+  { slug: "majuba-tvet", name: "Majuba TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "majuba.edu.za", campuses: ["Newcastle", "Dundee"] },
+  { slug: "maluti-tvet", name: "Maluti TVET College", type: "TVET College", province: "Free State", website: "malutitvet.co.za", campuses: ["Phuthaditjhaba", "Bethlehem", "Harrismith", "Kwetlisong"] },
+  { slug: "mnambithi-tvet", name: "Mnambithi TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "mnambithicollege.co.za", campuses: ["Ladysmith", "Estcourt"] },
+  { slug: "mopani-south-east-tvet", name: "Mopani South East TVET College", type: "TVET College", province: "Limpopo", website: "mopanicollege.edu.za", campuses: ["Phalaborwa", "Sir Val Duncan"] },
+  { slug: "motheo-tvet", name: "Motheo TVET College", type: "TVET College", province: "Free State", website: "motheotvet.edu.za", campuses: ["Bloemfontein", "Botshabelo", "Thaba Nchu"] },
+  { slug: "mthashana-tvet", name: "Mthashana TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "mthashanacollege.co.za", campuses: ["Vryheid", "Nongoma", "Ulundi"] },
+  { slug: "nkangala-tvet", name: "Nkangala TVET College", type: "TVET College", province: "Mpumalanga", website: "nkangalafet.edu.za", campuses: ["Witbank", "Middelburg", "CN Mahlangu"] },
+  { slug: "northern-cape-rural-tvet", name: "Northern Cape Rural TVET College", type: "TVET College", province: "Northern Cape", website: "ncrfet.edu.za", campuses: ["Upington", "Kuruman", "Namaqualand", "Kathu"] },
+  { slug: "northern-cape-urban-tvet", name: "Northern Cape Urban TVET College", type: "TVET College", province: "Northern Cape", website: "ncutvet.edu.za", campuses: ["Kimberley"] },
+  { slug: "northlink-tvet", name: "Northlink TVET College", type: "TVET College", province: "Western Cape", website: "northlink.co.za", campuses: ["Bellville", "Goodwood", "Parow", "Tygerberg", "Wingfield"] },
+  { slug: "orbit-tvet", name: "Orbit TVET College", type: "TVET College", province: "North West", website: "orbitcollege.co.za", campuses: ["Rustenburg", "Brits", "Mankwe"] },
+  { slug: "port-elizabeth-tvet", name: "Port Elizabeth TVET College", type: "TVET College", province: "Eastern Cape", website: "pecollege.edu.za", campuses: ["Gqeberha"] },
+  { slug: "sedibeng-tvet", name: "Sedibeng TVET College", type: "TVET College", province: "Gauteng", website: "sedcol.co.za", campuses: ["Vereeniging", "Vanderbijlpark", "Sebokeng", "Heidelberg"] },
+  { slug: "sekhukhune-tvet", name: "Sekhukhune TVET College", type: "TVET College", province: "Limpopo", website: "sekhukhunetvet.edu.za", campuses: ["CS Barlow", "CN Phatudi", "Apel"] },
+  { slug: "south-cape-tvet", name: "South Cape TVET College", type: "TVET College", province: "Western Cape", website: "sccollege.co.za", campuses: ["George", "Mossel Bay", "Oudtshoorn", "Beaufort West"] },
+  { slug: "south-west-gauteng-tvet", name: "South West Gauteng TVET College", type: "TVET College", province: "Gauteng", website: "swgc.co.za", campuses: ["Soweto", "Roodepoort", "Randburg"] },
+  { slug: "taletso-tvet", name: "Taletso TVET College", type: "TVET College", province: "North West", website: "taletsocollege.co.za", campuses: ["Mafikeng", "Lichtenburg", "Lehurutshe"] },
+  { slug: "thekwini-tvet", name: "Thekwini TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "thekwini.edu.za", campuses: ["Durban"] },
+  { slug: "tshwane-north-tvet", name: "Tshwane North TVET College", type: "TVET College", province: "Gauteng", website: "tnc.edu.za", campuses: ["Pretoria", "Soshanguve", "Mamelodi", "Temba"] },
+  { slug: "tshwane-south-tvet", name: "Tshwane South TVET College", type: "TVET College", province: "Gauteng", website: "tsc.edu.za", campuses: ["Pretoria", "Centurion", "Atteridgeville", "Odi"] },
+  { slug: "umfolozi-tvet", name: "Umfolozi TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "umfolozi.edu.za", campuses: ["Richards Bay", "eSikhawini", "Mandeni"] },
+  { slug: "umgungundlovu-tvet", name: "Umgungundlovu TVET College", type: "TVET College", province: "KwaZulu-Natal", website: "ufetc.edu.za", campuses: ["Pietermaritzburg"] },
+  { slug: "vhembe-tvet", name: "Vhembe TVET College", type: "TVET College", province: "Limpopo", website: "vhembecollege.edu.za", campuses: ["Thohoyandou", "Makwarela", "Mavhoi", "Mashamba"] },
+  { slug: "vuselela-tvet", name: "Vuselela TVET College", type: "TVET College", province: "North West", website: "vuselelacollege.co.za", campuses: ["Klerksdorp", "Potchefstroom", "Taung"] },
+  { slug: "waterberg-tvet", name: "Waterberg TVET College", type: "TVET College", province: "Limpopo", website: "waterbergcollege.co.za", campuses: ["Mokopane", "Mahwelereng", "Thabazimbi"] },
+  { slug: "west-coast-tvet", name: "West Coast TVET College", type: "TVET College", province: "Western Cape", website: "westcoastcollege.co.za", campuses: ["Malmesbury", "Atlantis", "Vredenburg", "Vredendal"] },
+  { slug: "western-tvet", name: "Western College for TVET", type: "TVET College", province: "Gauteng", website: "westcol.co.za", campuses: ["Randfontein", "Krugersdorp", "Carletonville", "Westonaria"] },
+];
+
+function publicInstitution(seed: InstitutionSeed): Institution {
+  const isTvet = seed.type === "TVET College";
+  const nationalSource = isTvet ? TVET_SOURCE : PUBLIC_UNIVERSITY_SOURCE;
+
+  return {
+    slug: seed.slug,
+    name: seed.name,
+    type: seed.type,
+    province: seed.province,
+    courses: 0,
+    funding: isTvet ? "NSFAS supported at public TVET colleges" : "NSFAS supported at public universities",
+    website: seed.website,
+    campuses: seed.campuses,
+    accreditationStatus: isTvet
+      ? "Public TVET college - registration and programme details require official confirmation"
+      : "Public university - registration and programme details require official confirmation",
+    registerLinks: [
+      { label: "Official website", url: `https://${seed.website}/` },
+      {
+        label: isTvet ? "DHET TVET colleges" : "Universities South Africa",
+        url: nationalSource,
+      },
+    ],
+    applicationWindows: [
+      {
+        label: isTvet ? "NC(V) / Report 191 applications" : "Undergraduate applications",
+        period: "Confirm current intake with the institution",
+        status: "Needs confirmation",
+      },
+      {
+        label: isTvet ? "Trimester / semester intake" : "Faculty or programme selection",
+        period: "Programme dependent",
+        status: "Needs confirmation",
+      },
+    ],
+    trust: {
+      sourceName: isTvet ? "DHET TVET branch reference" : "Universities South Africa member reference",
+      sourceUrl: nationalSource,
+      lastVerifiedAt: LAST_VERIFIED,
+      verificationStatus: "Needs confirmation",
+    },
+  };
+}
+
 export const INSTITUTIONS: Institution[] = [
-  {
-    slug: "uct",
-    name: "University of Cape Town",
-    type: "Public University",
-    province: "Western Cape",
-    courses: 127,
-    funding: "NSFAS supported",
-    website: "uct.ac.za",
-    campuses: ["Cape Town"],
-    accreditationStatus: "Public university - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.uct.ac.za/" },
-      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      {
-        label: "Undergraduate applications",
-        period: "Usually annual",
-        status: "Needs confirmation",
-      },
-      {
-        label: "Postgraduate applications",
-        period: "Programme dependent",
-        status: "Needs confirmation",
-      },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.uct.ac.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "wits",
-    name: "University of the Witwatersrand",
-    type: "Public University",
-    province: "Gauteng",
-    courses: 140,
-    funding: "NSFAS supported",
-    website: "wits.ac.za",
-    campuses: ["Johannesburg"],
-    accreditationStatus: "Public university - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.wits.ac.za/" },
-      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      {
-        label: "Undergraduate applications",
-        period: "Usually annual",
-        status: "Needs confirmation",
-      },
-      {
-        label: "Residence applications",
-        period: "Usually tied to admission cycle",
-        status: "Needs confirmation",
-      },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.wits.ac.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "up",
-    name: "University of Pretoria",
-    type: "Public University",
-    province: "Gauteng",
-    courses: 155,
-    funding: "NSFAS supported",
-    website: "up.ac.za",
-    campuses: ["Pretoria"],
-    accreditationStatus: "Public university - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.up.ac.za/" },
-      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      {
-        label: "Undergraduate applications",
-        period: "Usually annual",
-        status: "Needs confirmation",
-      },
-      { label: "Faculty selection", period: "Programme dependent", status: "Needs confirmation" },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.up.ac.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "ukzn",
-    name: "University of KwaZulu-Natal",
-    type: "Public University",
-    province: "KwaZulu-Natal",
-    courses: 130,
-    funding: "NSFAS supported",
-    website: "ukzn.ac.za",
-    campuses: ["Durban", "Pietermaritzburg"],
-    accreditationStatus: "Public university - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.ukzn.ac.za/" },
-      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      {
-        label: "Undergraduate applications",
-        period: "Usually annual",
-        status: "Needs confirmation",
-      },
-      {
-        label: "College-specific selection",
-        period: "Programme dependent",
-        status: "Needs confirmation",
-      },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.ukzn.ac.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "cput",
-    name: "Cape Peninsula University of Technology",
-    type: "University of Technology",
-    province: "Western Cape",
-    courses: 98,
-    funding: "NSFAS supported",
-    website: "cput.ac.za",
-    campuses: ["Cape Town", "Bellville"],
-    accreditationStatus: "University of technology - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.cput.ac.za/" },
-      { label: "DHET public universities", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      {
-        label: "Undergraduate applications",
-        period: "Usually annual",
-        status: "Needs confirmation",
-      },
-      {
-        label: "Late applications",
-        period: "If announced by institution",
-        status: "Needs confirmation",
-      },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.cput.ac.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "false-bay",
-    name: "False Bay TVET College",
-    type: "TVET College",
-    province: "Western Cape",
-    courses: 42,
-    funding: "NSFAS supported",
-    website: "falsebaycollege.co.za",
-    campuses: ["Fish Hoek", "Muizenberg", "Mitchells Plain", "Khayelitsha", "Westlake"],
-    accreditationStatus: "Public TVET college - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.falsebaycollege.co.za/" },
-      { label: "DHET TVET colleges", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      { label: "NC(V) applications", period: "Intake dependent", status: "Needs confirmation" },
-      {
-        label: "Trimester / semester applications",
-        period: "Programme dependent",
-        status: "Needs confirmation",
-      },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.falsebaycollege.co.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "ekurhuleni-east",
-    name: "Ekurhuleni East TVET College",
-    type: "TVET College",
-    province: "Gauteng",
-    courses: 38,
-    funding: "NSFAS supported",
-    website: "eec.edu.za",
-    campuses: ["Ekurhuleni"],
-    accreditationStatus: "Public TVET college - registration requires official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.eec.edu.za/" },
-      { label: "DHET TVET colleges", url: "https://www.dhet.gov.za/" },
-    ],
-    applicationWindows: [
-      { label: "NC(V) applications", period: "Intake dependent", status: "Needs confirmation" },
-      {
-        label: "Report 191 applications",
-        period: "Trimester / semester dependent",
-        status: "Needs confirmation",
-      },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.eec.edu.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
-  {
-    slug: "boston",
-    name: "Boston City Campus",
-    type: "Private College",
-    province: "Nationwide",
-    courses: 60,
-    funding: "Private funding",
-    website: "boston.co.za",
-    campuses: ["Nationwide", "Online"],
-    accreditationStatus:
-      "Private provider - registration and programme accreditation require official confirmation",
-    registerLinks: [
-      { label: "Official website", url: "https://www.boston.co.za/" },
-      { label: "DHET private institutions", url: "https://www.dhet.gov.za/" },
-      { label: "SAQA qualification search", url: "https://www.saqa.org.za/" },
-    ],
-    applicationWindows: [
-      {
-        label: "New student applications",
-        period: "Programme dependent",
-        status: "Needs confirmation",
-      },
-      { label: "Online study intake", period: "Provider dependent", status: "Needs confirmation" },
-    ],
-    trust: {
-      sourceName: "Prototype seed data",
-      sourceUrl: "https://www.boston.co.za/",
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
-    },
-  },
+  ...PUBLIC_UNIVERSITY_SEEDS.map(publicInstitution),
+  ...TVET_COLLEGE_SEEDS.map(publicInstitution),
 ];
 
 export const FUNDING: Array<{

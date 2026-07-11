@@ -15,6 +15,23 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Public Institution Catalogue Baseline
+
+**Date/Time:** 2026-07-11 17:01 +02:00
+
+**Files Modified:**
+
+- `.env.example`
+- `README.md`
+- `package.json`
+- `scripts/seed-public-institutions.ts`
+- `src/lib/data.ts`
+- `src/routes/prod-readiness.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Expanded the institution catalogue baseline from the tiny prototype set to all 26 public universities and 50 public TVET colleges. The expanded records are marked as public/provisional and still need confirmation, but `/institutions` now has comprehensive fallback coverage even if Supabase is empty. Added a guarded Supabase seed script that refuses to write with a publishable browser key and requires `SUPABASE_SERVICE_ROLE_KEY` for controlled upserts into `public.institutions`. Updated README, env example and `/prod-readiness` to reflect the new database seed path and the remaining verification gap.
+
 ## Review Remediation - Quality Gate Baseline
 
 **Date/Time:** 2026-07-11 15:55 +02:00
