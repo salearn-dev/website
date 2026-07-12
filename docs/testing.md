@@ -26,7 +26,7 @@ Use a dedicated test project or isolated test users. Never use production learne
 2. Supply the test project URL, publishable key and short-lived tokens for two learner accounts, one institution-role account and one administrator.
 3. Run `bun run test:integration:rls`.
 
-The harness validates anonymous catalogue access, anonymous private-table denial, learner ownership isolation, cross-learner denial, institution-role visibility, role-escalation denial, testimonial submission/moderation, stale-record RPC permissions and administrator moderation access.
+The harness validates anonymous catalogue access, anonymous private-table denial, learner ownership isolation, cross-learner denial, owner-scoped document storage, institution-role visibility, role-escalation denial, testimonial submission/moderation, stale-record RPC permissions and administrator moderation access.
 
 A direct `bun test` may skip integration cases when credentials are absent. The dedicated `test:integration:rls` command sets `REQUIRE_RLS_TESTS=1` and fails immediately when any credential is missing, so it is the only acceptable proof command.
 
