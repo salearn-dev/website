@@ -58,6 +58,8 @@ jobs:
         run: bun run auth:contract
       - name: Partner API contract
         run: bun run partner-api:contract
+      - name: Route schema-cast contract
+        run: bun run route-schema:contract
       - name: Dependency audit
         run: bun run audit:dependencies
       - name: Production build
