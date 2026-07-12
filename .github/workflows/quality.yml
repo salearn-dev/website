@@ -46,6 +46,8 @@ jobs:
         run: bun run security:boundaries
       - name: CI contract
         run: bun run ci:contract
+      - name: Schema contract
+        run: bun run schema:contract
       - name: Dependency audit
         run: bun run audit:dependencies
       - name: Production build
