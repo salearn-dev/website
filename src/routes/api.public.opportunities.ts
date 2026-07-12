@@ -1,25 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-
-type PartnerOpportunityPayload = {
-  title?: string;
-  category?: string;
-  sector?: string;
-  type?: string;
-  province?: string;
-  provider?: string;
-  closing_date?: string;
-  paid?: string;
-  description?: string;
-  source_name?: string;
-  source_url?: string;
-};
+import {
+  authorizePartnerKey,
+  MAX_PARTNER_BODY_BYTES,
+  parsePartnerOpportunityBody,
+} from "@/lib/partner-opportunity";
 
 function jsonResponse(body: unknown, init?: ResponseInit) {
   return new Response(JSON.stringify(body), {
     ...init,
     headers: {
       "content-type": "application/json",
+      "cache-control": "no-store",
       ...init?.headers,
     },
   });
@@ -33,22 +25,6 @@ function slugify(value: string) {
     .slice(0, 80);
 }
 
-function assertPartnerKey(request: Request) {
-  const expected = process.env.SA_LEARN_PARTNER_API_KEY;
-  if (!expected) {
-    return jsonResponse(
-      { ok: false, error: "Partner API key is not configured yet." },
-      { status: 503 },
-    );
-  }
-
-  if (request.headers.get("x-sa-learn-partner-key") !== expected) {
-    return jsonResponse({ ok: false, error: "Invalid partner API key." }, { status: 401 });
-  }
-
-  return null;
-}
-
 export const Route = createFileRoute("/api/public/opportunities")({
   server: {
     handlers: {
@@ -57,40 +33,37 @@ export const Route = createFileRoute("/api/public/opportunities")({
           ok: true,
           endpoint: "/api/public/opportunities",
           method: "POST",
-          auth: "Send x-sa-learn-partner-key. Kuzi/Lovable provision the key as a deployment secret.",
           moderation:
-            "Submissions are stored as moderation_state=submitted and verification_status=provisional until reviewed.",
+            "Submissions are provisional and require moderation before public display.",
           required: ["title", "source_url"],
-          optional: [
-            "category",
-            "sector",
-            "type",
-            "province",
-            "provider",
-            "closing_date",
-            "paid",
-            "description",
-            "source_name",
-          ],
+          maximumBodyBytes: MAX_PARTNER_BODY_BYTES,
         }),
 
       POST: async ({ request }: { request: Request }) => {
-        const authError = assertPartnerKey(request);
-        if (authError) return authError;
-
-        let payload: PartnerOpportunityPayload;
-        try {
-          payload = await request.json();
-        } catch {
-          return jsonResponse({ ok: false, error: "Invalid JSON body." }, { status: 400 });
-        }
-
-        if (!payload.title || !payload.source_url) {
+        const authorization = authorizePartnerKey(
+          request.headers.get("x-sa-learn-partner-key"),
+          process.env.SA_LEARN_PARTNER_API_KEY,
+        );
+        if (!authorization.ok) {
           return jsonResponse(
-            { ok: false, error: "title and source_url are required." },
-            { status: 400 },
+            { ok: false, error: authorization.error },
+            { status: authorization.status },
           );
         }
+
+        const declaredLength = Number(request.headers.get("content-length") ?? 0);
+        if (declaredLength > MAX_PARTNER_BODY_BYTES) {
+          return jsonResponse({ ok: false, error: "Request body is too large." }, { status: 413 });
+        }
+
+        const parsed = parsePartnerOpportunityBody(await request.text());
+        if (!parsed.ok) {
+          return jsonResponse(
+            { ok: false, error: parsed.error, ...("fields" in parsed ? { fields: parsed.fields } : {}) },
+            { status: parsed.status },
+          );
+        }
+        const payload = parsed.data;
 
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -116,16 +89,22 @@ export const Route = createFileRoute("/api/public/opportunities")({
             .single();
 
           if (error) {
-            return jsonResponse({ ok: false, error: error.message }, { status: 400 });
+            console.error("[partner-opportunities] Supabase insert failed", {
+              code: error.code,
+            });
+            return jsonResponse(
+              { ok: false, error: "Partner submission could not be stored." },
+              { status: 500 },
+            );
           }
 
           return jsonResponse({ ok: true, opportunity: data }, { status: 202 });
         } catch (error) {
+          console.error("[partner-opportunities] Unexpected submission failure", {
+            name: error instanceof Error ? error.name : "UnknownError",
+          });
           return jsonResponse(
-            {
-              ok: false,
-              error: error instanceof Error ? error.message : "Partner submission failed.",
-            },
+            { ok: false, error: "Partner submission failed." },
             { status: 500 },
           );
         }
