@@ -6,10 +6,13 @@ import {
   OPPORTUNITIES,
   type Course,
   type Institution,
-  type TrustMeta,
 } from "@/lib/data";
 import { INSTITUTION_IMAGES } from "@/lib/institution-images";
-import { isPaidOpportunity, normaliseDeliveryMode } from "@/lib/catalogue-normalization";
+import {
+  isPaidOpportunity,
+  normaliseCatalogueTrust,
+  normaliseDeliveryMode,
+} from "@/lib/catalogue-normalization";
 
 type Funding = (typeof FUNDING)[number];
 type Opportunity = (typeof OPPORTUNITIES)[number];
@@ -20,26 +23,6 @@ export type CatalogueResult<T> = {
   items: T[];
   source: CatalogueSource;
 };
-
-function trustFromCatalogue(row: {
-  source_name: string | null;
-  source_url: string | null;
-  last_verified_at: string | null;
-  verification_status: "unverified" | "provisional" | "verified" | "stale";
-}): TrustMeta {
-  return {
-    sourceName: row.source_name ?? "Live catalogue",
-    sourceUrl: row.source_url ?? "https://salearn.online",
-    lastVerifiedAt: row.last_verified_at
-      ? new Date(row.last_verified_at).toLocaleDateString("en-ZA", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        })
-      : "Awaiting verification date",
-    verificationStatus: row.verification_status === "verified" ? "Verified" : "Needs confirmation",
-  };
-}
 
 export async function loadApprovedCourses(): Promise<CatalogueResult<Course>> {
   try {
@@ -68,7 +51,7 @@ export async function loadApprovedCourses(): Promise<CatalogueResult<Course>> {
         deliveryMode: normaliseDeliveryMode(row.delivery_mode),
         category: row.category ?? "universities",
         accreditation: row.accreditation ?? "Needs confirmation",
-        trust: trustFromCatalogue(row),
+        trust: normaliseCatalogueTrust(row),
       })),
     };
   } catch {
@@ -127,7 +110,7 @@ export async function loadApprovedInstitutions(): Promise<CatalogueResult<Instit
               )
           : [],
         heroImage: INSTITUTION_IMAGES[row.slug],
-        trust: trustFromCatalogue(row),
+        trust: normaliseCatalogueTrust(row),
       })),
     };
   } catch {
@@ -155,7 +138,7 @@ export async function loadApprovedFunding(): Promise<CatalogueResult<Funding>> {
         coverage: row.coverage ?? "Information unavailable",
         best: row.best_for ?? "Learners who meet the official criteria.",
         deadline: row.deadline ?? "Confirm official deadline",
-        trust: trustFromCatalogue(row),
+        trust: normaliseCatalogueTrust(row),
       })),
     };
   } catch {
@@ -184,7 +167,7 @@ export async function loadApprovedOpportunities(): Promise<CatalogueResult<Oppor
         province: row.province ?? "Nationwide",
         closes: row.closing_date ?? "Confirm official deadline",
         paid: isPaidOpportunity(row.paid),
-        trust: trustFromCatalogue(row),
+        trust: normaliseCatalogueTrust(row),
       })),
     };
   } catch {
