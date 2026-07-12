@@ -1,40 +1,85 @@
-import { describe, expect, test } from "bun:test";
+import { beforeAll, describe, expect, test } from "bun:test";
 
 const url = process.env.SUPABASE_TEST_URL;
 const key = process.env.SUPABASE_TEST_PUBLISHABLE_KEY;
-const userAToken = process.env.SUPABASE_TEST_USER_A_TOKEN;
-const userBToken = process.env.SUPABASE_TEST_USER_B_TOKEN;
-const userAId = process.env.SUPABASE_TEST_USER_A_ID;
-const userBId = process.env.SUPABASE_TEST_USER_B_ID;
-const adminToken = process.env.SUPABASE_TEST_ADMIN_TOKEN;
-const institutionToken = process.env.SUPABASE_TEST_INSTITUTION_TOKEN;
+let userAToken = process.env.SUPABASE_TEST_USER_A_TOKEN;
+let userBToken = process.env.SUPABASE_TEST_USER_B_TOKEN;
+let userAId = process.env.SUPABASE_TEST_USER_A_ID;
+let userBId = process.env.SUPABASE_TEST_USER_B_ID;
+let adminToken = process.env.SUPABASE_TEST_ADMIN_TOKEN;
+let institutionToken = process.env.SUPABASE_TEST_INSTITUTION_TOKEN;
+const userAEmail = process.env.SUPABASE_TEST_USER_A_EMAIL;
+const userAPassword = process.env.SUPABASE_TEST_USER_A_PASSWORD;
+const userBEmail = process.env.SUPABASE_TEST_USER_B_EMAIL;
+const userBPassword = process.env.SUPABASE_TEST_USER_B_PASSWORD;
+const adminEmail = process.env.SUPABASE_TEST_ADMIN_EMAIL;
+const adminPassword = process.env.SUPABASE_TEST_ADMIN_PASSWORD;
+const institutionEmail = process.env.SUPABASE_TEST_INSTITUTION_EMAIL;
+const institutionPassword = process.env.SUPABASE_TEST_INSTITUTION_PASSWORD;
 const requireRlsTests = process.env.REQUIRE_RLS_TESTS === "1";
-const requiredEnvironment = {
-  SUPABASE_TEST_URL: url,
-  SUPABASE_TEST_PUBLISHABLE_KEY: key,
-  SUPABASE_TEST_USER_A_TOKEN: userAToken,
-  SUPABASE_TEST_USER_B_TOKEN: userBToken,
-  SUPABASE_TEST_USER_A_ID: userAId,
-  SUPABASE_TEST_USER_B_ID: userBId,
-  SUPABASE_TEST_ADMIN_TOKEN: adminToken,
-  SUPABASE_TEST_INSTITUTION_TOKEN: institutionToken,
-};
-const missingEnvironment = Object.entries(requiredEnvironment)
-  .filter(([, value]) => !value)
-  .map(([name]) => name);
+const hasBase = Boolean(url && key);
+const hasUserTokens = Boolean(userAToken && userBToken && userAId && userBId);
+const hasUserCredentials = Boolean(
+  userAEmail && userAPassword && userBEmail && userBPassword,
+);
+const hasUsers = Boolean(hasBase && (hasUserTokens || hasUserCredentials));
+const hasAdmin = Boolean(hasBase && (adminToken || (adminEmail && adminPassword)));
+const hasInstitution = Boolean(
+  hasBase && (institutionToken || (institutionEmail && institutionPassword)),
+);
 
-if (requireRlsTests && missingEnvironment.length > 0) {
-  throw new Error(`RLS integration tests require: ${missingEnvironment.join(", ")}`);
+if (requireRlsTests && !hasBase) {
+  throw new Error("RLS integration tests require SUPABASE_TEST_URL and SUPABASE_TEST_PUBLISHABLE_KEY.");
+}
+if (requireRlsTests && !hasUsers) {
+  throw new Error("RLS integration tests require two token/id pairs or two email/password test users.");
+}
+if (requireRlsTests && !hasAdmin) {
+  throw new Error("RLS integration tests require an admin token or admin email/password.");
+}
+if (requireRlsTests && !hasInstitution) {
+  throw new Error("RLS integration tests require an institution token or institution email/password.");
 }
 
-const hasBase = Boolean(url && key);
-const hasUsers = Boolean(hasBase && userAToken && userBToken && userAId && userBId);
-const hasAdmin = Boolean(hasBase && adminToken);
-const hasInstitution = Boolean(hasBase && institutionToken);
 const baseTest = hasBase ? test : test.skip;
 const userTest = hasUsers ? test : test.skip;
 const adminTest = hasAdmin ? test : test.skip;
 const institutionTest = hasInstitution ? test : test.skip;
+
+async function signIn(email: string, password: string) {
+  const response = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+    method: "POST",
+    headers: {
+      apikey: key ?? "",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!response.ok) {
+    throw new Error(`Dedicated RLS test account authentication failed (${response.status}).`);
+  }
+  return response.json() as Promise<{ access_token: string; user: { id: string } }>;
+}
+
+beforeAll(async () => {
+  if (!hasBase) return;
+  if (!userAToken && userAEmail && userAPassword) {
+    const session = await signIn(userAEmail, userAPassword);
+    userAToken = session.access_token;
+    userAId = session.user.id;
+  }
+  if (!userBToken && userBEmail && userBPassword) {
+    const session = await signIn(userBEmail, userBPassword);
+    userBToken = session.access_token;
+    userBId = session.user.id;
+  }
+  if (!adminToken && adminEmail && adminPassword) {
+    adminToken = (await signIn(adminEmail, adminPassword)).access_token;
+  }
+  if (!institutionToken && institutionEmail && institutionPassword) {
+    institutionToken = (await signIn(institutionEmail, institutionPassword)).access_token;
+  }
+});
 
 async function rest(path: string, token?: string, init?: RequestInit) {
   return fetch(`${url}/rest/v1/${path}`, {
