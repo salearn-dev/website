@@ -36,4 +36,19 @@ describe("match report PDF", () => {
 
     expect(operations.length).toBeGreaterThan(1);
   });
+
+  test("creates additional pages instead of clipping long reports", async () => {
+    const longReport = Array.from(
+      { length: 110 },
+      (_, index) => `Result line ${index + 1}`,
+    ).join("\n");
+    const pdf = new TextDecoder().decode(
+      await makePdfBlob(longReport).arrayBuffer(),
+    );
+
+    expect(pdf).toContain("/Count 3");
+    expect((pdf.match(/\/Type \/Page /g) ?? [])).toHaveLength(3);
+    expect(pdf).toContain("Result line 110");
+  });
+
 });
