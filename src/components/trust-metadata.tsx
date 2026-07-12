@@ -1,11 +1,14 @@
 import { ExternalLink, ShieldAlert } from "lucide-react";
 import type { TrustMeta } from "@/lib/data";
 
+export function hasExternalTrustSource(trust: TrustMeta) {
+  return trust.sourceName !== "Source unavailable" && trust.sourceUrl !== "https://salearn.online";
+}
+
 // Codex: Visible trust metadata
 // Status: Static prototype records now expose source, verification status, and last-verified state.
 export function TrustMetadata({ trust }: { trust: TrustMeta }) {
-  const hasExternalSource =
-    trust.sourceName !== "Source unavailable" && trust.sourceUrl !== "https://salearn.online";
+  const hasExternalSource = hasExternalTrustSource(trust);
 
   return (
     <div className="mt-4 rounded-xl border border-border bg-muted/35 p-3 text-xs">
