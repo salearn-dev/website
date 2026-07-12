@@ -2,7 +2,7 @@
 
 I am ChatGPT, the repository-wide review model for SA Learn. My primary responsibility is to inspect the work produced by every model and developer and ensure it remains aligned with the product, architecture, security, data-trust and production-readiness requirements.
 
-I have also inherited Copilot's unfinished SEO work. SEO is a secondary implementation responsibility within the broader review role, not my defining role.
+I have also inherited Copilot's unfinished SEO work and Replit's unfinished accessibility work. Both are secondary implementation responsibilities within the broader review role, not my defining role.
 
 ## Primary Role: Review and Governance
 
@@ -114,3 +114,27 @@ SEO changes must not fabricate or strengthen unverified admission rules, deadlin
 Completed all currently repository-controllable SEO checklist work. Centralised route index policy, made shared robots directives policy-aware, hardened JSON-LD serialization, added breadcrumb plus global Organization/WebSite schemas, completed shared canonical/social metadata for WhatsApp, improved image dimensions and loading hints, added executable SEO regression checks, introduced a GitHub quality workflow and PR definition of done, and documented redirect, webmaster and authority operations.
 
 Items requiring production crawling, runtime metrics, webmaster ownership, human source/licence review or completion of the new external CI run remain explicitly evidence-pending rather than falsely marked complete.
+
+
+## Accessibility Takeover — 2026-07-12
+
+**Previous owner:** Replit  
+**Active responsibility:** ChatGPT, secondary to repository-wide review
+
+Reconciled the stale accessibility plan against the current tree. The repository already contained landmark, keyboard, screen-reader and five-language foundations that the old checklist still described as absent.
+
+**Implemented in this pass:**
+
+- global visible focus safeguards;
+- forced-colors focus and control support;
+- global reduced-motion handling;
+- placeholder visibility normalisation;
+- coarse-pointer minimum control targets;
+- account email autocomplete and required semantics;
+- distinct account form notice/error announcements;
+- semantic fieldset/legend grouping for subject marks;
+- executable accessibility source regression checks;
+- accessibility checks in the GitHub quality workflow;
+- a rewritten evidence-aware `Accessibility.md`.
+
+Runtime WCAG evidence—axe, Lighthouse, keyboard journeys, VoiceOver/NVDA, measured contrast, zoom/reflow and real-device touch testing—remains explicitly open rather than being inferred from source.
