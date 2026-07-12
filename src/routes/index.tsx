@@ -586,7 +586,7 @@ function LearnerTestimonials() {
         return;
       }
 
-      const { error } = await supabase.from("testimonials").insert({
+      const { error } = await supabase.from("learner_testimonials").insert({
         ...submission.data,
         user_id: user.id,
         language,
