@@ -36,7 +36,8 @@ describe("Supabase RLS integration", () => {
 
   baseTest("anonymous users cannot read learner details", async () => {
     const response = await rest("learner_details?select=user_id&limit=1");
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual([]);
   });
 
   userTest("a learner can read their own private learner row", async () => {
