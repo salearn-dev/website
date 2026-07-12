@@ -14,7 +14,7 @@ import { StructuredData } from "@/components/structured-data";
 import { InstitutionHeroMedia } from "@/components/institution-hero-media";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS } from "@/lib/data";
-import { buildSeoHead } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/institutions/$slug")({
   loader: ({ params }) => {
@@ -48,6 +48,12 @@ function InstitutionDetailPage() {
 
   // Codex: Institution profile template
   // Status: Static-dynamic profiles expose accreditation and windows; official verification remains backend/data-owned.
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Institutions", path: "/institutions" },
+    { name: institution.name, path: `/institutions/${institution.slug}` },
+  ]);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
@@ -67,7 +73,7 @@ function InstitutionDetailPage() {
       title={institution.name}
       description={`${institution.type} in ${institution.province}. Review registration notes, application windows and official source links before choosing where to study.`}
     >
-      <StructuredData data={jsonLd} />
+      <StructuredData data={[jsonLd, breadcrumbJsonLd]} />
 
       <div className="mb-6">
         <Link
