@@ -1,18 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, CalendarClock, MessageCircle, Target, Wallet } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/whatsapp")({
-  head: () => ({
-    meta: [
-      { title: "WhatsApp - SA Learn" },
-      {
-        name: "description",
-        content:
-          "Start SA Learn's core learner flows from WhatsApp with prefilled messages for courses, funding, deadlines and match support.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeoHead({
+      title: "WhatsApp Study Guidance - SA Learn",
+      description:
+        "Start SA Learn learner flows from WhatsApp with prepared messages for courses, funding, deadlines and study-path guidance.",
+      path: "/whatsapp",
+    }),
   component: WhatsAppPage,
 });
 
