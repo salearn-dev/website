@@ -57,6 +57,7 @@ Client/browser variables:
 ```text
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_ENABLE_APPLE_AUTH=false
 ```
 
 Server/SSR variables:
@@ -73,6 +74,8 @@ SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 Never place service-role or secret Supabase keys in `VITE_` variables. Browser code must only receive publishable keys.
+
+Apple sign-in remains hidden unless `VITE_ENABLE_APPLE_AUTH=true` and the provider plus callback URLs have been configured in the deployed auth project.
 
 ## Important Routes
 
