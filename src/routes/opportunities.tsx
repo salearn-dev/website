@@ -60,17 +60,19 @@ function OpportunitiesPage() {
         setOpportunities(catalogue.items);
         setCatalogueSource(catalogue.source);
 
-        const { data: sessionData } = await supabase.auth.getSession();
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
         const user = sessionData.session?.user;
         if (!user) return;
 
-        const { data } = await supabase
+        const { data, error: reminderError } = await supabase
           .from("deadline_reminders")
           .select("item_slug, channel, remind_at")
           .eq("user_id", user.id)
           .eq("item_type", "opportunity")
           .eq("status", "pending");
 
+        if (reminderError) throw reminderError;
         if (!alive) return;
         setSavedReminders(
           Object.fromEntries(
@@ -81,7 +83,7 @@ function OpportunitiesPage() {
           ),
         );
       } catch {
-        if (alive) setSaveMessage("Sign in from Account to save opportunity reminders.");
+        if (alive) setSaveMessage("Saved reminders could not be loaded. Please refresh and try again.");
       }
     }
 
@@ -98,7 +100,8 @@ function OpportunitiesPage() {
     setSaveMessage("");
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setSaveMessage("Sign in from Account to save opportunity reminders.");
