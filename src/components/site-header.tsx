@@ -80,13 +80,13 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-1 lg:flex">
-          <button
-            type="button"
+          <Link
+            to="/ask"
             aria-label={t("nav.search")}
             className="grid h-9 w-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <Search className="h-4 w-4" />
-          </button>
+            <Search className="h-4 w-4" aria-hidden="true" />
+          </Link>
           <LanguageSelect />
           <ThemeToggle />
           <Link
