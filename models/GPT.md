@@ -314,3 +314,13 @@ Replaced the CI dependency on expiring stored JWTs with runtime authentication f
 ### Built production-preview smoke
 
 Added a dependency-free CI smoke pass that starts the production preview and verifies rendered HTML plus the shared SA Learn shell on eight critical public routes. This adds deployment-artifact route proof after the build. It is explicitly not marked as T52 completion because it does not replace real browser journeys or axe.
+
+
+### Institution and admin moderation corrections
+
+Repository review found two hidden moderation defects:
+
+1. The institution portal cast Supabase to an ad-hoc client and inserted nonexistent `status: under_review` instead of the schema enum `moderation_state: submitted`.
+2. The admin queue selected both `name` and `title` from every heterogeneous catalogue table, causing PostgREST failures whenever one requested column did not exist.
+
+Corrected the portal to use a typed, tested submission contract with bounded fields and HTTPS source validation. Added table-specific moderation label-column contracts and regression tests, and scrubbed the remaining raw admin statistics error.
