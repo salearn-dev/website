@@ -11,7 +11,7 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { StructuredData } from "@/components/structured-data";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
-import { buildSeoHead } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/careers/$slug")({
   loader: ({ params }) => {
@@ -50,6 +50,12 @@ function CareerDetailPage() {
 
   // Codex: Career detail page template
   // Status: Static-dynamic pages expose career pathways; verified labour-market data remains pending.
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Careers", path: "/careers" },
+    { name: career.title, path: `/careers/${career.slug}` },
+  ]);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Occupation",
@@ -73,7 +79,7 @@ function CareerDetailPage() {
       title={career.title}
       description={`${career.short} Compare routes, salary bands, demand signals, linked courses and skills before choosing your next step.`}
     >
-      <StructuredData data={jsonLd} />
+      <StructuredData data={[jsonLd, breadcrumbJsonLd]} />
 
       <div className="mb-6">
         <Link
