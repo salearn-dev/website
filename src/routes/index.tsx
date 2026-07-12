@@ -174,7 +174,7 @@ function Landing() {
       {/* Featured courses */}
       <Section
         title="Featured courses"
-        eyebrow="Verified pathways"
+        eyebrow="Explore pathways"
         link={{ to: "/courses", label: "All courses" }}
       >
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -196,7 +196,7 @@ function Landing() {
       </Section>
 
       {/* Trusted partners */}
-      <Section title="Trusted sources" eyebrow="Verified information">
+      <Section title="Official reference points" eyebrow="Confirm critical information">
         <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-6">
           {["SAQA", "DHET", "NSFAS", "SETAs", "Universities SA", "SANC"].map((p) => (
             <div
