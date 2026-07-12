@@ -108,6 +108,16 @@ for (const [route, relativePath] of Object.entries(routeFiles)) {
   }
 }
 
+for (const [route, expectedUnavailableText] of [
+  ["/funding", "Official link unavailable"],
+  ["/opportunities", "Application link unavailable"],
+]) {
+  const source = await readFile(new URL(routeFiles[route], import.meta.url), "utf8");
+  if (!source.includes("hasExternalTrustSource") || !source.includes(expectedUnavailableText)) {
+    failures.push(`Trust-aware external action is missing: ${route}`);
+  }
+}
+
 for (const relativePath of detailRouteFiles) {
   const source = await readFile(new URL(relativePath, import.meta.url), "utf8");
   if (!source.includes("StructuredData") || !source.includes("buildBreadcrumbJsonLd")) {
