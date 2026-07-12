@@ -3,7 +3,7 @@ import { ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { StructuredData } from "@/components/structured-data";
 import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
-import { buildSeoHead } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/$slug")({
   loader: ({ params }) => {
@@ -37,6 +37,12 @@ function GuideDetailPage() {
 
   // Codex: Structured guide JSON-LD
   // Status: Detail pages emit Article JSON-LD, and step-based guides also emit HowTo JSON-LD.
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Guides", path: "/guides" },
+    { name: guide.title, path: `/guides/${guide.slug}` },
+  ]);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -65,7 +71,7 @@ function GuideDetailPage() {
 
   return (
     <PageShell eyebrow={`${guide.category} guide`} title={guide.title} description={guide.summary}>
-      <StructuredData data={articleJsonLd} />
+      <StructuredData data={[articleJsonLd, breadcrumbJsonLd]} />
       {howToJsonLd && (
         <StructuredData data={howToJsonLd} />
       )}
