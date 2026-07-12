@@ -238,3 +238,14 @@ T51 and T53 remain unchecked until repository administrators configure the varia
 - Expanded content-health enforcement to funding and opportunity slugs, sources, HTTPS links, verification states and verification dates.
 
 The production Actions runner remains externally unavailable through the connector; no evidence-pending checklist item was promoted to ✅.
+
+
+### Testimonial accessibility and moderation policy
+
+- Added native required, length, autocomplete and descriptive-help semantics to the learner testimonial form.
+- Replaced raw testimonial backend errors with a stable public failure message.
+- Added accessibility-source enforcement for the testimonial semantics.
+- Extracted `prepareTestimonialSubmission` and tested consent denial, whitespace normalization, public-field bounds and the mandatory `approved: false` moderation default.
+- Aligned README and the combined local gate with the explicit unit/RLS lanes.
+
+T39 remains unchecked because repository tests now prove the submission policy, but live learner RLS insertion and administrator moderation still require the credentialed integration lane.
