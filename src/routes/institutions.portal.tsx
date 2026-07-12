@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Landmark, Lock, Send } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  prepareInstitutionSubmission,
+  type InstitutionDraft,
+} from "@/lib/institution-submission";
 
 export const Route = createFileRoute("/institutions/portal")({
   head: () => ({
@@ -20,21 +24,6 @@ export const Route = createFileRoute("/institutions/portal")({
 });
 
 type RoleState = "checking" | "signed-out" | "not-institution" | "ready";
-type InstitutionDraft = {
-  name: string;
-  type: string;
-  province: string;
-  website: string;
-  accreditationStatus: string;
-  sourceUrl: string;
-};
-
-type CatalogueClient = {
-  from: (table: "institutions") => {
-    insert: (payload: Record<string, unknown>) => Promise<{ error: Error | null }>;
-  };
-};
-
 const INITIAL_DRAFT: InstitutionDraft = {
   name: "",
   type: "TVET College",
@@ -43,14 +32,6 @@ const INITIAL_DRAFT: InstitutionDraft = {
   accreditationStatus: "Submitted for moderation",
   sourceUrl: "",
 };
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 // Codex: Institution self-serve portal
 // Status: Institution-role users can submit provisional records; admin approval remains in /admin/data.
@@ -97,25 +78,13 @@ function InstitutionPortalPage() {
     setMessage("");
 
     try {
-      const slug = slugify(draft.name);
-      if (!slug) {
-        setMessage("Institution name is required.");
+      const submission = prepareInstitutionSubmission(draft);
+      if (!submission.ok) {
+        setMessage(submission.error);
         return;
       }
 
-      const catalogueClient = supabase as unknown as CatalogueClient;
-      const { error } = await catalogueClient.from("institutions").insert({
-        slug,
-        name: draft.name,
-        type: draft.type,
-        province: draft.province || null,
-        website: draft.website || null,
-        accreditation_status: draft.accreditationStatus,
-        source_url: draft.sourceUrl || draft.website || null,
-        source_name: draft.name,
-        verification_status: "provisional",
-        status: "under_review",
-      });
+      const { error } = await supabase.from("institutions").insert(submission.data);
 
       if (error) throw error;
 
