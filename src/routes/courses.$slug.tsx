@@ -5,6 +5,7 @@ import { StructuredData } from "@/components/structured-data";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { COURSES } from "@/lib/data";
 import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
+import { buildCourseJsonLd } from "@/lib/seo-schema";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: ({ params }) => {
@@ -44,25 +45,7 @@ function CourseDetailPage() {
     { name: course.title, path: `/courses/${course.slug}` },
   ]);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: course.title,
-    description: `${course.qualification} pathway at ${course.institution}. Admission details and fees require official confirmation before applying.`,
-    provider: {
-      "@type": "EducationalOrganization",
-      name: course.institution,
-    },
-    educationalCredentialAwarded: course.qualification,
-    educationalLevel: course.nqf ? `NQF ${course.nqf}` : "Information unavailable",
-    timeRequired: course.duration,
-    offers: {
-      "@type": "Offer",
-      price: course.cost === "Free" ? "0" : undefined,
-      priceCurrency: "ZAR",
-      availability: "https://schema.org/LimitedAvailability",
-    },
-  };
+  const jsonLd = buildCourseJsonLd(course);
 
   return (
     <PageShell
