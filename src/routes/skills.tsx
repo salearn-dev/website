@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n } from "@/lib/i18n";
+import { makePdfBlob } from "@/lib/match-report";
 
 export const Route = createFileRoute("/skills")({
   head: () =>
@@ -150,7 +151,7 @@ function SkillsPage() {
       "It is not an accredited qualification, SETA certificate, SAQA-registered award, or proof of formal competence.",
       "Use it as a learning-progress summary while building a portfolio and applying through official providers.",
     ].join("\n");
-    const blob = makeSkillPdfBlob(text);
+    const blob = makePdfBlob(text);
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -175,8 +176,7 @@ function SkillsPage() {
               Learn in steps, then compare where the skill can take you.
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-              These tracks are public planning guides. They do not save progress yet, but they show
-              the next practical action and the career pathways already mapped in SA Learn.
+              These tracks are public planning guides. Signed-in learners can save self-reported progress, compare the next practical action and follow mapped career pathways.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm md:min-w-56">
@@ -308,50 +308,6 @@ function SkillsPage() {
       </div>
     </PageShell>
   );
-}
-
-function makeSkillPdfBlob(text: string) {
-  const lines = text.split("\n").flatMap((line) => {
-    if (line.length <= 88) return [line];
-    return line.match(/.{1,88}(\s|$)/g)?.map((part) => part.trim()) ?? [line];
-  });
-  const content = [
-    "BT",
-    "/F1 11 Tf",
-    "50 780 Td",
-    "14 TL",
-    ...lines.flatMap((line) => [`(${escapePdfText(line)}) Tj`, "T*"]),
-    "ET",
-  ].join("\n");
-  const objects = [
-    "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
-  ];
-  const parts = ["%PDF-1.4\n"];
-  const offsets = [0];
-
-  objects.forEach((object, index) => {
-    offsets.push(parts.join("").length);
-    parts.push(`${index + 1} 0 obj\n${object}\nendobj\n`);
-  });
-
-  const xrefOffset = parts.join("").length;
-  parts.push(`xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`);
-  offsets.slice(1).forEach((offset) => {
-    parts.push(`${String(offset).padStart(10, "0")} 00000 n \n`);
-  });
-  parts.push(
-    `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`,
-  );
-
-  return new Blob(parts, { type: "application/pdf" });
-}
-
-function escapePdfText(value: string) {
-  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }
 
 function progressLabelFromStatus(status: string) {
