@@ -27,7 +27,8 @@
     "ci:contract": "node scripts/check-rls-ci-contract.mjs",
     "schema:contract": "node scripts/check-testimonial-contract.mjs",
     "sensitive-data:contract": "node scripts/check-sensitive-data-contract.mjs",
-    "security:public-errors": "node scripts/check-public-errors.mjs"
+    "security:public-errors": "node scripts/check-public-errors.mjs",
+    "smoke:routes": "node scripts/smoke-routes.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
