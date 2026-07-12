@@ -56,6 +56,22 @@ jobs:
         run: bun run audit:dependencies
       - name: Production build
         run: bun run build
+      - name: Built preview smoke
+        run: |
+          bun run preview -- --host 127.0.0.1 --port 4173 > /tmp/sa-learn-preview.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              cat /tmp/sa-learn-preview.log
+              exit 1
+            fi
+            sleep 1
+          done
+          bun run smoke:routes
       - name: Bundle budget
         run: bun run performance:budget
 
