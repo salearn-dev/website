@@ -162,6 +162,7 @@ function InstitutionPortalPage() {
             onChange={(name) => setDraft({ ...draft, name })}
             required
             maxLength={160}
+            autoComplete="organization"
           />
           <Field
             label="Institution type"
@@ -172,6 +173,7 @@ function InstitutionPortalPage() {
             label="Province"
             value={draft.province}
             onChange={(province) => setDraft({ ...draft, province })}
+            autoComplete="address-level1"
           />
           <Field
             label="Website"
@@ -179,6 +181,7 @@ function InstitutionPortalPage() {
             onChange={(website) => setDraft({ ...draft, website })}
             type="url"
             maxLength={2048}
+            autoComplete="url"
           />
           <Field
             label="Accreditation note"
@@ -224,6 +227,7 @@ function Field({
   type = "text",
   required = false,
   maxLength,
+  autoComplete,
 }: {
   label: string;
   value: string;
@@ -231,6 +235,7 @@ function Field({
   type?: "text" | "url";
   required?: boolean;
   maxLength?: number;
+  autoComplete?: string;
 }) {
   return (
     <label className="block text-sm">
@@ -241,6 +246,7 @@ function Field({
         onChange={(event) => onChange(event.target.value)}
         required={required}
         maxLength={maxLength}
+        autoComplete={autoComplete}
         className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       />
     </label>
