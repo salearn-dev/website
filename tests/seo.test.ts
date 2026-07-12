@@ -4,6 +4,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { StructuredData } from "../src/components/structured-data";
 import { buildBreadcrumbJsonLd, buildSeoHead, getCanonicalUrl } from "../src/lib/seo";
 import { getSeoRoutePolicy } from "../src/lib/seo-policy";
+import { buildCourseJsonLd } from "../src/lib/seo-schema";
+import { COURSES } from "../src/lib/data";
 
 describe("SEO policy", () => {
   test("builds absolute production canonicals", () => {
@@ -41,5 +43,18 @@ describe("StructuredData", () => {
     );
     expect(html).not.toContain("</script><script>");
     expect(html).toContain("\\u003c/script\\u003e");
+  });
+});
+
+
+describe("course detail schema", () => {
+  test("represents visible course detail fields without inventing a price", () => {
+    const course = COURSES[0];
+    const schema = buildCourseJsonLd(course);
+    expect(schema.name).toBe(course.title);
+    expect(schema.provider.name).toBe(course.institution);
+    expect(schema.educationalCredentialAwarded).toBe(course.qualification);
+    expect(schema.description).toContain("require official confirmation");
+    if (course.cost !== "Free") expect("price" in schema.offers).toBe(false);
   });
 });
