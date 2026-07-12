@@ -40,6 +40,8 @@ jobs:
         run: bun run seo:check
       - name: Accessibility policy
         run: bun run accessibility:check
+      - name: Catalogue content health
+        run: bun run content:health
       - name: Server-only boundaries
         run: bun run security:boundaries
       - name: Dependency audit
