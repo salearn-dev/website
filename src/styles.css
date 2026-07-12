@@ -181,3 +181,41 @@
     letter-spacing: -0.02em;
   }
 }
+
+
+/* Accessibility: preserve clear keyboard focus across custom and native controls. */
+@layer base {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+
+  :where(input, textarea)::placeholder {
+    color: var(--color-muted-foreground);
+    opacity: 1;
+  }
+}
+
+/* Accessibility: suppress non-essential motion while preserving state changes. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* Accessibility: keep focus and controls visible in Windows High Contrast Mode. */
+@media (forced-colors: active) {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid Highlight;
+  }
+
+  :where(button, [role="button"], input, select, textarea) {
+    border: 1px solid ButtonText;
+  }
+}
