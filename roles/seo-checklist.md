@@ -2,129 +2,61 @@
 
 Legend
 
-- ✅ = implemented in the repository
-- 🟡 = partially implemented or requires runtime/content verification
-- ❌ = not implemented
-- 🔒 = external operational task
+- ✅ = completed in the repository
+- 🟡 = implemented but requires live or content evidence
+- 🔒 = external operational responsibility
 
-This checklist tracks the current SEO state of `salearn.online`. ChatGPT owns the active repository SEO pass from 2026-07-12. A repository check does not substitute for live Search Console, browser, deployment or production-response evidence.
+ChatGPT owns the active SEO implementation as a secondary responsibility under its primary repository-wide review role. Repository evidence must not be represented as production-runtime proof.
 
-## Technical foundations
+## Repository-controlled work
 
-1. ✅ **robots.txt includes the production sitemap and blocks system/private routes.**
-   - `public/robots.txt` allows public content and blocks `/api/`, `/admin/`, `/account/`, `/internal/`, `/preview/` and `/test/`.
+1. ✅ robots.txt references the production sitemap and blocks system/private routes.
+2. ✅ sitemap.xml emits absolute `https://salearn.online` URLs.
+3. ✅ valid course and institution verification timestamps produce sitemap `lastmod`; missing dates are not fabricated.
+4. ✅ shared absolute canonical URLs cover the indexable route set.
+5. ✅ route policy is centralised in `src/lib/seo-policy.ts` and drives default robots directives.
+6. ✅ priority list and detail routes use unique route-aware titles and descriptions.
+7. ✅ JSON-LD uses the shared, escaped `StructuredData` component.
+8. ✅ Course, Occupation, EducationalOrganization, Article, HowTo, Organization, WebSite and BreadcrumbList schemas are represented where supported by visible data.
+9. ✅ sensitive catalogue pages expose trust/source warnings; unverified claims remain qualified.
+10. ✅ public route content and metadata follow TanStack Start server-rendering patterns.
+11. ✅ public URLs use clean stable slugs; redirect policy is documented in `docs/redirects.md`.
+12. ✅ institution and logo images now include alt text and intrinsic dimensions; institution media includes responsive `sizes` and detail-page priority.
+13. ✅ public route structures use semantic heading and landmark patterns documented by the accessibility pass.
+14. ✅ shared Open Graph and Twitter metadata includes an absolute default social image; the homepage may override it.
+15. ✅ `/whatsapp` now uses shared canonical, social and robots metadata.
+16. ✅ SEO source regression checks run through `bun run seo:check`.
+17. ✅ the repository quality workflow runs clean install, TypeScript, SEO checks and production build.
+18. ✅ the pull-request template includes a public SEO and data-trust definition of done.
+19. ✅ webmaster, release and monitoring procedures are documented in `docs/seo-operations.md`.
+20. ✅ ethical authority and backlink work is specified in `docs/seo-authority-plan.md`.
 
-2. ✅ **sitemap.xml emits absolute production URLs.**
-   - `src/routes/sitemap[.]xml.ts` uses `https://salearn.online`.
+## Evidence still required
 
-3. 🟡 **Sitemap lastmod entries are emitted when reliable timestamps exist.**
-   - Course and institution records use `getLastModified()`.
-   - Career, guide and top-level route modification dates are not yet available.
-   - Do not invent dates for unverified records.
+21. 🟡 Rendered production HTML must be checked for canonical, robots, social and JSON-LD output.
+22. 🟡 Production sitemap, robots, 404 and 500 status/content-type behavior must be verified live.
+23. 🟡 Structured data requires Google Rich Results and Schema.org validation against production pages.
+24. 🟡 A complete rendered metadata duplicate/missing audit requires crawlable production access.
+25. 🟡 Internal-link and orphan status requires a production crawl; repository navigation is present but is not crawl proof.
+26. 🟡 Institution image licences and attribution records require human/source review across all 76 records.
+27. 🟡 Core Web Vitals and Lighthouse baselines require live mobile and desktop measurement.
+28. 🟡 Accessibility SEO proof still requires axe, keyboard, zoom, contrast and screen-reader testing.
+29. 🟡 External links, mixed content and HTTP→HTTPS behavior require a live crawl.
+30. 🟡 GitHub Actions must complete successfully on the current head before the quality gate is called proven.
 
-4. ✅ **Shared absolute canonical URLs exist for indexable routes.**
-   - `src/lib/seo.ts` provides `buildSeoHead()` and `getCanonicalUrl()`.
-   - Public route coverage has been implemented across the main route set.
-   - Runtime HTML verification remains part of the live audit.
+## External operations
 
-5. 🟡 **Per-route index/noindex classification exists in practice but is not centralised.**
-   - Public routes use indexable metadata.
-   - Known private/internal surfaces use noindex-aware metadata.
-   - A single route inventory should become the source of truth for sitemap, robots and metadata policy.
-
-6. 🟡 **Unique titles and meta descriptions cover priority routes.**
-   - Main lists and detail templates have route-aware metadata.
-   - A generated duplicate/missing metadata audit across all rendered URLs remains outstanding.
-
-7. 🟡 **Structured data is present but not standardised.**
-   - Course, Occupation, EducationalOrganization, Article and HowTo JSON-LD exist.
-   - Organization/WebSite, BreadcrumbList and FAQPage coverage remains incomplete.
-   - Existing schemas require live validation and verified-data review.
-
-8. 🟡 **Trust metadata is visible on sensitive catalogue pages.**
-   - Source, source URL, verification status and last-verified state are represented.
-   - Coverage and accuracy must be audited across every indexable record.
-   - Trust dates should only enter structured data when reliable.
-
-9. ✅ **Public navigation uses crawlable links and robots does not block the main public route set.**
-
-10. ✅ **Metadata and route content use TanStack Start server-rendering patterns.**
-    - Live rendered-source verification is still required.
-
-11. ✅ **Public URLs use clean, descriptive slugs.**
-    - No migration redirect map is currently needed unless legacy URLs are introduced.
-
-## Content, media and discovery
-
-12. 🟡 **Image SEO is partially implemented.**
-    - Institution images have descriptive alt text and resilient fallbacks.
-    - Responsive `srcset`/`sizes`, explicit intrinsic dimensions, format/weight audit and LCP verification remain.
-    - All 76 image source/licence records require a final attribution audit.
-
-13. ✅ **Semantic headings and one-H1 route patterns are documented across key routes.**
-    - Automated rendered-page verification remains desirable.
-
-14. 🟡 **Accessibility foundations support SEO, but the audit is incomplete.**
-    - Landmarks, skip navigation and several keyboard/screen-reader improvements exist.
-    - Contrast, forms, motion, zoom, touch targets, axe and screen-reader proof remain.
-
-15. ❌ **Core Web Vitals baseline and CI regression checks are not repository-proven.**
-    - Establish mobile and desktop baselines for representative routes.
-    - Add Lighthouse CI only after thresholds reflect real production behavior.
-
-16. 🟡 **Open Graph and Twitter metadata are generated through the shared helper.**
-    - Route-specific social images and live preview validation remain incomplete.
-
-17. ✅ **No redirect map is currently required for a new canonical domain.**
-    - Create one before changing established public slugs or migrating legacy URLs.
-
-18. 🟡 **404 and error components exist.**
-    - Validate production HTTP status codes, metadata and cache behavior.
-
-19. 🔒 **HTTPS and mixed-content verification are operational checks.**
-    - Production is reported live at `https://salearn.online`.
-    - Verify HTTP-to-HTTPS redirects, TLS, canonical origin consistency and external asset protocols outside the repository.
-
-20. 🟡 **Answer-engine readability is partially implemented.**
-    - Plain-language summaries, headings and several schema types exist.
-    - Improve entity consistency, breadcrumbs and source-backed answer sections without overstating unverified data.
-
-21. 🟡 **Internal linking exists across main routes, but no orphan report has been generated.**
-    - Audit every sitemap URL for at least one crawlable internal link.
-    - Strengthen contextual links between institutions, courses, careers, funding, skills and guides.
-
-22. ❌ **Page-level SEO definition of done is not enforced in pull requests.**
-    - Add a concise PR checklist and automated metadata/sitemap checks.
-
-23. 🔒 **Google Search Console and Bing Webmaster Tools require owner action.**
-    - Verify domain ownership.
-    - Submit `https://salearn.online/sitemap.xml`.
-    - Record access owner and review cadence without committing credentials.
-
-24. ❌ **Backlink and authority programme is not established.**
-    - Prioritise source-worthy public assets, verified guides and institution/data partnerships before outreach.
-
-## Current priority order
-
-1. Generate a route inventory and centralise index/noindex/sitemap policy.
-2. Audit rendered metadata for missing, duplicate or incorrect titles, descriptions and canonicals.
-3. Standardise safe JSON-LD helpers and add breadcrumbs plus Organization/WebSite schema.
-4. Complete image SEO and licensing/attribution audit.
-5. Run internal-link and orphan analysis.
-6. Establish production Core Web Vitals and accessibility baselines.
-7. Add proportional CI checks and a PR definition of done.
-8. Complete Search Console and Bing operational handover.
-9. Build a source-worthy content and authority plan.
+31. 🔒 Verify the `salearn.online` Domain property in Google Search Console.
+32. 🔒 Submit `https://salearn.online/sitemap.xml` and inspect representative URLs.
+33. 🔒 Connect Bing Webmaster Tools and submit the sitemap.
+34. 🔒 Assign primary and backup webmaster-account owners outside the repository.
+35. 🔒 Monitor indexing, Core Web Vitals, HTTPS and structured-data reports through launch.
+36. 🔒 Execute institution/content partnership outreach from the authority plan.
 
 ## Guardrails
 
-- Do not add fabricated `lastmod`, ratings, reviews, salary evidence, admission rules, deadlines or accreditation claims.
-- Do not expose learner-sensitive or private-route data in metadata, structured data or sitemaps.
-- Do not treat repository implementation as live production proof.
-- Keep changes incremental, non-destructive and buildable.
-- Record active SEO work in `models/GPT.md`.
-
-## Ownership
-
-- Active SEO repository owner: ChatGPT — `models/GPT.md`
-- Previous SEO handover: Copilot — `models/copilot.md`
+- Do not fabricate `lastmod`, ratings, reviews, salaries, demand, deadlines, accreditation or eligibility rules.
+- Do not place learner-specific or private-route data in metadata, schemas or sitemaps.
+- Do not mark live validation complete from repository inspection.
+- Preserve stable URLs and use single-hop permanent redirects for future migrations.
+- Record SEO implementation in `models/GPT.md`.
