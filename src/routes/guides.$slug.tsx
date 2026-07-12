@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { StructuredData } from "@/components/structured-data";
 import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
 
@@ -64,15 +65,9 @@ function GuideDetailPage() {
 
   return (
     <PageShell eyebrow={`${guide.category} guide`} title={guide.title} description={guide.summary}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
+      <StructuredData data={articleJsonLd} />
       {howToJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
-        />
+        <StructuredData data={howToJsonLd} />
       )}
 
       <div className="mb-6">
