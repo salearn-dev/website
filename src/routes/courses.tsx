@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
+import { filterCourses } from "@/lib/catalogue-filters";
 import { COURSES, COURSE_CATEGORIES, type Course } from "@/lib/data";
 import { loadApprovedCourses } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
@@ -57,27 +58,14 @@ function CoursesPage() {
   const costOptions = useMemo(() => ["Any", ...unique(courses.map((c) => c.cost))], [courses]);
   const deliveryOptions = useMemo(() => ["Any", ...unique(courses.map((c) => c.deliveryMode))], [courses]);
 
-  // Codex: Course explorer city and delivery filters
-  // Status: Public filters now run over live approved rows when available; SAQA/DHET sync remains data-owned.
-  const filtered = courses.filter((c) => {
-    const haystack = `${c.title} ${c.institution} ${c.careers.join(" ")}`.toLowerCase();
-    const matchesCat = !cat || c.category === cat;
-    const matchesQ = !q || haystack.includes(q.toLowerCase());
-    const matchesProvince = province === "All" || c.province === province;
-    const matchesCity = city === "All" || c.city === city;
-    const matchesNqf = nqf === "All" || (c.nqf ? `NQF ${c.nqf}` : "Not NQF-rated") === nqf;
-    const matchesCost = cost === "Any" || c.cost === cost;
-    const matchesDelivery = delivery === "Any" || c.deliveryMode === delivery;
-
-    return (
-      matchesCat &&
-      matchesQ &&
-      matchesProvince &&
-      matchesCity &&
-      matchesNqf &&
-      matchesCost &&
-      matchesDelivery
-    );
+  const filtered = filterCourses(courses, {
+    query: q,
+    category: cat,
+    province,
+    city,
+    nqf,
+    cost,
+    delivery,
   });
 
   function clearFilters() {
