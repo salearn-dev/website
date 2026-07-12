@@ -138,7 +138,7 @@ function AccountPage() {
     });
 
     if (signInError) {
-      setError(signInError.message);
+      setError("The sign-in link could not be sent. Please try again later.");
     } else {
       setNotice("Check your email for the SA Learn sign-in link.");
     }
@@ -159,7 +159,7 @@ function AccountPage() {
         redirect_uri: window.location.origin,
       });
       if (result?.error) {
-        setError(result.error instanceof Error ? result.error.message : String(result.error));
+        setError("Google sign-in is unavailable. Please try again later.");
       }
       setAuthLoading(false);
       return;
@@ -171,7 +171,7 @@ function AccountPage() {
     });
 
     if (providerError) {
-      setError(providerError.message);
+      setError("This sign-in provider is unavailable. Please try again later.");
       setAuthLoading(false);
     }
   }
@@ -180,7 +180,7 @@ function AccountPage() {
     setAuthLoading(true);
     const { error: signOutError } = await supabase.auth.signOut();
     if (signOutError) {
-      setError(signOutError.message);
+      setError("Sign-out could not be completed. Please try again.");
     }
     setAuthLoading(false);
   }
