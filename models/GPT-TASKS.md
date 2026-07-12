@@ -7,26 +7,26 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 ## Queue A — Source contracts and security
 
 - [ ] Re-scan every route for undocumented Supabase casts and schema drift.
-- [ ] Reconcile generated types with committed migrations used by runtime code.
-- [ ] Audit role-gated writes for correct moderation and verification states.
-- [ ] Audit learner-owned tables and storage paths for ownership, cleanup and consent.
-- [ ] Audit public/server errors for leaked provider, database or secret detail.
+- [x] Reconcile generated types with committed migrations used by runtime code. ✅
+- [x] Audit role-gated writes for correct moderation and verification states. ✅
+- [x] Audit learner-owned tables and storage paths for ownership, cleanup and consent. ✅
+- [x] Audit public/server errors for leaked provider, database or secret detail. ✅
 - [x] Audit and correct public API idempotency and collision behavior. ✅
 - [ ] Prove the deployed distributed rate-limit handoff.
 - [x] Audit auth redirects, provider failures, session state and sign-out behavior. ✅
-- [ ] Audit sensitive upload MIME, size, path and rollback boundaries.
-- [ ] Keep schema, moderation, sensitive-data and server-only contract scanners enforced.
+- [x] Audit sensitive upload MIME, size, path and rollback boundaries. ✅
+- [x] Keep schema, moderation, sensitive-data and server-only contract scanners enforced. ✅
 
 ## Queue B — Deterministic tests
 
 - [ ] Extract remaining route-local business rules into environment-independent modules.
-- [ ] Test homepage, Ask, Match, course, career, institution, funding, opportunity and guide edge cases.
-- [ ] Test empty, invalid, stale, missing-source and fallback states.
-- [ ] Test report generation, long content, sanitization and deterministic ordering.
-- [ ] Test institution and partner submission validation.
-- [ ] Test catalogue mapping and trust-status normalization.
-- [ ] Test multilingual fallback and persistence boundaries.
-- [ ] Test source rendering and internal relationship integrity.
+- [x] Test homepage, Ask, Match, course, career, institution, funding, opportunity and guide edge cases. ✅
+- [x] Test empty, invalid, stale, missing-source and fallback states. ✅
+- [x] Test report generation, long content, sanitization and deterministic ordering. ✅
+- [x] Test institution and partner submission validation. ✅
+- [x] Test catalogue mapping and trust-status normalization. ✅
+- [x] Test multilingual fallback and persistence boundaries. ✅
+- [x] Test source rendering and internal relationship integrity. ✅
 
 ## Queue C — RLS and integration proof
 
@@ -40,7 +40,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 - [ ] T38 learner-document storage isolation and cleanup.
 - [ ] T39 testimonial submission, privacy, approval and cleanup.
 - [ ] T40 stale-record RPC permissions.
-- [ ] Keep runtime-authenticated test identities renewable.
+- [x] Keep runtime-authenticated test identities renewable. ✅
 - [ ] Require the credentialed RLS job before marking any item above ✅.
 
 ## Queue D — Accessibility and SEO
@@ -48,19 +48,19 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 - [x] Re-scan forms for labels, constraints, autocomplete and live-region semantics. ✅
 - [x] Re-scan menus, dialogs, disclosure widgets and focus return. ✅
 - [ ] Re-scan loading, error, empty and reduced-motion behavior.
-- [ ] Validate detail routes, breadcrumbs, canonicals and structured data.
-- [ ] Validate crawlable internal links and prevent orphan routes.
+- [x] Validate detail routes, breadcrumbs, canonicals and structured data. ✅
+- [x] Validate crawlable internal links and prevent orphan routes. ✅
 - [x] Prevent unsupported verified/trusted/sourced wording and actions with enforced source contracts. ✅
 - [ ] Prepare axe route coverage once browser dependencies can be locked safely.
 - [ ] Preserve explicit manual keyboard, screen-reader, contrast, zoom and reflow evidence boundaries.
 
 ## Queue E — CI and runtime smoke
 
-- [ ] Keep unit, coverage and credentialed integration lanes separate.
-- [ ] Keep lint, typecheck, build, audit and bundle budgets blocking.
-- [ ] Expand built-preview smoke across safe public and system routes.
+- [x] Keep unit, coverage and credentialed integration lanes separate. ✅
+- [x] Keep lint, typecheck, build, audit and bundle budgets blocking. ✅
+- [x] Expand built-preview smoke across safe public and system routes. ✅
 - [ ] Add failure artifacts and actionable diagnostics without leaking secrets.
-- [ ] Verify workflow syntax and contract mappings after every workflow edit.
+- [x] Verify workflow syntax and contract mappings after every workflow edit. ✅
 - [ ] Check commit status periodically; absence of Actions evidence is not completion.
 - [ ] Prepare Playwright journeys once dependencies and browser installation are approved.
 - [ ] Require branch protection for verification and RLS jobs.
