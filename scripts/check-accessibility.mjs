@@ -8,6 +8,7 @@ const files = {
   match: await readFile(new URL("../src/routes/match.tsx", import.meta.url), "utf8"),
   home: await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8"),
   institutionPortal: await readFile(new URL("../src/routes/institutions.portal.tsx", import.meta.url), "utf8"),
+  unlock: await readFile(new URL("../src/routes/unlock.tsx", import.meta.url), "utf8"),
 };
 
 const failures = [];
@@ -52,6 +53,18 @@ for (const semantic of [
 ]) {
   if (!files.institutionPortal.includes(semantic)) {
     failures.push(`Institution form semantic missing: ${semantic}`);
+  }
+}
+
+for (const semantic of [
+  "required",
+  "aria-invalid={error}",
+  'aria-describedby={error ? "unlock-error" : undefined}',
+  'role="alert"',
+  'role="status"',
+]) {
+  if (!files.unlock.includes(semantic)) {
+    failures.push(`Unlock form semantic missing: ${semantic}`);
   }
 }
 
