@@ -25,12 +25,12 @@ describe("testimonial submission policy", () => {
     expect(result).toEqual({
       ok: true,
       data: {
-        learner_name: "Lerato",
+        display_name: "Lerato",
         province: "Gauteng",
         quote: "SA Learn helped me compare safer study options.",
         role_or_school: "Learner submission",
         consent_to_publish: true,
-        approved: false,
+        moderation_state: "submitted",
       },
     });
   });
@@ -45,10 +45,10 @@ describe("testimonial submission policy", () => {
 
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.data.learner_name).toHaveLength(80);
+      expect(result.data.display_name).toHaveLength(80);
       expect(result.data.province).toHaveLength(80);
       expect(result.data.quote).toHaveLength(700);
-      expect(result.data.approved).toBe(false);
+      expect(result.data.moderation_state).toBe("submitted");
     }
   });
 });
