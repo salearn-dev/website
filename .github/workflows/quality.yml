@@ -44,6 +44,8 @@ jobs:
         run: bun run content:health
       - name: Server-only boundaries
         run: bun run security:boundaries
+      - name: CI contract
+        run: bun run ci:contract
       - name: Dependency audit
         run: bun run audit:dependencies
       - name: Production build
