@@ -14,6 +14,10 @@ async function sourceFiles(directory) {
 
 const forbidden = [
   {
+    pattern: /set(?:Error|Message|Notice)\\([^;\\n]*\\.message/g,
+    reason: "raw exception assigned to public UI state",
+  },
+  {
     pattern: /set[A-Za-z]*Message\(error instanceof Error \? error\.message/g,
     reason: "raw exception assigned to learner-facing message",
   },
