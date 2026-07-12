@@ -309,3 +309,8 @@ Also removed the homepage live-catalogue `unknown` client cast and now use the g
 ### Renewable RLS test identities
 
 Replaced the CI dependency on expiring stored JWTs with runtime authentication for dedicated test accounts. The harness now supports recommended email/password secrets for two learners, an administrator and an institution-role user, derives learner IDs from authenticated sessions, and retains token/id overrides only for local debugging. Updated the environment template, workflow mappings, CI-contract checks and testing documentation.
+
+
+### Built production-preview smoke
+
+Added a dependency-free CI smoke pass that starts the production preview and verifies rendered HTML plus the shared SA Learn shell on eight critical public routes. This adds deployment-artifact route proof after the build. It is explicitly not marked as T52 completion because it does not replace real browser journeys or axe.
