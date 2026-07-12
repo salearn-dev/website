@@ -533,31 +533,6 @@ type LearnerTestimonial = {
   created_at: string;
 };
 
-type TestimonialSelectBuilder = {
-  eq: (column: string, value: string | boolean) => TestimonialSelectBuilder;
-  order: (
-    column: string,
-    options: { ascending: boolean },
-  ) => {
-    limit: (count: number) => Promise<{ data: LearnerTestimonial[] | null; error: Error | null }>;
-  };
-};
-
-type TestimonialClient = {
-  from: (table: "learner_testimonials") => {
-    select: (columns: string) => TestimonialSelectBuilder;
-    insert: (row: {
-      user_id: string;
-      display_name: string;
-      province: string | null;
-      quote: string;
-      language: LanguageCode;
-      consent_to_publish: boolean;
-      moderation_state: "submitted";
-    }) => Promise<{ error: Error | null }>;
-  };
-};
-
 // Codex: Canonical learner testimonial pipeline
 // Status: Uses public.learner_testimonials; learner submissions stay submitted until admin moderation.
 function LearnerTestimonials() {
@@ -566,14 +541,13 @@ function LearnerTestimonials() {
   const [form, setForm] = useState({ displayName: "", province: "", quote: "", consent: false });
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const testimonialClient = supabase as unknown as TestimonialClient;
 
   useEffect(() => {
     let alive = true;
 
     async function loadTestimonials() {
       try {
-        const { data } = await testimonialClient
+        const { data } = await supabase
           .from("learner_testimonials")
           .select("id,display_name,province,quote,language,created_at")
           .eq("moderation_state", "approved")
@@ -591,7 +565,7 @@ function LearnerTestimonials() {
     return () => {
       alive = false;
     };
-  }, [testimonialClient]);
+  }, []);
 
   async function submitTestimonial(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -612,7 +586,7 @@ function LearnerTestimonials() {
         return;
       }
 
-      const { error } = await testimonialClient.from("testimonials").insert({
+      const { error } = await supabase.from("testimonials").insert({
         ...submission.data,
         user_id: user.id,
         language,
