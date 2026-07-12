@@ -17,6 +17,7 @@ import { loadApprovedFunding } from "@/lib/live-catalogue";
 import { evaluateNsfasAnswers, getFundingMatchReasons } from "@/lib/funding-guidance";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n } from "@/lib/i18n";
+import { learnerDocumentPath, validateLearnerDocument } from "@/lib/learner-document";
 
 type FundingItem = (typeof FUNDING)[number];
 
@@ -119,6 +120,13 @@ function DocumentUploadConsent() {
       return;
     }
 
+    const validation = validateLearnerDocument(file);
+    if (!validation.ok) {
+      setState("error");
+      setMessage(validation.error);
+      return;
+    }
+
     setState("uploading");
     try {
       const { data: sessionData } = await supabase.auth.getSession();
@@ -129,8 +137,12 @@ function DocumentUploadConsent() {
         return;
       }
 
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "-").slice(-80);
-      const path = `${user.id}/${documentType}/${Date.now()}-${safeName}`;
+      const path = learnerDocumentPath(
+        user.id,
+        documentType,
+        validation.safeName,
+        Date.now(),
+      );
       const { error: uploadError } = await supabase.storage
         .from("learner-documents")
         .upload(path, file, { upsert: false });
@@ -160,9 +172,9 @@ function DocumentUploadConsent() {
       setState("uploaded");
       setMessage("Document uploaded to your private learner document vault.");
       setFile(null);
-    } catch (error) {
+    } catch {
       setState("error");
-      setMessage(error instanceof Error ? error.message : "Document upload failed.");
+      setMessage("Document upload failed. Please try again later.");
     }
   }
 
