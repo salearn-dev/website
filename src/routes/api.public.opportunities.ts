@@ -122,12 +122,34 @@ export const Route = createFileRoute("/api/public/opportunities")({
             .single();
 
           if (error) {
+            if (error.code === "23505") {
+              const { data: racedRecord } = await supabaseAdmin
+                .from("opportunities")
+                .select("id, slug, title, source_url, moderation_state, verification_status")
+                .eq("slug", slug)
+                .maybeSingle();
+              if (racedRecord && isSamePartnerSubmission(racedRecord, payload)) {
+                return jsonResponse(
+                  {
+                    ok: true,
+                    duplicate: true,
+                    opportunity: {
+                      id: racedRecord.id,
+                      slug: racedRecord.slug,
+                      moderation_state: racedRecord.moderation_state,
+                      verification_status: racedRecord.verification_status,
+                    },
+                  },
+                  { status: 200 },
+                );
+              }
+            }
             console.error("[partner-opportunities] Supabase insert failed", {
               code: error.code,
             });
             return jsonResponse(
               { ok: false, error: "Partner submission could not be stored." },
-              { status: 500 },
+              { status: error.code === "23505" ? 409 : 500 },
             );
           }
 
