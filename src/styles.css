@@ -219,3 +219,16 @@
     border: 1px solid ButtonText;
   }
 }
+
+
+/* Accessibility: minimum target size for controls; inline text links remain flow-sized. */
+@media (pointer: coarse) {
+  :where(button, input:not([type="checkbox"]):not([type="radio"]), select, textarea, [role="button"]) {
+    min-height: 44px;
+  }
+
+  :where(input[type="checkbox"], input[type="radio"]) {
+    min-width: 24px;
+    min-height: 24px;
+  }
+}
