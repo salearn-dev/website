@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { StructuredData } from "@/components/structured-data";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
 
@@ -72,10 +73,7 @@ function CareerDetailPage() {
       title={career.title}
       description={`${career.short} Compare routes, salary bands, demand signals, linked courses and skills before choosing your next step.`}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <StructuredData data={jsonLd} />
 
       <div className="mb-6">
         <Link
