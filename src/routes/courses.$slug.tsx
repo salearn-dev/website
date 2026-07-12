@@ -4,7 +4,7 @@ import { PageShell } from "@/components/page-shell";
 import { StructuredData } from "@/components/structured-data";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { COURSES } from "@/lib/data";
-import { buildSeoHead } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: ({ params }) => {
@@ -38,6 +38,12 @@ function CourseDetailPage() {
 
   // Codex: Course detail page template
   // Status: Static-dynamic course pages use one fixed detail template; backend-backed requirements remain pending.
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Courses", path: "/courses" },
+    { name: course.title, path: `/courses/${course.slug}` },
+  ]);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
@@ -64,7 +70,7 @@ function CourseDetailPage() {
       title={course.title}
       description={`${course.institution} - ${course.qualification}. Review the route, funding fit and verification status before taking your next step.`}
     >
-      <StructuredData data={jsonLd} />
+      <StructuredData data={[jsonLd, breadcrumbJsonLd]} />
 
       <div className="mb-6">
         <Link to="/courses" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
