@@ -371,3 +371,13 @@ Featured career cards now open their career detail routes, and featured course c
 - Hid Apple sign-in unless `VITE_ENABLE_APPLE_AUTH=true`; Google remains the default configured provider.
 - Updated stale Phase 1 copy that contradicted active Match/Funding profile writes.
 - Added provider/callback unit tests, environment documentation and a local/CI auth-contract guard.
+
+
+### Skill progress and completion-record correction
+
+- Extracted learner progress mapping into a deterministic contract and added regression coverage for all three progress states, invalid track lengths and persisted labels.
+- Restricted the downloadable skill completion record to tracks explicitly saved as “Ready to show”; incomplete or unsigned-in learners now receive a disabled, explanatory control.
+- Reused the shared multipage, byte-accurate PDF generator and removed the duplicate route-local writer.
+- Corrected stale route copy that claimed progress could not be saved.
+
+The record remains clearly described as learner-reported progress, not an accredited qualification or formal certificate.
