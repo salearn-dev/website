@@ -332,3 +332,8 @@ Corrected the portal to use a typed, tested submission contract with bounded fie
 - Replaced unchecked delivery-mode casting with an allowlisted normalizer.
 - Prevented live rows from receiving a “Verified” badge unless they have verified database status, a valid verification date and an HTTPS source URL.
 - Added environment-independent regression tests for paid states, delivery modes and incomplete trust evidence.
+
+
+### Verification evidence invariant
+
+Admin moderation can no longer mark a catalogue row verified unless it has a valid HTTPS source URL. The action is blocked in UI and guarded again in the update handler. Added unit coverage and a local/CI moderation wiring contract to prevent regression of the institution submission schema, heterogeneous admin columns or source requirement.
