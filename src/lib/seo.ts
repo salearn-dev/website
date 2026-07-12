@@ -1,3 +1,5 @@
+import { getRobotsDirective } from "@/lib/seo-policy";
+
 const SITE_URL = "https://salearn.online";
 
 export function getCanonicalUrl(pathname: string) {
@@ -11,7 +13,7 @@ export function buildSeoHead({
   path = "/",
   ogType = "website",
   extraMeta = [],
-  robots = "index, follow",
+  robots,
 }: {
   title: string;
   description: string;
@@ -21,6 +23,7 @@ export function buildSeoHead({
   robots?: string;
 }) {
   const canonicalUrl = getCanonicalUrl(path);
+  const robotsDirective = robots ?? getRobotsDirective(path);
 
   return {
     meta: [
@@ -34,7 +37,7 @@ export function buildSeoHead({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
-      { name: "robots", content: robots },
+      { name: "robots", content: robotsDirective },
       ...extraMeta,
     ],
     links: [{ rel: "canonical", href: canonicalUrl }],
