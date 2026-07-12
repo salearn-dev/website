@@ -324,3 +324,11 @@ Repository review found two hidden moderation defects:
 2. The admin queue selected both `name` and `title` from every heterogeneous catalogue table, causing PostgREST failures whenever one requested column did not exist.
 
 Corrected the portal to use a typed, tested submission contract with bounded fields and HTTPS source validation. Added table-specific moderation label-column contracts and regression tests, and scrubbed the remaining raw admin statistics error.
+
+
+### Live catalogue normalization corrections
+
+- Fixed live opportunity `paid=yes` rows incorrectly rendering as unpaid.
+- Replaced unchecked delivery-mode casting with an allowlisted normalizer.
+- Prevented live rows from receiving a “Verified” badge unless they have verified database status, a valid verification date and an HTTPS source URL.
+- Added environment-independent regression tests for paid states, delivery modes and incomplete trust evidence.
