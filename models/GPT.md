@@ -190,3 +190,17 @@ The GitHub connector still reports no Actions status or workflow run for the cur
 ### RLS proof harness prepared
 
 Added direct Supabase REST integration tests for anonymous catalogue access, anonymous private-table isolation, learner ownership, cross-learner denial, role-escalation denial and administrator moderation access. These tests use dedicated test credentials from `.env.test.example` and skip explicitly when credentials are unavailable. They are not marked complete until executed against the configured Supabase test environment.
+
+
+### Route and content contract coverage
+
+- ✅ T16 — Course filters and course detail schema are covered by deterministic tests.
+- ✅ T18 — Institution media covers primary and fallback rendering paths.
+- ✅ T19 — Funding matching and NSFAS advisory outcomes are covered.
+- ✅ T20 — Opportunity filtering, expiry and reminder dates are covered.
+- ✅ T22 — Supported-language validation and preference persistence are covered.
+- T21 implementation prepared — guide lookup, related glossary resolution and Article/HowTo schema construction now share a deterministic contract with regression tests. It remains unchecked in the shared completion document until the repository quality workflow proves the clean-checkout test run.
+
+**Files added or updated:** `src/lib/catalogue-filters.ts`, `src/lib/funding-guidance.ts`, `src/lib/guide-detail.ts`, `src/lib/seo-schema.ts`, `src/lib/i18n.tsx`, route consumers, and their corresponding tests.
+
+**Evidence boundary:** The GitHub connector reports no workflow run for commit `75d3be0de6428e3191a0a02655b46c0d24b6ba89`. T21 is implemented but not represented as fully complete until CI evidence exists.
