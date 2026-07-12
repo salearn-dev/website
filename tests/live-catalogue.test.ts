@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   isPaidOpportunity,
   normaliseDeliveryMode,
-} from "@/lib/live-catalogue";
+} from "@/lib/catalogue-normalization";
 
 describe("live catalogue normalization", () => {
   test("maps canonical paid states correctly", () => {
