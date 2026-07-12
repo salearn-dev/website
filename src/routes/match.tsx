@@ -364,8 +364,8 @@ function MatchPage() {
               <>
                 <div className="mt-6 divide-y divide-border rounded-xl border border-border">
                   {subjects.map((s, i) => (
-                    <div key={s.name} className="flex items-center justify-between px-4 py-3">
-                      <span className="text-sm font-medium text-foreground">{s.name}</span>
+                    <fieldset key={s.name} className="flex items-center justify-between px-4 py-3">
+                      <legend className="text-sm font-medium text-foreground">{s.name}</legend>
                       <div className="flex items-center gap-2">
                         <input
                           type="number"
@@ -373,6 +373,7 @@ function MatchPage() {
                           max={100}
                           value={s.mark}
                           aria-label={`${s.name} mark (percentage)`}
+                          aria-describedby={`${s.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-unit`}
                           onChange={(e) => {
                             const v = Math.max(0, Math.min(100, Number(e.target.value) || 0));
                             setSubjects((prev) =>
@@ -381,9 +382,14 @@ function MatchPage() {
                           }}
                           className="h-10 w-20 rounded-md border border-input bg-background px-3 text-right text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         />
-                        <span className="text-sm text-muted-foreground">%</span>
+                        <span
+                          id={`${s.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}-unit`}
+                          className="text-sm text-muted-foreground"
+                        >
+                          percent
+                        </span>
                       </div>
-                    </div>
+                    </fieldset>
                   ))}
                 </div>
                 <div className="mt-6 flex items-center justify-between rounded-xl bg-muted/60 px-4 py-3 text-sm">
