@@ -50,7 +50,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 - [ ] Re-scan loading, error, empty and reduced-motion behavior.
 - [ ] Validate detail routes, breadcrumbs, canonicals and structured data.
 - [ ] Validate crawlable internal links and prevent orphan routes.
-- [ ] Prevent unsupported verified/trusted/sourced wording.
+- [x] Prevent unsupported verified/trusted/sourced wording and actions with enforced source contracts. ✅
 - [ ] Prepare axe route coverage once browser dependencies can be locked safely.
 - [ ] Preserve explicit manual keyboard, screen-reader, contrast, zoom and reflow evidence boundaries.
 
