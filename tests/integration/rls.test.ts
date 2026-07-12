@@ -45,6 +45,7 @@ const baseTest = hasBase ? test : test.skip;
 const userTest = hasUsers ? test : test.skip;
 const adminTest = hasAdmin ? test : test.skip;
 const institutionTest = hasInstitution ? test : test.skip;
+const institutionAdminTest = hasInstitution && hasAdmin ? test : test.skip;
 
 async function signIn(email: string, password: string) {
   const response = await fetch(`${url}/auth/v1/token?grant_type=password`, {
@@ -190,6 +191,55 @@ describe("Supabase RLS integration", () => {
       institutionToken,
     );
     expect(response.status).toBe(200);
+  });
+
+  institutionAdminTest("institution submissions require admin approval before public access", async () => {
+    if (!institutionToken || !adminToken) throw new Error("Institution/admin identities unavailable.");
+    const marker = crypto.randomUUID();
+    const create = await rest("institutions", institutionToken, {
+      method: "POST",
+      headers: { prefer: "return=representation" },
+      body: JSON.stringify({
+        slug: `rls-institution-${marker}`,
+        name: `RLS Institution ${marker}`,
+        type: "Test provider",
+        province: "Gauteng",
+        website: "https://example.org/",
+        source_name: "RLS integration test",
+        source_url: "https://example.org/source",
+        verification_status: "provisional",
+        moderation_state: "submitted",
+      }),
+    });
+    expect(create.status).toBe(201);
+    const rows = await create.json();
+    const row = rows[0] as { id: string; moderation_state: string };
+    expect(row.moderation_state).toBe("submitted");
+
+    try {
+      const anonymousRead = await rest(
+        `institutions?id=eq.${row.id}&select=id,moderation_state`,
+      );
+      expect(anonymousRead.status).toBe(200);
+      expect(await anonymousRead.json()).toEqual([]);
+
+      const approve = await rest(`institutions?id=eq.${row.id}`, adminToken, {
+        method: "PATCH",
+        headers: { prefer: "return=representation" },
+        body: JSON.stringify({
+          moderation_state: "approved",
+          verification_status: "provisional",
+        }),
+      });
+      expect(approve.status).toBe(200);
+      const approvedRows = await approve.json();
+      expect(approvedRows[0]?.moderation_state).toBe("approved");
+    } finally {
+      const cleanup = await rest(`institutions?id=eq.${row.id}`, adminToken, {
+        method: "DELETE",
+      });
+      expect([200, 204]).toContain(cleanup.status);
+    }
   });
 
   userTest("a learner cannot invoke the catalogue staleness function", async () => {
