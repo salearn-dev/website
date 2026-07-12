@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { buildSeoHead } from "../lib/seo";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { StructuredData } from "../components/structured-data";
 import { ThemeProvider } from "../components/theme-provider";
 import { Toaster } from "../components/ui/sonner";
 import { I18nProvider } from "../lib/i18n";
@@ -110,11 +111,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const rootStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://salearn.online/#organization",
+    name: "SA Learn",
+    url: "https://salearn.online/",
+    logo: "https://salearn.online/flag-south-africa.webp",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://salearn.online/#website",
+    url: "https://salearn.online/",
+    name: "SA Learn",
+    publisher: { "@id": "https://salearn.online/#organization" },
+    inLanguage: ["en", "zu", "af", "xh", "st"],
+  },
+];
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <StructuredData data={rootStructuredData} />
       </head>
       <body>
         <ScriptOnce>
