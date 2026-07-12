@@ -177,3 +177,16 @@ The original match UI selected the first six eligible subjects rather than the s
 ### Evidence boundary
 
 The GitHub connector still reports no Actions status or workflow run for the current head. The implementations above are complete in source; lint, tests, coverage, audit and production build remain unproven until the workflow executes successfully.
+
+
+### Additional completed controls
+
+- ✅ T17 — Added tests proving career-to-course and career-to-skill relationships resolve.
+- ✅ T46 — Added a CI boundary scanner preventing unapproved service-role client imports.
+- ✅ T58 — Expanded SEO checks to enforce shared metadata, structured data, breadcrumbs and primary internal links.
+- ✅ T59 — Added catalogue source, verification-date, slug, institution-image and attribution health checks.
+- ✅ T60 — Added per-asset and total production bundle budgets after build.
+
+### RLS proof harness prepared
+
+Added direct Supabase REST integration tests for anonymous catalogue access, anonymous private-table isolation, learner ownership, cross-learner denial, role-escalation denial and administrator moderation access. These tests use dedicated test credentials from `.env.test.example` and skip explicitly when credentials are unavailable. They are not marked complete until executed against the configured Supabase test environment.
