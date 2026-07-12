@@ -4,6 +4,7 @@ import { CalendarClock, CheckCircle2, Coins, MapPin, Save } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { supabase } from "@/integrations/supabase/client";
+import { filterOpportunities } from "@/lib/catalogue-filters";
 import { OPPORTUNITIES } from "@/lib/data";
 import { loadApprovedOpportunities } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
@@ -41,15 +42,7 @@ function OpportunitiesPage() {
   const sectors = useMemo(() => ["All", ...unique(opportunities.map((item) => item.sector))], [opportunities]);
   const types = useMemo(() => ["All", ...unique(opportunities.map((item) => item.type))], [opportunities]);
 
-  // Codex: Opportunity filtering
-  // Status: Filters run over approved live rows when available; live ingestion remains backend-owned.
-  const filtered = opportunities.filter((item) => {
-    const matchesProvince = province === "All" || item.province === province;
-    const matchesSector = sector === "All" || item.sector === sector;
-    const matchesType = type === "All" || item.type === type;
-
-    return matchesProvince && matchesSector && matchesType;
-  });
+  const filtered = filterOpportunities(opportunities, { province, sector, type });
 
   function clearFilters() {
     setProvince("All");
