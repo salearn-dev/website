@@ -47,7 +47,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 
 - [x] Re-scan forms for labels, constraints, autocomplete and live-region semantics. ✅
 - [x] Re-scan menus, dialogs, disclosure widgets and focus return. ✅
-- [ ] Re-scan loading, error, empty and reduced-motion behavior.
+- [x] Re-scan loading, error, empty and reduced-motion source behavior; retain runtime evidence boundary. ✅
 - [x] Validate detail routes, breadcrumbs, canonicals and structured data. ✅
 - [x] Validate crawlable internal links and prevent orphan routes. ✅
 - [x] Prevent unsupported verified/trusted/sourced wording and actions with enforced source contracts. ✅
