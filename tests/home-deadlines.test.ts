@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { resolveDeadlineFeed, type DeadlineItem } from "@/lib/home-deadlines";
+import { deadlineFeedStatusLabel, resolveDeadlineFeed, type DeadlineItem } from "@/lib/home-deadlines";
 
 const fallback: DeadlineItem[] = [{
   title: "Curated bursary",
@@ -41,4 +41,11 @@ describe("homepage deadline feed", () => {
   test("does not replace usable fallback data after a failed query", () => {
     expect(resolveDeadlineFeed(fallback, null, null).items).toBe(fallback);
   });
+
+  test("labels loading, live and fallback states without ambiguity", () => {
+    expect(deadlineFeedStatusLabel("loading")).toBe("Checking live catalogue…");
+    expect(deadlineFeedStatusLabel("live")).toBe("Live catalogue feed");
+    expect(deadlineFeedStatusLabel("fallback")).toBe("Curated catalogue fallback");
+  });
+
 });
