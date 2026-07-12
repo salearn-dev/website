@@ -390,21 +390,33 @@ type I18nContextValue = {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-function isLanguageCode(value: string | null): value is LanguageCode {
+export function isLanguageCode(value: string | null): value is LanguageCode {
   return LANGUAGES.some((language) => language.code === value);
+}
+
+export function readStoredLanguage(storage: Pick<Storage, "getItem">) {
+  const stored = storage.getItem(STORAGE_KEY);
+  return isLanguageCode(stored) ? stored : "en";
+}
+
+export function persistLanguage(
+  language: LanguageCode,
+  storage: Pick<Storage, "setItem">,
+  documentElement: Pick<HTMLElement, "lang">,
+) {
+  documentElement.lang = language;
+  storage.setItem(STORAGE_KEY, language);
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<LanguageCode>("en");
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (isLanguageCode(stored)) setLanguageState(stored);
+    setLanguageState(readStoredLanguage(window.localStorage));
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = language;
-    window.localStorage.setItem(STORAGE_KEY, language);
+    persistLanguage(language, window.localStorage, document.documentElement);
   }, [language]);
 
   const value = useMemo<I18nContextValue>(
