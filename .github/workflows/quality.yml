@@ -48,6 +48,8 @@ jobs:
         run: bun run ci:contract
       - name: Schema contract
         run: bun run schema:contract
+      - name: Sensitive data contract
+        run: bun run sensitive-data:contract
       - name: Dependency audit
         run: bun run audit:dependencies
       - name: Production build
