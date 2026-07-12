@@ -318,7 +318,7 @@ function AccountPage() {
             </p>
           </div>
 
-          <form onSubmit={sendMagicLink} className="space-y-3" aria-describedby="account-auth-help account-auth-status">
+          <form onSubmit={sendMagicLink} className="space-y-3" aria-describedby="account-auth-help account-auth-notice account-auth-error">
             <label htmlFor="account-email" className="block text-sm">
               <span className="mb-1.5 block font-medium text-foreground">Email address</span>
               <input
@@ -389,7 +389,7 @@ function AccountPage() {
 function Alert({ tone, message }: { tone: "success" | "warning"; message: string }) {
   return (
     <div
-      id="account-auth-status"
+      id={tone === "warning" ? "account-auth-error" : "account-auth-notice"}
       role={tone === "warning" ? "alert" : "status"}
       aria-live={tone === "warning" ? "assertive" : "polite"}
       className={`mb-6 rounded-2xl border p-4 text-sm ${
