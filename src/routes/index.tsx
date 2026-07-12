@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n, type LanguageCode } from "@/lib/i18n";
 import { resolveDeadlineFeed, type DeadlineItem } from "@/lib/home-deadlines";
+import { prepareTestimonialSubmission } from "@/lib/testimonial-submission";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -598,8 +599,9 @@ function LearnerTestimonials() {
     event.preventDefault();
     setMessage("");
 
-    if (!form.consent || form.quote.trim().length < 20 || !form.displayName.trim()) {
-      setMessage("Add a display name, write at least 20 characters, and confirm consent.");
+    const submission = prepareTestimonialSubmission(form);
+    if (!submission.ok) {
+      setMessage(submission.error);
       return;
     }
 
@@ -613,14 +615,9 @@ function LearnerTestimonials() {
       }
 
       const { error } = await testimonialClient.from("testimonials").insert({
+        ...submission.data,
         submitter_user_id: user.id,
-        learner_name: form.displayName.trim().slice(0, 80),
-        province: form.province.trim() || null,
-        quote: form.quote.trim().slice(0, 700),
-        role_or_school: "Learner submission",
         language,
-        consent_to_publish: true,
-        approved: false,
       });
 
       if (error) throw error;
