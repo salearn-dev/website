@@ -92,6 +92,12 @@ const navigation = await Promise.all([
   readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8"),
 ]).then((sources) => sources.join("\n"));
 
+for (const detailLink of ['to="/courses/$slug"', 'to="/careers/$slug"']) {
+  if (!navigation.includes(detailLink)) {
+    failures.push(`Homepage lacks crawlable detail link: ${detailLink}`);
+  }
+}
+
 for (const [route, relativePath] of Object.entries(routeFiles)) {
   const source = await readFile(new URL(relativePath, import.meta.url), "utf8");
   if (!source.includes("buildSeoHead")) {
