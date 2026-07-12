@@ -471,7 +471,7 @@ function LiveDeadlineFeed() {
             {t("landing.deadlinesTitle")}
           </h2>
         </div>
-        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+        <span role="status" aria-live="polite" className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
           <BookmarkCheck className="h-3.5 w-3.5" />
           {deadlineFeedStatusLabel(feedState)}
         </span>
