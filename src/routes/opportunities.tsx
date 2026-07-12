@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { CalendarClock, CheckCircle2, Coins, MapPin, Save } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { TrustMetadata } from "@/components/trust-metadata";
+import { hasExternalTrustSource, TrustMetadata } from "@/components/trust-metadata";
 import { supabase } from "@/integrations/supabase/client";
 import { filterOpportunities, reminderDateFromDeadline } from "@/lib/catalogue-filters";
 import { OPPORTUNITIES } from "@/lib/data";
@@ -206,14 +206,20 @@ function OpportunitiesPage() {
                 )}
                 {savedReminders[o.id] ? "Reminder saved" : "Save reminder"}
               </button>
-              <a
-                href={o.trust.sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Apply
-              </a>
+              {hasExternalTrustSource(o.trust) ? (
+                <a
+                  href={o.trust.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  Apply at official source
+                </a>
+              ) : (
+                <span className="inline-flex h-10 items-center px-2 text-xs text-muted-foreground">
+                  Application link unavailable
+                </span>
+              )}
             </div>
           </article>
         ))}
