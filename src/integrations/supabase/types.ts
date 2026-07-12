@@ -449,6 +449,51 @@ export type Database = {
         }
         Relationships: []
       }
+      learner_testimonials: {
+        Row: {
+          consent_to_publish: boolean
+          created_at: string
+          display_name: string
+          id: string
+          language: string
+          moderation_state: Database["public"]["Enums"]["moderation_state"]
+          province: string | null
+          quote: string
+          reviewed_at: string | null
+          source_note: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consent_to_publish?: boolean
+          created_at?: string
+          display_name: string
+          id?: string
+          language?: string
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          province?: string | null
+          quote: string
+          reviewed_at?: string | null
+          source_note?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consent_to_publish?: boolean
+          created_at?: string
+          display_name?: string
+          id?: string
+          language?: string
+          moderation_state?: Database["public"]["Enums"]["moderation_state"]
+          province?: string | null
+          quote?: string
+          reviewed_at?: string | null
+          source_note?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       learner_details: {
         Row: {
           aps: number | null
