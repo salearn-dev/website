@@ -13,6 +13,11 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  CATALOGUE_TABLES,
+  moderationSelectColumns,
+  type CatalogueTable,
+} from "@/lib/catalogue-moderation";
 
 type TableStats = {
   name: string;
@@ -65,30 +70,6 @@ type CatalogueTableClient = {
 };
 type CatalogueClient = {
   from: (table: CatalogueTable) => CatalogueTableClient;
-};
-
-const CATALOGUE_TABLES = [
-  "institutions",
-  "courses",
-  "qualifications",
-  "opportunities",
-  "funding_windows",
-  "careers",
-  "skills",
-  "guides",
-] as const;
-
-type CatalogueTable = (typeof CATALOGUE_TABLES)[number];
-
-const TABLE_LABEL_COLUMN: Record<CatalogueTable, "name" | "title"> = {
-  institutions: "name",
-  courses: "title",
-  qualifications: "name",
-  opportunities: "title",
-  funding_windows: "name",
-  careers: "title",
-  skills: "title",
-  guides: "title",
 };
 
 export const Route = createFileRoute("/admin/data")({
@@ -233,11 +214,10 @@ function DataManagerPage() {
     setModerationMessage("");
 
     try {
-      const labelColumn = TABLE_LABEL_COLUMN[tableName];
       const { data, error: loadError } = await catalogueClient
         .from(tableName)
         .select<RawModerationRow>(
-          `id,${labelColumn},source_url,verification_status`,
+          moderationSelectColumns(tableName),
         )
         .in("verification_status", ["unverified", "provisional", "stale"])
         .limit(8);
