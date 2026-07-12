@@ -1,9 +1,13 @@
 import { readFile } from "node:fs/promises";
 
-const [account, policy, environment] = await Promise.all([
+const [account, policy, environment, skills, opportunities, institutionPortal, adminData] = await Promise.all([
   readFile("src/routes/account.tsx", "utf8"),
   readFile("src/lib/auth-policy.ts", "utf8"),
   readFile(".env.example", "utf8"),
+  readFile("src/routes/skills.tsx", "utf8"),
+  readFile("src/routes/opportunities.tsx", "utf8"),
+  readFile("src/routes/institutions.portal.tsx", "utf8"),
+  readFile("src/routes/admin.data.tsx", "utf8"),
 ]);
 
 const failures = [];
@@ -21,6 +25,26 @@ if (!environment.includes("VITE_ENABLE_APPLE_AUTH=false")) {
 }
 if (/set(?:Error|Notice)\([^;\n]*\.message/.test(account)) {
   failures.push("account exposes a raw auth/provider error");
+}
+
+for (const [label, source] of [
+  ["skills", skills],
+  ["opportunities", opportunities],
+  ["institution portal", institutionPortal],
+  ["admin data", adminData],
+]) {
+  if (!source.includes("error: sessionError") || !source.includes("if (sessionError) throw sessionError")) {
+    failures.push(`${label} route ignores returned session errors`);
+  }
+}
+if (!institutionPortal.includes("if (roleError) throw roleError")) {
+  failures.push("institution portal ignores returned role lookup errors");
+}
+if (!adminData.includes("if (roleError) throw roleError")) {
+  failures.push("admin route ignores returned role lookup errors");
+}
+if (!opportunities.includes("if (reminderError) throw reminderError")) {
+  failures.push("opportunities route ignores returned reminder query errors");
 }
 
 if (failures.length > 0) {
