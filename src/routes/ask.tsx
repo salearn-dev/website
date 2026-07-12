@@ -202,7 +202,9 @@ function buildAnswer(rawQuery: string): AskAnswer {
 
 function selectResults(intent: AskIntent, query: string): AskResult[] {
   const pools: AskResult[] =
-    intent === "courses"
+    intent === "match"
+      ? workflowResults()
+      : intent === "courses"
       ? courseResults(query)
       : intent === "careers"
         ? careerResults(query)
