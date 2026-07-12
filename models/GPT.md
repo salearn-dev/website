@@ -209,3 +209,11 @@ Added direct Supabase REST integration tests for anonymous catalogue access, ano
 ### Homepage fallback coverage
 
 T15 implementation prepared: extracted the homepage deadline-feed selection policy into `src/lib/home-deadlines.ts`, covered empty/null live-query results, fallback preservation, live-row selection and missing-field normalisation, and wired the landing route to the tested policy. It remains unchecked until the clean-checkout workflow proves the suite.
+
+
+### Qualification path and report coverage
+
+- T12 implementation prepared — moved existing-qualification matching from the route into `src/lib/qualification-match.ts`; added regression coverage for Diploma/Degree paths, NQF clamping, blank-input defaults, stable fallback careers and non-verified advisory wording.
+- T26 implementation prepared — moved match PDF generation into `src/lib/match-report.ts`; added tests for PDF structure, control-character escaping, long-line wrapping and byte-accurate xref offsets. The byte-offset correction prevents malformed reports when learner content contains multibyte characters.
+
+Both tasks remain unchecked in the shared completion document until the quality workflow produces clean-checkout evidence.
