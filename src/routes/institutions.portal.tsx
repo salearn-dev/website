@@ -46,19 +46,21 @@ function InstitutionPortalPage() {
 
     async function checkRole() {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
         const user = sessionData.session?.user;
         if (!user) {
           if (alive) setRoleState("signed-out");
           return;
         }
 
-        const { data } = await supabase
+        const { data, error: roleError } = await supabase
           .from("user_roles")
           .select("role")
           .eq("user_id", user.id)
           .in("role", ["institution", "admin"]);
 
+        if (roleError) throw roleError;
         if (!alive) return;
         setRoleState(data && data.length > 0 ? "ready" : "not-institution");
       } catch {
