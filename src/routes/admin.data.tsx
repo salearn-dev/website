@@ -80,6 +80,17 @@ const CATALOGUE_TABLES = [
 
 type CatalogueTable = (typeof CATALOGUE_TABLES)[number];
 
+const TABLE_LABEL_COLUMN: Record<CatalogueTable, "name" | "title"> = {
+  institutions: "name",
+  courses: "title",
+  qualifications: "name",
+  opportunities: "title",
+  funding_windows: "name",
+  careers: "title",
+  skills: "title",
+  guides: "title",
+};
+
 export const Route = createFileRoute("/admin/data")({
   head: () => ({
     meta: [
@@ -169,7 +180,7 @@ function DataManagerPage() {
       const stats = await Promise.all(CATALOGUE_TABLES.map((table) => fetchTableStats(table)));
       setTables(stats);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load table statistics");
+      setError("Table statistics could not be loaded. Please retry.");
     }
 
     setLoading(false);
@@ -222,9 +233,12 @@ function DataManagerPage() {
     setModerationMessage("");
 
     try {
+      const labelColumn = TABLE_LABEL_COLUMN[tableName];
       const { data, error: loadError } = await catalogueClient
         .from(tableName)
-        .select<RawModerationRow>("id,name,title,source_url,verification_status")
+        .select<RawModerationRow>(
+          `id,${labelColumn},source_url,verification_status`,
+        )
         .in("verification_status", ["unverified", "provisional", "stale"])
         .limit(8);
 
