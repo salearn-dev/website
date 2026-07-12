@@ -1,104 +1,94 @@
-# SEO Report — SA Learn (concise handover)
+# SEO Report — SA Learn
 
-Project: SA Learn (salearn-dev/website)
-Domain: https://salearn.online (production domain — adjust if different)
-SEO owner: Copilot (model)
-Report date: 2026-07-06
+**Domain:** https://salearn.online  
+**Repository:** salearn-dev/website  
+**Review date:** 2026-07-12  
+**Active repository owner:** ChatGPT, secondary SEO role under repository-wide review
 
-Progress update (2026-07-07)
-- Shared canonical and route-level SEO metadata are now generated through a common helper for public routes.
-- Private and restricted surfaces use noindex-aware metadata.
-- Sitemap generation now emits lastmod values when verified timestamps exist in trust metadata.
-- Local verification: `npm run build` completed successfully.
+## Current position
 
----
+The repository-controlled technical SEO foundation is implemented. Earlier Copilot reports described canonical, robots, sitemap and structured-data gaps that no longer match the current tree.
 
-Indexable routes (public, should be indexed)
-- /
-- /courses
-- /courses/:slug
-- /match
-- /careers
-- /careers/:slug
-- /institutions
-- /institutions/:slug
-- /funding
-- /skills
-- /opportunities
-- /guides
-- /guides/:slug
-- /sitemap.xml
+The remaining uncertainty is primarily live evidence, content verification and externally owned webmaster operations.
 
-Noindex / private routes (recommendation)
-- /account (NOINDEX_PRIVATE)
-- /admin, /api, /internal, /preview, /test (BLOCKED_SYSTEM / NOINDEX_PRIVATE as applicable)
+## Implemented
 
-Sitemap URL
-- https://salearn.online/sitemap.xml (server-generated at src/routes/sitemap[.]xml.ts)
-  - Note: current sitemap generator uses BASE_URL = "". Must set to production domain so <loc> values are absolute.
+- Absolute canonical origin through `src/lib/seo.ts`
+- Central public/private/system route policy
+- Route-aware titles, descriptions, Open Graph and Twitter metadata
+- Absolute production sitemap
+- Conditional, non-fabricated sitemap `lastmod`
+- Production robots file with private/system exclusions
+- Safe shared JSON-LD serialization
+- Course, Occupation, EducationalOrganization, Article, HowTo and BreadcrumbList schemas
+- Global Organization and WebSite schemas
+- Clean detail-page slugs
+- Trust and source disclosures on sensitive catalogue content
+- Intrinsic dimensions for learner-facing raster images
+- Redirect policy
+- PR SEO/data-trust checklist
+- Executable SEO source checks
+- GitHub quality workflow for install, TypeScript, SEO policy and build
+- Search Console/Bing operational handover
+- Source-backed authority plan
 
-robots.txt URL
-- https://salearn.online/robots.txt (public/robots.txt)
-  - Note: current robots.txt is minimal and does not reference sitemap. Update recommended.
+## Indexable public routes
 
-Redirect map
-- None found in repository. No explicit redirect map detected. (If old URLs exist, provide a mapping before migration.)
+- `/`
+- `/ask`
+- `/careers` and `/careers/:slug`
+- `/courses` and `/courses/:slug`
+- `/funding`
+- `/guides` and `/guides/:slug`
+- `/institutions` and `/institutions/:slug`
+- `/match`
+- `/opportunities`
+- `/skills`
+- `/whatsapp`
 
-Structured data currently used
-- None consistently detected on detail pages. Root route provides OG and meta tags server-side.
-- Recommendation: add JSON-LD for Organization/WebSite, Course/EducationalOrganization, WebPage, BreadcrumbList and FAQPage where applicable, rendered server-side.
+## Private or system routes
 
-Primary keywords (suggested starters)
-- / : "SA Learn", "post-matric guidance South Africa"
-- /courses : "courses South Africa", "NQF courses"
-- /courses/:slug : "[course name] course", "[course name] [institution]"
-- /match : "what do I qualify for South Africa", "APS checker"
-- /careers : "career pathways South Africa"
-- /institutions : "universities in South Africa", "TVET colleges"
-- /funding : "NSFAS eligibility", "bursaries South Africa"
-- /skills : "job-ready skills South Africa"
-- /opportunities : "learnerships internships South Africa"
-- /guides : "APS explained", "what is SAQA"
+The central policy classifies account, administration, institution portal, production-readiness and unlock surfaces as private/noindex. API, internal, preview and test prefixes are blocked-system routes. None belongs in the sitemap.
 
-Top 10 issues to fix (priority ordered)
-1. Sitemap loc values are not absolute — set BASE_URL to production (critical).
-2. robots.txt lacks Sitemap reference and system Disallow rules (critical).
-3. Missing canonical <link rel="canonical"> tags on indexable routes (critical).
-4. No JSON-LD structured data on course/career/institution/guide detail pages (high).
-5. Some titles/meta descriptions are generic — make them route-specific and unique (high).
-6. Sitemap entries lack lastmod where available — add accurate lastmod when content updates are tracked (high).
-7. Ensure trust metadata (source, last_verified_at) is visible and included in structured data on detail pages (high).
-8. Image SEO: verify alt text, srcset, width/height, compression; avoid lazy-loading LCP hero images (medium).
-9. Implement per-route index/noindex classification and enforcement (INDEX_PUBLIC/NOINDEX_PUBLIC/NOINDEX_PRIVATE) (medium).
-10. Add Lighthouse CI and SEO PR checklist to CI to prevent regressions (medium).
+## Data-trust position
 
-Quick remediation summary (one-line fixes)
-- Set BASE_URL = "https://salearn.online" in src/routes/sitemap[.]xml.ts (1–2 hrs).
-- Update public/robots.txt to include Sitemap line and Disallow list (0.5–1 hr).
-- Add canonical links to server head in __root.tsx or per-route head() output (2–4 hrs).
-- Create a JSON-LD templates library and render JSON-LD in route heads for detail pages (4–8 hrs).
-- Audit titles/meta across top 200 pages and update key pages (4–8 hrs).
-- Add last_verified_at tracking into sitemap generation where source_records provide timestamps (2–4 hrs).
-- Image audit and add responsive attributes + compression (3–6 hrs).
-- Add an SEO PR checklist file (.github/seo-checklist.md) and Lighthouse CI workflow (3–6 hrs).
+Structured data and search copy must describe only visible content. Admissions, accreditation, salary, demand, deadline and eligibility information remains qualified wherever the repository does not contain verified source evidence.
 
-Known good things
-- Server-rendered head metadata pattern via route head functions — supports server-side meta and JSON-LD injection.
-- Sitemap generator exists and returns XML via a server route (good foundation).
-- TrustMetadata component present in course listings (good UI trust pattern).
+Missing verification timestamps intentionally produce no sitemap `lastmod`.
 
-Suggested next steps (first week)
-1. Implement critical fixes (BASE_URL in sitemap, robots.txt updates, add canonicals). Estimated 1–2 days.
-2. Add JSON-LD templates and deploy to a staging environment; test with Rich Results and structured data testing. Estimated 2–3 days.
-3. Run a focused Lighthouse CI baseline for the homepage, 5 course pages, 3 guide pages, and the match page. Estimated 1 day.
-4. Add SEO PR checklist and Lighthouse CI workflow to catch regressions. Estimated 1 day.
-5. Produce full /seo-report.md with per-route keyword and metadata table after the initial audit changes. Estimated 2–3 days.
+## Live validation still required
 
-Contact and handover
-- SEO owner: Copilot (model) — contributions and suggested PRs will be incremental. I will follow Lovable rules (no force-pushes, keep branches deployable).
+The following cannot be closed from GitHub source alone:
 
----
+- rendered metadata and schema output;
+- production status codes and content types;
+- sitemap and robots availability;
+- HTTP→HTTPS and mixed-content behavior;
+- Google schema validation;
+- internal-link/orphan crawl;
+- Core Web Vitals and Lighthouse;
+- accessibility runtime testing;
+- external-link integrity;
+- Search Console and Bing ownership, submission and monitoring;
+- successful completion of the newly added GitHub quality workflow.
 
-Notes
-- All changes must avoid exposing learner-sensitive data in public pages or sitemaps.
-- For any production domain other than https://salearn.online, replace BASE_URL and robots Sitemap line accordingly.
+Operational instructions are in `docs/seo-operations.md`.
+
+## Launch monitoring
+
+During the run-up to 1 August, review daily:
+
+- indexed-page changes;
+- manual actions and security issues;
+- sitemap processing;
+- crawl and 5xx errors;
+- structured-data errors;
+- mobile Core Web Vitals;
+- unexpected private URL discovery;
+- expired opportunities and application dates.
+
+## Definition of done
+
+Repository SEO is complete when the quality workflow passes and no route-policy regression remains.
+
+Production SEO is complete only when the live checks above pass, webmaster properties are owned and monitored, and high-impact education content has current source evidence.
