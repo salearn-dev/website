@@ -6,7 +6,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 
 ## Queue A — Source contracts and security
 
-- [ ] Re-scan every route for undocumented Supabase casts and schema drift.
+- [x] Re-scan every route for undocumented Supabase casts and schema drift; enforce the bounded dynamic-table exception. ✅
 - [x] Reconcile generated types with committed migrations used by runtime code. ✅
 - [x] Audit role-gated writes for correct moderation and verification states. ✅
 - [x] Audit learner-owned tables and storage paths for ownership, cleanup and consent. ✅
