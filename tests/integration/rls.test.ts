@@ -199,7 +199,8 @@ describe("Supabase RLS integration", () => {
       const publishedRows = await publishedRead.json();
       expect(publishedRows[0]?.moderation_state).toBe("approved");
     } finally {
-      await rest(`learner_testimonials?id=eq.${row.id}`, adminToken, { method: "DELETE" });
+      const cleanup = await rest(`learner_testimonials?id=eq.${row.id}`, adminToken, { method: "DELETE" });
+      expect([200, 204]).toContain(cleanup.status);
     }
   });
 
