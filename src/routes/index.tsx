@@ -667,11 +667,16 @@ function LearnerTestimonials() {
               label={t("landing.testimonialName")}
               value={form.displayName}
               onChange={(displayName) => setForm((current) => ({ ...current, displayName }))}
+              required
+              maxLength={80}
+              autoComplete="name"
             />
             <TextInput
               label={t("landing.testimonialProvince")}
               value={form.province}
               onChange={(province) => setForm((current) => ({ ...current, province }))}
+              maxLength={80}
+              autoComplete="address-level1"
             />
             <label className="block text-sm">
               <span className="mb-1.5 block font-medium text-muted-foreground">
@@ -683,12 +688,20 @@ function LearnerTestimonials() {
                   setForm((current) => ({ ...current, quote: event.target.value }))
                 }
                 rows={4}
+                required
+                minLength={20}
+                maxLength={700}
+                aria-describedby="testimonial-quote-help"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               />
+              <span id="testimonial-quote-help" className="mt-1 block text-xs text-muted-foreground">
+                20 to 700 characters. Do not include private contact or identity information.
+              </span>
             </label>
             <label className="flex items-start gap-2 text-sm text-muted-foreground">
               <input
                 type="checkbox"
+                required
                 checked={form.consent}
                 onChange={(event) =>
                   setForm((current) => ({ ...current, consent: event.target.checked }))
@@ -720,10 +733,16 @@ function TextInput({
   label,
   value,
   onChange,
+  required = false,
+  maxLength,
+  autoComplete,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  required?: boolean;
+  maxLength?: number;
+  autoComplete?: string;
 }) {
   return (
     <label className="block text-sm">
@@ -731,6 +750,9 @@ function TextInput({
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        required={required}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
         className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       />
     </label>
