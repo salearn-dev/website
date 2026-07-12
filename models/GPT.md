@@ -392,3 +392,8 @@ The record remains clearly described as learner-reported progress, not an accred
 - Added a source contract gate and enforced it in the local and GitHub quality workflows.
 
 This completes the repository-side idempotency/collision control. T45 remains open because distributed production rate limiting still requires hosting-layer evidence.
+
+
+### Returned Supabase error handling
+
+Audited authenticated route calls for Supabase's returned-error contract. Skills, opportunity reminders, Match, homepage testimonial submission, institution access and admin access now check returned session/query errors explicitly instead of relying on exceptions. Role-gated routes fail closed; learner routes distinguish signed-out guidance from backend failure. The auth source gate now enforces session-error handling across these routes. The latest commit still has no reported status or workflow run, so this is implemented source control rather than CI proof.
