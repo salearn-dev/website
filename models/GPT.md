@@ -138,3 +138,42 @@ Reconciled the stale accessibility plan against the current tree. The repository
 - a rewritten evidence-aware `Accessibility.md`.
 
 Runtime WCAG evidence—axe, Lighthouse, keyboard journeys, VoiceOver/NVDA, measured contrast, zoom/reflow and real-device touch testing—remains explicitly open rather than being inferred from source.
+
+
+## Production-Readiness Workstream — Test and API Security Foundation
+
+**Date:** 2026-07-12
+
+### Completed implementations
+
+- ✅ T01 — Configured Bun's real test runner.
+- ✅ T02 — Separated tests from TypeScript checking.
+- ✅ T03 — Added shared deterministic test fixtures.
+- ✅ T04 — Added stable catalogue/match test data.
+- ✅ T05 — Added coverage generation and CI artifact upload.
+- ✅ T06 — Added an 80% coverage threshold for exercised production modules.
+- ✅ T07 — Tested APS boundary conversion.
+- ✅ T08 — Tested strongest-six subject selection.
+- ✅ T09 — Tested Life Orientation exclusion.
+- ✅ T10 — Tested Mathematics and Mathematical Literacy fallback.
+- ✅ T11 — Tested missing, invalid and out-of-range marks.
+- ✅ T13 — Tested stable match-result grouping.
+- ✅ T14 — Tested explanations, missing evidence, additional checks and advisory language.
+- ✅ T41 — Added and tested partner API authentication.
+- ✅ T42 — Rejected missing, invalid and differently sized API keys.
+- ✅ T43 — Added strict Zod payload validation with bounded fields and HTTPS sources.
+- ✅ T44 — Added declared and actual 32 KiB request-body limits.
+- ✅ T47 — Removed database/internal exception details from public API responses.
+- ✅ T48 — Added partner API security regression tests.
+- ✅ T50 — Added lint to the quality workflow.
+- ✅ T54 — Added dependency vulnerability auditing to CI.
+- ✅ T55 — Added coverage artifact publication.
+- ✅ T56 — Documented required production branch protection.
+
+### Material correction
+
+The original match UI selected the first six eligible subjects rather than the strongest six. APS calculation now sorts eligible subjects by APS points, excludes Life Orientation, preserves input order on ties and clamps invalid marks.
+
+### Evidence boundary
+
+The GitHub connector still reports no Actions status or workflow run for the current head. The implementations above are complete in source; lint, tests, coverage, audit and production build remain unproven until the workflow executes successfully.
