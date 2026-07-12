@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import {
   authorizePartnerKey,
+  isSamePartnerSubmission,
   MAX_PARTNER_BODY_BYTES,
   parsePartnerOpportunityBody,
+  partnerOpportunitySlug,
 } from "@/lib/partner-opportunity";
 
 function jsonResponse(body: unknown, init?: ResponseInit) {
@@ -15,14 +17,6 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
       ...init?.headers,
     },
   });
-}
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 80);
 }
 
 export const Route = createFileRoute("/api/public/opportunities")({
@@ -67,10 +61,49 @@ export const Route = createFileRoute("/api/public/opportunities")({
 
         try {
           const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const slug = partnerOpportunitySlug(payload);
+          const { data: existing, error: lookupError } = await supabaseAdmin
+            .from("opportunities")
+            .select("id, slug, title, source_url, moderation_state, verification_status")
+            .eq("slug", slug)
+            .maybeSingle();
+
+          if (lookupError) {
+            console.error("[partner-opportunities] Supabase lookup failed", {
+              code: lookupError.code,
+            });
+            return jsonResponse(
+              { ok: false, error: "Partner submission could not be checked." },
+              { status: 500 },
+            );
+          }
+
+          if (existing) {
+            if (!isSamePartnerSubmission(existing, payload)) {
+              return jsonResponse(
+                { ok: false, error: "Submission identity conflicts with an existing record." },
+                { status: 409 },
+              );
+            }
+            return jsonResponse(
+              {
+                ok: true,
+                duplicate: true,
+                opportunity: {
+                  id: existing.id,
+                  slug: existing.slug,
+                  moderation_state: existing.moderation_state,
+                  verification_status: existing.verification_status,
+                },
+              },
+              { status: 200 },
+            );
+          }
+
           const { data, error } = await supabaseAdmin
             .from("opportunities")
             .insert({
-              slug: slugify(`${payload.provider ?? "partner"}-${payload.title}`),
+              slug,
               title: payload.title,
               category: payload.category ?? "Partner submission",
               sector: payload.sector ?? "Information unavailable",
