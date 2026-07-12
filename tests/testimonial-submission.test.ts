@@ -28,7 +28,6 @@ describe("testimonial submission policy", () => {
         display_name: "Lerato",
         province: "Gauteng",
         quote: "SA Learn helped me compare safer study options.",
-        role_or_school: "Learner submission",
         consent_to_publish: true,
         moderation_state: "submitted",
       },
