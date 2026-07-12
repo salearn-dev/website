@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  canMarkVerified,
   CATALOGUE_TABLES,
   moderationSelectColumns,
 } from "@/lib/catalogue-moderation";
@@ -27,4 +28,12 @@ describe("catalogue moderation columns", () => {
       (columns) => !columns.includes("name,title"),
     )).toBe(true);
   });
+
+  test("requires an HTTPS source before verification", () => {
+    expect(canMarkVerified("https://example.edu/source")).toBe(true);
+    expect(canMarkVerified("http://example.edu/source")).toBe(false);
+    expect(canMarkVerified("javascript:alert(1)")).toBe(false);
+    expect(canMarkVerified(null)).toBe(false);
+  });
+
 });
