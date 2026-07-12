@@ -397,3 +397,8 @@ This completes the repository-side idempotency/collision control. T45 remains op
 ### Returned Supabase error handling
 
 Audited authenticated route calls for Supabase's returned-error contract. Skills, opportunity reminders, Match, homepage testimonial submission, institution access and admin access now check returned session/query errors explicitly instead of relying on exceptions. Role-gated routes fail closed; learner routes distinguish signed-out guidance from backend failure. The auth source gate now enforces session-error handling across these routes. The latest commit still has no reported status or workflow run, so this is implemented source control rather than CI proof.
+
+
+### Accessibility form rescan
+
+Completed the repository form-semantic pass. Institution submissions now expose browser autocomplete purposes and mirror backend length limits in native controls. The restricted unlock form now marks its credential required, exposes invalid state and error association, announces failures as alerts and announces pending validation through a polite status region. Both contracts are enforced by the accessibility source gate. Manual assistive-technology evidence remains open.
