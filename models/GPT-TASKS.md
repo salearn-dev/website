@@ -45,7 +45,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 
 ## Queue D — Accessibility and SEO
 
-- [ ] Re-scan forms for labels, constraints, autocomplete and live-region semantics.
+- [x] Re-scan forms for labels, constraints, autocomplete and live-region semantics. ✅
 - [ ] Re-scan menus, dialogs, disclosure widgets and focus return.
 - [ ] Re-scan loading, error, empty and reduced-motion behavior.
 - [ ] Validate detail routes, breadcrumbs, canonicals and structured data.
