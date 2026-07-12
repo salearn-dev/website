@@ -2,8 +2,10 @@ import { describe, expect, test } from "bun:test";
 import {
   authorizePartnerKey,
   constantTimeEqual,
+  isSamePartnerSubmission,
   MAX_PARTNER_BODY_BYTES,
   parsePartnerOpportunityBody,
+  partnerOpportunitySlug,
 } from "../src/lib/partner-opportunity";
 
 const validPayload = {
@@ -52,5 +54,38 @@ describe("partner opportunity payload validation", () => {
   test("rejects request bodies above the byte limit", () => {
     const body = JSON.stringify({ ...validPayload, description: "x".repeat(MAX_PARTNER_BODY_BYTES) });
     expect(parsePartnerOpportunityBody(body).status).toBe(413);
+  });
+});
+
+
+describe("partner opportunity identity", () => {
+  test("creates a stable retry-safe slug", () => {
+    const first = partnerOpportunitySlug(validPayload);
+    expect(first).toBe(partnerOpportunitySlug(validPayload));
+    expect(first.length).toBeLessThanOrEqual(80);
+  });
+
+  test("separates otherwise identical listings from different source URLs", () => {
+    expect(partnerOpportunitySlug(validPayload)).not.toBe(
+      partnerOpportunitySlug({
+        ...validPayload,
+        source_url: "https://example.org/opportunities/a-different-listing",
+      }),
+    );
+  });
+
+  test("only treats the same title and source as an idempotent retry", () => {
+    expect(
+      isSamePartnerSubmission(
+        { title: validPayload.title, source_url: validPayload.source_url },
+        validPayload,
+      ),
+    ).toBe(true);
+    expect(
+      isSamePartnerSubmission(
+        { title: "Different opportunity", source_url: validPayload.source_url },
+        validPayload,
+      ),
+    ).toBe(false);
   });
 });
