@@ -9,6 +9,7 @@ const requiredWorkflowFragments = [
   "run: bun run test:integration:rls",
   "SUPABASE_TEST_URL: ${{ secrets.SUPABASE_TEST_URL }}",
   "SUPABASE_TEST_ADMIN_TOKEN: ${{ secrets.SUPABASE_TEST_ADMIN_TOKEN }}",
+  "SUPABASE_TEST_INSTITUTION_TOKEN: ${{ secrets.SUPABASE_TEST_INSTITUTION_TOKEN }}",
 ];
 
 const missingWorkflow = requiredWorkflowFragments.filter((fragment) => !workflow.includes(fragment));
