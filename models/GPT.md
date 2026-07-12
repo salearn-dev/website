@@ -292,3 +292,15 @@ Corrected the flow to:
 - enforce the contract locally and in CI.
 
 T38 is implemented in source and its direct proof is prepared, but remains unchecked until the credentialed RLS job passes.
+
+
+### Repository-wide public error boundary
+
+Extended error scrubbing beyond the partner API:
+
+- funding document, reminder and saved-profile errors now use stable public messages;
+- account OTP, OAuth and sign-out flows no longer render provider/Supabase exception text;
+- added a recursive route scanner for raw exception messages in public UI state and JSON responses;
+- enforced the scanner locally and in CI.
+
+Also removed the homepage live-catalogue `unknown` client cast and now use the generated Supabase contract directly.
