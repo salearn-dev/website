@@ -14,6 +14,28 @@ const requiredPublicRoutes = [
   "/skills",
   "/whatsapp",
 ];
+
+const routeFiles = {
+  "/": "../src/routes/index.tsx",
+  "/ask": "../src/routes/ask.tsx",
+  "/careers": "../src/routes/careers.tsx",
+  "/courses": "../src/routes/courses.tsx",
+  "/funding": "../src/routes/funding.tsx",
+  "/guides": "../src/routes/guides.tsx",
+  "/institutions": "../src/routes/institutions.tsx",
+  "/match": "../src/routes/match.tsx",
+  "/opportunities": "../src/routes/opportunities.tsx",
+  "/skills": "../src/routes/skills.tsx",
+  "/whatsapp": "../src/routes/whatsapp.tsx",
+};
+
+const detailRouteFiles = [
+  "../src/routes/careers.$slug.tsx",
+  "../src/routes/courses.$slug.tsx",
+  "../src/routes/guides.$slug.tsx",
+  "../src/routes/institutions.$slug.tsx",
+];
+
 const forbiddenSitemapPrefixes = [
   "/account",
   "/admin",
@@ -61,6 +83,30 @@ for (const prefix of forbiddenSitemapPrefixes) {
 
 if (!policy.includes('"noindex-private"') || !policy.includes('"blocked-system"')) {
   failures.push("SEO policy does not define private and blocked route classes.");
+}
+
+
+const navigation = await Promise.all([
+  readFile(new URL("../src/components/site-header.tsx", import.meta.url), "utf8"),
+  readFile(new URL("../src/components/site-footer.tsx", import.meta.url), "utf8"),
+  readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8"),
+]).then((sources) => sources.join("\n"));
+
+for (const [route, relativePath] of Object.entries(routeFiles)) {
+  const source = await readFile(new URL(relativePath, import.meta.url), "utf8");
+  if (!source.includes("buildSeoHead")) {
+    failures.push(`Public route does not use shared metadata: ${route}`);
+  }
+  if (route !== "/" && !navigation.includes(`"${route}"`)) {
+    failures.push(`Public route lacks a primary crawlable internal link: ${route}`);
+  }
+}
+
+for (const relativePath of detailRouteFiles) {
+  const source = await readFile(new URL(relativePath, import.meta.url), "utf8");
+  if (!source.includes("StructuredData") || !source.includes("buildBreadcrumbJsonLd")) {
+    failures.push(`Detail route lacks structured data or breadcrumbs: ${relativePath}`);
+  }
 }
 
 if (failures.length) {
