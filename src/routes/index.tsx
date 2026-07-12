@@ -292,7 +292,8 @@ function SignedInDashboard() {
 
     async function loadDashboard() {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
         const user = sessionData.session?.user;
         if (!user) return;
 
@@ -565,7 +566,8 @@ function LearnerTestimonials() {
 
     setSubmitting(true);
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setMessage(t("landing.testimonialSignIn"));
