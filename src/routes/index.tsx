@@ -530,7 +530,6 @@ type LearnerTestimonial = {
   province: string | null;
   quote: string;
   language: LanguageCode;
-  role_or_school: string | null;
   created_at: string;
 };
 
@@ -552,7 +551,6 @@ type TestimonialClient = {
       display_name: string;
       province: string | null;
       quote: string;
-      role_or_school: string;
       language: LanguageCode;
       consent_to_publish: boolean;
       moderation_state: "submitted";
@@ -561,7 +559,7 @@ type TestimonialClient = {
 };
 
 // Codex: Canonical learner testimonial pipeline
-// Status: Uses public.testimonials; learner submissions stay unapproved until admin moderation.
+// Status: Uses public.learner_testimonials; learner submissions stay submitted until admin moderation.
 function LearnerTestimonials() {
   const { t, language } = useI18n();
   const [items, setItems] = useState<LearnerTestimonial[]>([]);
