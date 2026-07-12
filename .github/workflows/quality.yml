@@ -52,6 +52,8 @@ jobs:
         run: bun run schema:contract
       - name: Sensitive data contract
         run: bun run sensitive-data:contract
+      - name: Moderation contract
+        run: bun run moderation:contract
       - name: Dependency audit
         run: bun run audit:dependencies
       - name: Production build
