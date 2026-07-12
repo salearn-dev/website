@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit --pretty false",
     "test": "bun test",
     "test:coverage": "bun test ./tests/*.test.ts ./tests/*.test.tsx --coverage --coverage-reporter=lcov",
-    "check": "bun run typecheck && bun run lint && bun run test:unit && bun run seo:check && bun run accessibility:check && bun run security:boundaries && bun run security:public-errors && bun run ci:contract && bun run schema:contract && bun run sensitive-data:contract && bun run moderation:contract && bun run content:health && bun run build && bun run performance:budget",
+    "check": "bun run typecheck && bun run lint && bun run test:unit && bun run seo:check && bun run accessibility:check && bun run security:boundaries && bun run security:public-errors && bun run ci:contract && bun run schema:contract && bun run sensitive-data:contract && bun run moderation:contract && bun run auth:contract && bun run content:health && bun run build && bun run performance:budget",
     "seo:check": "node scripts/check-seo.mjs",
     "accessibility:check": "node scripts/check-accessibility.mjs",
     "audit:dependencies": "bun audit",
@@ -29,7 +29,8 @@
     "sensitive-data:contract": "node scripts/check-sensitive-data-contract.mjs",
     "security:public-errors": "node scripts/check-public-errors.mjs",
     "smoke:routes": "node scripts/smoke-routes.mjs",
-    "moderation:contract": "node scripts/check-moderation-contract.mjs"
+    "moderation:contract": "node scripts/check-moderation-contract.mjs",
+    "auth:contract": "node scripts/check-auth-contract.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
