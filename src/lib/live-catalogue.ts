@@ -20,6 +20,23 @@ export type CatalogueResult<T> = {
   source: CatalogueSource;
 };
 
+const DELIVERY_MODES = new Set<Course["deliveryMode"]>([
+  "Contact",
+  "Online",
+  "Blended",
+  "Workplace",
+]);
+
+export function normaliseDeliveryMode(value: string | null): Course["deliveryMode"] {
+  return value && DELIVERY_MODES.has(value as Course["deliveryMode"])
+    ? value as Course["deliveryMode"]
+    : "Contact";
+}
+
+export function isPaidOpportunity(value: string | null) {
+  return ["yes", "paid", "true"].includes(value?.trim().toLowerCase() ?? "");
+}
+
 function trustFromCatalogue(row: {
   source_name: string | null;
   source_url: string | null;
@@ -64,7 +81,7 @@ export async function loadApprovedCourses(): Promise<CatalogueResult<Course>> {
         careers: row.careers ?? [],
         province: row.province ?? "Information unavailable",
         city: row.city ?? "Information unavailable",
-        deliveryMode: (row.delivery_mode ?? "Contact") as Course["deliveryMode"],
+        deliveryMode: normaliseDeliveryMode(row.delivery_mode),
         category: row.category ?? "universities",
         accreditation: row.accreditation ?? "Needs confirmation",
         trust: trustFromCatalogue(row),
@@ -182,7 +199,7 @@ export async function loadApprovedOpportunities(): Promise<CatalogueResult<Oppor
         type: row.type ?? "Opportunity",
         province: row.province ?? "Nationwide",
         closes: row.closing_date ?? "Confirm official deadline",
-        paid: (row.paid ?? "").toLowerCase().includes("paid"),
+        paid: isPaidOpportunity(row.paid),
         trust: trustFromCatalogue(row),
       })),
     };
