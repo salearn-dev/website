@@ -108,6 +108,12 @@ for (const [route, relativePath] of Object.entries(routeFiles)) {
   }
 }
 
+const courseSource = await readFile(new URL(routeFiles["/courses"], import.meta.url), "utf8");
+if (!courseSource.includes('verified={c.trust.verificationStatus === "Verified"}') ||
+    !courseSource.includes("Accreditation claim:")) {
+  failures.push("Course accreditation presentation is not tied to verification evidence.");
+}
+
 for (const [route, expectedUnavailableText] of [
   ["/funding", "Official link unavailable"],
   ["/opportunities", "Application link unavailable"],
