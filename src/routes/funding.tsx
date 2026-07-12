@@ -149,22 +149,17 @@ function DocumentUploadConsent() {
 
       if (uploadError) throw uploadError;
 
-      const documentClient = supabase as unknown as {
-        from: (table: "document_consents") => {
-          insert: (row: {
-            user_id: string;
-            document_type: string;
-            file_path: string;
-            consent_version: string;
-          }) => Promise<{ error: Error | null }>;
-        };
-      };
-
-      const { error: consentError } = await documentClient.from("document_consents").insert({
+      const { error: consentError } = await supabase.from("consent_records").insert({
         user_id: user.id,
-        document_type: documentType,
-        file_path: path,
+        consent_type: "learner_document_storage",
         consent_version: "2026-07-07",
+        granted: true,
+        context: {
+          document_type: documentType,
+          file_path: path,
+          mime_type: file.type,
+          size_bytes: file.size,
+        },
       });
 
       if (consentError) throw consentError;
