@@ -48,6 +48,17 @@ async function rest(path: string, token?: string, init?: RequestInit) {
   });
 }
 
+async function storage(path: string, token: string, init?: RequestInit) {
+  return fetch(`${url}/storage/v1/${path}`, {
+    ...init,
+    headers: {
+      apikey: key ?? "",
+      authorization: `Bearer ${token}`,
+      ...init?.headers,
+    },
+  });
+}
+
 describe("Supabase RLS integration", () => {
   baseTest("anonymous users can read approved public institutions", async () => {
     const response = await rest("institutions?select=id,slug&limit=1");
@@ -78,6 +89,44 @@ describe("Supabase RLS integration", () => {
     );
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual([]);
+  });
+
+  userTest("learner document objects are owner scoped", async () => {
+    if (!userAToken || !userBToken || !userAId) throw new Error("Test learners are unavailable.");
+    const objectPath = `${userAId}/integration/${crypto.randomUUID()}.pdf`;
+    const upload = await storage(
+      `object/learner-documents/${objectPath}`,
+      userAToken,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/pdf",
+          "x-upsert": "false",
+        },
+        body: "%PDF-1.4\n%%EOF",
+      },
+    );
+    expect([200, 201]).toContain(upload.status);
+
+    try {
+      const ownerRead = await storage(
+        `object/authenticated/learner-documents/${objectPath}`,
+        userAToken,
+      );
+      expect(ownerRead.status).toBe(200);
+
+      const otherRead = await storage(
+        `object/authenticated/learner-documents/${objectPath}`,
+        userBToken,
+      );
+      expect([400, 401, 403, 404]).toContain(otherRead.status);
+    } finally {
+      await storage("object/learner-documents", userAToken, {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ prefixes: [objectPath] }),
+      });
+    }
   });
 
   userTest("a learner cannot assign themselves an admin role", async () => {
