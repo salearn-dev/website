@@ -18,6 +18,12 @@ import { CAREERS, COURSES, SKILLS } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n } from "@/lib/i18n";
 import { makePdfBlob } from "@/lib/match-report";
+import {
+  buildSkillProgress,
+  canDownloadSkillRecord,
+  progressLabelFromStatus,
+  type SkillProgressChoice,
+} from "@/lib/skill-progress";
 
 export const Route = createFileRoute("/skills")({
   head: () =>
@@ -88,7 +94,7 @@ function SkillsPage() {
     };
   }, []);
 
-  async function saveProgress(slug: string, title: string, progress: string) {
+  async function saveProgress(slug: string, title: string, progress: SkillProgressChoice) {
     setStatusMessage("");
     setSavingSlug(slug);
 
@@ -100,15 +106,8 @@ function SkillsPage() {
         return;
       }
 
-      const totalSteps = SKILLS.find((skill) => skill.slug === slug)?.track.length ?? 3;
-      const completedSteps =
-        progress === "Ready to show" ? totalSteps : progress === "Practising" ? Math.max(1, totalSteps - 1) : 1;
-      const status =
-        progress === "Ready to show"
-          ? "completed"
-          : progress === "Practising"
-            ? "practising"
-            : "started";
+      const stepCount = SKILLS.find((skill) => skill.slug === slug)?.track.length ?? 3;
+      const { totalSteps, completedSteps, status } = buildSkillProgress(stepCount, progress);
 
       const { error } = await supabase.from("skill_progress").upsert(
         {
@@ -235,7 +234,7 @@ function SkillsPage() {
                 ))}
               </ol>
               <div className="mt-4 flex flex-wrap gap-2">
-                {["Started", "Practising", "Ready to show"].map((progress) => (
+                {(["Started", "Practising", "Ready to show"] as const).map((progress) => (
                   <button
                     key={progress}
                     type="button"
@@ -272,10 +271,18 @@ function SkillsPage() {
                         savedProgress[skill.slug] ?? "Not saved yet",
                       )
                     }
-                    className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    disabled={!canDownloadSkillRecord(savedProgress[skill.slug])}
+                    title={
+                      canDownloadSkillRecord(savedProgress[skill.slug])
+                        ? undefined
+                        : "Save this track as Ready to show before downloading"
+                    }
+                    className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                    Download record
+                    {canDownloadSkillRecord(savedProgress[skill.slug])
+                      ? "Download record"
+                      : "Complete track to download"}
                   </button>
                 </div>
               </div>
@@ -308,12 +315,6 @@ function SkillsPage() {
       </div>
     </PageShell>
   );
-}
-
-function progressLabelFromStatus(status: string) {
-  if (status === "completed") return "Ready to show";
-  if (status === "practising") return "Practising";
-  return "Started";
 }
 
 function LinkGroup({
