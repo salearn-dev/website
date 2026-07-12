@@ -529,7 +529,7 @@ function LearnerTestimonials() {
 
     async function loadTestimonials() {
       try {
-        const { data } = await supabase
+        const { data, error: testimonialError } = await supabase
           .from("learner_testimonials")
           .select("id,display_name,province,quote,language,created_at")
           .eq("moderation_state", "approved")
@@ -537,6 +537,7 @@ function LearnerTestimonials() {
           .order("created_at", { ascending: false })
           .limit(6);
 
+        if (testimonialError) throw testimonialError;
         if (alive) {
           setItems((data ?? []).map((item) => ({
             ...item,
