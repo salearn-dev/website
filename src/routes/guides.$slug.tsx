@@ -2,20 +2,18 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { StructuredData } from "@/components/structured-data";
-import { GLOSSARY_TERMS, GUIDES } from "@/lib/data";
+import { buildGuideSchemas, getGuideDetail } from "@/lib/guide-detail";
 import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/$slug")({
   loader: ({ params }) => {
-    const guide = GUIDES.find((item) => item.slug === params.slug);
+    const detail = getGuideDetail(params.slug);
 
-    if (!guide) {
+    if (!detail) {
       throw notFound();
     }
 
-    const glossary = GLOSSARY_TERMS.filter((item) => guide.relatedTerms.includes(item.term));
-
-    return { guide, glossary };
+    return detail;
   },
   head: ({ loaderData }) => {
     const guide = loaderData?.guide;
@@ -35,46 +33,22 @@ export const Route = createFileRoute("/guides/$slug")({
 function GuideDetailPage() {
   const { guide, glossary } = Route.useLoaderData();
 
-  // Codex: Structured guide JSON-LD
-  // Status: Detail pages emit Article JSON-LD, and step-based guides also emit HowTo JSON-LD.
+  const schemas = buildGuideSchemas(guide.slug);
+
+  if (!schemas) {
+    throw notFound();
+  }
+
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
     { name: "Guides", path: "/guides" },
     { name: guide.title, path: `/guides/${guide.slug}` },
   ]);
 
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: guide.title,
-    description: guide.summary,
-    articleSection: guide.category,
-    publisher: {
-      "@type": "Organization",
-      name: "SA Learn",
-    },
-  };
-
-  const howToJsonLd = guide.steps
-    ? {
-        "@context": "https://schema.org",
-        "@type": "HowTo",
-        name: guide.title,
-        description: guide.summary,
-        step: guide.steps.map((step: string, index: number) => ({
-          "@type": "HowToStep",
-          position: index + 1,
-          text: step,
-        })),
-      }
-    : null;
-
   return (
     <PageShell eyebrow={`${guide.category} guide`} title={guide.title} description={guide.summary}>
-      <StructuredData data={[articleJsonLd, breadcrumbJsonLd]} />
-      {howToJsonLd && (
-        <StructuredData data={howToJsonLd} />
-      )}
+      <StructuredData data={[schemas.article, breadcrumbJsonLd]} />
+      {schemas.howTo && <StructuredData data={schemas.howTo} />}
 
       <div className="mb-6">
         <Link
