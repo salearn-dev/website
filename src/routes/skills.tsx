@@ -63,16 +63,18 @@ function SkillsPage() {
 
     async function loadSavedProgress() {
       try {
-        const { data: sessionData } = await supabase.auth.getSession();
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
         const user = sessionData.session?.user;
         if (!user) return;
 
-        const { data } = await supabase
+        const { data, error: progressError } = await supabase
           .from("skill_progress")
           .select("skill_slug, status, completed_steps, total_steps")
           .eq("user_id", user.id)
           .order("updated_at", { ascending: false });
 
+        if (progressError) throw progressError;
         if (!alive) return;
         setUserId(user.id);
         setSavedProgress(
@@ -84,7 +86,7 @@ function SkillsPage() {
           ),
         );
       } catch {
-        if (alive) setStatusMessage("Sign in from Account to save skill progress.");
+        if (alive) setStatusMessage("Saved progress could not be loaded. Please refresh and try again.");
       }
     }
 
@@ -99,7 +101,8 @@ function SkillsPage() {
     setSavingSlug(slug);
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setStatusMessage("Sign in from Account to save skill progress.");
