@@ -1,4 +1,4 @@
-import { COURSES, INSTITUTIONS, LAST_VERIFIED } from "../src/lib/data";
+import { COURSES, FUNDING, INSTITUTIONS, LAST_VERIFIED, OPPORTUNITIES } from "../src/lib/data";
 import { INSTITUTION_IMAGES } from "../src/lib/institution-images";
 
 const failures: string[] = [];
@@ -36,8 +36,12 @@ function checkTrust(
 
 checkUniqueSlugs("courses", COURSES);
 checkUniqueSlugs("institutions", INSTITUTIONS);
+checkUniqueSlugs("funding", FUNDING);
+checkUniqueSlugs("opportunities", OPPORTUNITIES);
 checkTrust("courses", COURSES);
 checkTrust("institutions", INSTITUTIONS);
+checkTrust("funding", FUNDING);
+checkTrust("opportunities", OPPORTUNITIES);
 
 const institutionSlugs = new Set(INSTITUTIONS.map((institution) => institution.slug));
 for (const slug of institutionSlugs) {
@@ -68,5 +72,5 @@ if (failures.length) {
 }
 
 console.log(
-  `Content health passed: ${COURSES.length} courses, ${INSTITUTIONS.length} institutions, ${Object.keys(INSTITUTION_IMAGES).length} images.`,
+  `Content health passed: ${COURSES.length} courses, ${INSTITUTIONS.length} institutions, ${FUNDING.length} funding records, ${OPPORTUNITIES.length} opportunities, ${Object.keys(INSTITUTION_IMAGES).length} images.`,
 );
