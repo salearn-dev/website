@@ -159,7 +159,8 @@ function Landing() {
           {CAREERS.slice(0, 6).map((c) => (
             <Link
               key={c.slug}
-              to="/careers"
+              to="/careers/$slug"
+              params={{ slug: c.slug }}
               className="group rounded-2xl border border-border bg-card p-6 hover:border-foreground/20 hover:shadow-[var(--shadow-card-hover)]"
             >
               <div className="flex items-center gap-2">
@@ -185,9 +186,14 @@ function Landing() {
       >
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {COURSES.slice(0, 3).map((c) => (
-            <div key={c.slug} className="rounded-2xl border border-border bg-card p-6">
+            <Link
+              key={c.slug}
+              to="/courses/$slug"
+              params={{ slug: c.slug }}
+              className="group rounded-2xl border border-border bg-card p-6 hover:border-foreground/20 hover:shadow-[var(--shadow-card-hover)]"
+            >
               <p className="text-xs text-muted-foreground">{c.institution}</p>
-              <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground">
+              <h3 className="mt-2 text-lg font-semibold tracking-tight text-foreground group-hover:underline">
                 {c.title}
               </h3>
               <div className="mt-4 flex flex-wrap gap-2 text-xs">
@@ -196,7 +202,7 @@ function Landing() {
                 <Chip tone="info">{c.funding}</Chip>
               </div>
               <p className="mt-4 text-sm text-muted-foreground">{c.careers.join(", ")}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </Section>
