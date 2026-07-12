@@ -66,3 +66,33 @@ export function parsePartnerOpportunityBody(rawBody: string) {
 
   return { ok: true as const, data: result.data };
 }
+
+
+function slugPart(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function stableHash(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36).padStart(7, "0").slice(0, 7);
+}
+
+export function partnerOpportunitySlug(payload: Pick<PartnerOpportunityPayload, "title" | "provider" | "source_name" | "source_url">) {
+  const provider = payload.provider ?? payload.source_name ?? "partner";
+  const base = slugPart(`${provider}-${payload.title}`).slice(0, 72) || "partner-opportunity";
+  return `${base}-${stableHash(payload.source_url)}`;
+}
+
+export function isSamePartnerSubmission(
+  existing: { source_url: string | null; title: string },
+  payload: Pick<PartnerOpportunityPayload, "source_url" | "title">,
+) {
+  return existing.source_url === payload.source_url && existing.title === payload.title;
+}
