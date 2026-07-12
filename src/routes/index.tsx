@@ -367,35 +367,6 @@ function SignedInDashboard() {
   );
 }
 
-type CatalogueOpportunityRow = {
-  title: string | null;
-  closing_date: string | null;
-  provider: string | null;
-  source_name: string | null;
-  source_url: string | null;
-  verification_status: string | null;
-};
-
-type CatalogueFundingRow = {
-  name: string | null;
-  deadline: string | null;
-  provider: string | null;
-  source_name: string | null;
-  source_url: string | null;
-  verification_status: string | null;
-};
-
-type CatalogueQuery<T> = {
-  order: (column: string, options: { ascending: boolean }) => CatalogueQuery<T>;
-  limit: (count: number) => Promise<{ data: T[] | null }>;
-};
-
-type CatalogueClient = {
-  from: <T>(table: string) => {
-    select: (columns: string) => CatalogueQuery<T>;
-  };
-};
-
 const STATIC_DEADLINES: DeadlineItem[] = [
   ...OPPORTUNITIES.slice(0, 4).map((item) => ({
     title: item.title,
@@ -425,15 +396,14 @@ function LiveDeadlineFeed() {
 
     async function loadDeadlines() {
       try {
-        const catalogueClient = supabase as unknown as CatalogueClient;
         const [opportunities, funding] = await Promise.all([
-          catalogueClient
-            .from<CatalogueOpportunityRow>("opportunities")
+          supabase
+            .from("opportunities")
             .select("title,closing_date,provider,source_name,source_url,verification_status")
             .order("closing_date", { ascending: true })
             .limit(4),
-          catalogueClient
-            .from<CatalogueFundingRow>("funding_windows")
+          supabase
+            .from("funding_windows")
             .select("name,deadline,provider,source_name,source_url,verification_status")
             .order("deadline", { ascending: true })
             .limit(3),
