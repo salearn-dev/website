@@ -37,6 +37,9 @@ export function SaFlagLogo() {
       ref={imageRef}
       src={src}
       alt="South African flag"
+      width={48}
+      height={32}
+      decoding="async"
       className="h-full w-full object-cover"
       onError={() => {
         if (src !== SA_FLAG_FALLBACK_URL) {
