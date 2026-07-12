@@ -162,7 +162,10 @@ function DocumentUploadConsent() {
         },
       });
 
-      if (consentError) throw consentError;
+      if (consentError) {
+        await supabase.storage.from("learner-documents").remove([path]);
+        throw consentError;
+      }
 
       setState("uploaded");
       setMessage("Document uploaded to your private learner document vault.");
