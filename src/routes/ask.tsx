@@ -24,7 +24,12 @@ import {
   type TrustMeta,
 } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
-import { askTokens, detectAskIntent, type AskIntent } from "@/lib/ask-intent";
+import {
+  askTokens,
+  detectAskIntent,
+  hasAskQuerySignal,
+  type AskIntent,
+} from "@/lib/ask-intent";
 
 export const Route = createFileRoute("/ask")({
   head: () =>
@@ -183,7 +188,7 @@ function AskPage() {
 function buildAnswer(rawQuery: string): AskAnswer {
   const query = rawQuery.trim();
   const intent = detectAskIntent(query);
-  const results = selectResults(intent, query);
+  const results = hasAskQuerySignal(query) ? selectResults(intent, query) : [];
   const label = intentLabel(intent);
 
   return {
