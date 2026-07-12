@@ -626,8 +626,8 @@ function LearnerTestimonials() {
       if (error) throw error;
       setForm({ displayName: "", province: "", quote: "", consent: false });
       setMessage("Thank you. Your feedback was submitted for moderation.");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Feedback could not be submitted.");
+    } catch {
+      setMessage("Feedback could not be submitted. Please try again later.");
     } finally {
       setSubmitting(false);
     }
