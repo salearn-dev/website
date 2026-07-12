@@ -411,3 +411,11 @@ Completed the repository form-semantic pass. Institution submissions now expose 
 - Funding rows without source evidence now render honest non-interactive “Official link unavailable” text.
 - Exported and tested the shared external-source predicate so trust presentation and route actions cannot diverge.
 - Extended the accessibility source gate to enforce mobile menu expansion, focus return and the functional search route.
+
+
+### Catalogue action and accreditation trust corrections
+
+- Opportunity cards now expose an official application action only when genuine external source evidence exists; fallback records render “Application link unavailable.”
+- Course accreditation claims no longer receive a green success treatment unless the record’s verification status is explicitly `Verified`; provisional claims are labelled as claims and rendered neutrally.
+- Removed unsupported “Verified institutions” language from institution route metadata and English learner-facing copy.
+- Extended the SEO/trust gate to enforce evidence-aware funding, opportunity and accreditation presentation.
