@@ -58,20 +58,24 @@ function UnlockPage() {
           Access key
         </label>
         <div className="mt-2 flex items-center gap-2">
-          <Lock className="h-4 w-4 text-muted-foreground" />
+          <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           <Input
             id="password"
             type="password"
             autoComplete="current-password"
             autoFocus
+            required
+            aria-invalid={error}
+            aria-describedby={error ? "unlock-error" : undefined}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Paste key"
           />
         </div>
         {error && (
-          <p className="mt-3 text-sm text-destructive">Incorrect key. Try again.</p>
+          <p id="unlock-error" role="alert" className="mt-3 text-sm text-destructive">Incorrect key. Try again.</p>
         )}
+        <p role="status" aria-live="polite" className="sr-only">{pending ? "Checking access key." : ""}</p>
         <Button type="submit" className="mt-5 w-full" disabled={pending || !password}>
           {pending ? "Checking..." : "Unlock"}
         </Button>
