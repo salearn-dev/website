@@ -52,16 +52,16 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 - [x] Validate crawlable internal links and prevent orphan routes. ✅
 - [x] Prevent unsupported verified/trusted/sourced wording and actions with enforced source contracts. ✅
 - [ ] Prepare axe route coverage once browser dependencies can be locked safely.
-- [ ] Preserve explicit manual keyboard, screen-reader, contrast, zoom and reflow evidence boundaries.
+- [x] Preserve explicit manual keyboard, screen-reader, contrast, zoom and reflow evidence boundaries. ✅
 
 ## Queue E — CI and runtime smoke
 
 - [x] Keep unit, coverage and credentialed integration lanes separate. ✅
 - [x] Keep lint, typecheck, build, audit and bundle budgets blocking. ✅
 - [x] Expand built-preview smoke across safe public and system routes. ✅
-- [ ] Add failure artifacts and actionable diagnostics without leaking secrets.
+- [ ] BLOCKED — failure-artifact upload was rejected because preview logs may export sensitive runtime data; requires explicit trusted-destination approval.
 - [x] Verify workflow syntax and contract mappings after every workflow edit. ✅
-- [ ] Check commit status periodically; absence of Actions evidence is not completion.
+- [x] Checked current head: zero statuses and zero workflow runs; no CI completion claimed. ✅
 - [ ] Prepare Playwright journeys once dependencies and browser installation are approved.
 - [ ] Require branch protection for verification and RLS jobs.
 
