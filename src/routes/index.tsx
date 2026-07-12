@@ -19,7 +19,12 @@ import { CAREERS, COURSES, FUNDING, OPPORTUNITIES } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSeoHead } from "@/lib/seo";
 import { isLanguageCode, useI18n, type LanguageCode } from "@/lib/i18n";
-import { resolveDeadlineFeed, type DeadlineItem } from "@/lib/home-deadlines";
+import {
+  deadlineFeedStatusLabel,
+  resolveDeadlineFeed,
+  type DeadlineFeedState,
+  type DeadlineItem,
+} from "@/lib/home-deadlines";
 import { prepareTestimonialSubmission } from "@/lib/testimonial-submission";
 
 export const Route = createFileRoute("/")({
@@ -412,7 +417,7 @@ const STATIC_DEADLINES: DeadlineItem[] = [
 // Status: Reads Phase 2 public catalogue tables with a static fallback until external source integrations are live.
 function LiveDeadlineFeed() {
   const [deadlines, setDeadlines] = useState<DeadlineItem[]>(STATIC_DEADLINES);
-  const [isLive, setIsLive] = useState(false);
+  const [feedState, setFeedState] = useState<DeadlineFeedState>("loading");
   const { t } = useI18n();
 
   useEffect(() => {
@@ -442,10 +447,10 @@ function LiveDeadlineFeed() {
 
         if (alive) {
           setDeadlines(feed.items);
-          setIsLive(feed.isLive);
+          setFeedState(feed.isLive ? "live" : "fallback");
         }
       } catch {
-        if (alive) setIsLive(false);
+        if (alive) setFeedState("fallback");
       }
     }
 
@@ -468,7 +473,7 @@ function LiveDeadlineFeed() {
         </div>
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
           <BookmarkCheck className="h-3.5 w-3.5" />
-          {isLive ? "Live catalogue feed" : "Curated catalogue fallback"}
+          {deadlineFeedStatusLabel(feedState)}
         </span>
       </div>
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
