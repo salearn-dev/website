@@ -189,9 +189,10 @@ function CoursesPage() {
             </p>
             <TrustMetadata trust={c.trust} />
             <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
-              <span className="inline-flex items-center rounded-full bg-success-soft px-2.5 py-1 text-xs font-medium text-success">
-                {c.accreditation}
-              </span>
+              <AccreditationClaim
+                label={c.accreditation}
+                verified={c.trust.verificationStatus === "Verified"}
+              />
               <Link
                 to="/courses/$slug"
                 params={{ slug: c.slug }}
@@ -236,6 +237,19 @@ function FilterSelect({
         ))}
       </select>
     </label>
+  );
+}
+
+
+function AccreditationClaim({ label, verified }: { label: string; verified: boolean }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+        verified ? "bg-success-soft text-success" : "bg-muted text-muted-foreground"
+      }`}
+    >
+      {verified ? label : `Accreditation claim: ${label}`}
+    </span>
   );
 }
 
