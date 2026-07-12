@@ -11,7 +11,8 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 - [ ] Audit role-gated writes for correct moderation and verification states.
 - [ ] Audit learner-owned tables and storage paths for ownership, cleanup and consent.
 - [ ] Audit public/server errors for leaked provider, database or secret detail.
-- [ ] Audit public API idempotency, collision behavior and deployed rate-limit handoff.
+- [x] Audit and correct public API idempotency and collision behavior. ✅
+- [ ] Prove the deployed distributed rate-limit handoff.
 - [ ] Audit auth redirects, provider failures, session state and sign-out behavior.
 - [ ] Audit sensitive upload MIME, size, path and rollback boundaries.
 - [ ] Keep schema, moderation, sensitive-data and server-only contract scanners enforced.
