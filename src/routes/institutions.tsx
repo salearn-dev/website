@@ -13,7 +13,7 @@ export const Route = createFileRoute("/institutions")({
   head: () =>
     buildSeoHead({
       title: "Institutions - SA Learn",
-      description: "Verified South African universities, TVET colleges and private institutions.",
+      description: "South African universities, TVET colleges and private institutions with visible source and verification status.",
       path: "/institutions",
       ogType: "website",
     }),
