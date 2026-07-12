@@ -25,6 +25,8 @@ jobs:
         run: bun install --frozen-lockfile
       - name: TypeScript
         run: bun run typecheck
+      - name: Unit tests and coverage
+        run: bun run test
       - name: SEO policy
         run: bun run seo:check
       - name: Accessibility policy
