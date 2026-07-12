@@ -347,3 +347,8 @@ Added `docs/partner-api-security.md` defining the distributed/edge rate-limit ba
 ### Match report clipping correction
 
 Replaced the single-page PDF writer with a byte-accurate multipage generator (48 lines per page), preserving valid page/content references and xref offsets. Added long-report coverage proving later results remain present, plus control-character, smart-punctuation and font-safe text normalization tests.
+
+
+### Trust presentation correction
+
+Trust metadata no longer renders the SA Learn fallback URL as if it were external source evidence. Real HTTPS sources remain linked; unavailable evidence renders as plain “Source unavailable.” Added SSR coverage for both states. Funding reminders now reuse the single tested deadline rule instead of an untested route-local copy.
