@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
     "test": "bun test",
-    "test:coverage": "bun test tests --ignore tests/integration --coverage --coverage-reporter=lcov",
+    "test:coverage": "bun test ./tests/*.test.ts ./tests/*.test.tsx --coverage --coverage-reporter=lcov",
     "check": "bun run typecheck && bun run lint && bun run test && bun run seo:check && bun run accessibility:check && bun run security:boundaries && bun run content:health && bun run build && bun run performance:budget",
     "seo:check": "node scripts/check-seo.mjs",
     "accessibility:check": "node scripts/check-accessibility.mjs",
@@ -22,7 +22,7 @@
     "collect:institution-images": "node scripts/collect-institution-images.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test:unit": "bun test tests --ignore tests/integration",
+    "test:unit": "bun test ./tests/*.test.ts ./tests/*.test.tsx",
     "test:integration:rls": "REQUIRE_RLS_TESTS=1 bun test tests/integration/rls.test.ts"
   },
   "dependencies": {
