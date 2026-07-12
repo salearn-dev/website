@@ -9,6 +9,7 @@ const files = {
   home: await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8"),
   institutionPortal: await readFile(new URL("../src/routes/institutions.portal.tsx", import.meta.url), "utf8"),
   unlock: await readFile(new URL("../src/routes/unlock.tsx", import.meta.url), "utf8"),
+  header: await readFile(new URL("../src/components/site-header.tsx", import.meta.url), "utf8"),
 };
 
 const failures = [];
@@ -66,6 +67,20 @@ for (const semantic of [
   if (!files.unlock.includes(semantic)) {
     failures.push(`Unlock form semantic missing: ${semantic}`);
   }
+}
+
+for (const semantic of [
+  'aria-expanded={open}',
+  'aria-controls="mobile-navigation"',
+  'triggerRef.current?.focus()',
+  'to="/ask"',
+]) {
+  if (!files.header.includes(semantic)) {
+    failures.push(`Header navigation semantic missing: ${semantic}`);
+  }
+}
+if (files.header.includes('<button\n            type="button"\n            aria-label={t("nav.search")}')) {
+  failures.push("Desktop search is an inert button.");
 }
 
 if (failures.length) {
