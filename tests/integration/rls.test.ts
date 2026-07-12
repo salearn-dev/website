@@ -7,6 +7,7 @@ const userBToken = process.env.SUPABASE_TEST_USER_B_TOKEN;
 const userAId = process.env.SUPABASE_TEST_USER_A_ID;
 const userBId = process.env.SUPABASE_TEST_USER_B_ID;
 const adminToken = process.env.SUPABASE_TEST_ADMIN_TOKEN;
+const institutionToken = process.env.SUPABASE_TEST_INSTITUTION_TOKEN;
 const requireRlsTests = process.env.REQUIRE_RLS_TESTS === "1";
 const requiredEnvironment = {
   SUPABASE_TEST_URL: url,
@@ -16,6 +17,7 @@ const requiredEnvironment = {
   SUPABASE_TEST_USER_A_ID: userAId,
   SUPABASE_TEST_USER_B_ID: userBId,
   SUPABASE_TEST_ADMIN_TOKEN: adminToken,
+  SUPABASE_TEST_INSTITUTION_TOKEN: institutionToken,
 };
 const missingEnvironment = Object.entries(requiredEnvironment)
   .filter(([, value]) => !value)
@@ -28,9 +30,11 @@ if (requireRlsTests && missingEnvironment.length > 0) {
 const hasBase = Boolean(url && key);
 const hasUsers = Boolean(hasBase && userAToken && userBToken && userAId && userBId);
 const hasAdmin = Boolean(hasBase && adminToken);
+const hasInstitution = Boolean(hasBase && institutionToken);
 const baseTest = hasBase ? test : test.skip;
 const userTest = hasUsers ? test : test.skip;
 const adminTest = hasAdmin ? test : test.skip;
+const institutionTest = hasInstitution ? test : test.skip;
 
 async function rest(path: string, token?: string, init?: RequestInit) {
   return fetch(`${url}/rest/v1/${path}`, {
@@ -83,6 +87,66 @@ describe("Supabase RLS integration", () => {
       body: JSON.stringify({ user_id: userAId, role: "admin" }),
     });
     expect([401, 403]).toContain(response.status);
+  });
+
+  institutionTest("an institution role can inspect its moderation queue surface", async () => {
+    const response = await rest(
+      "institutions?select=id,moderation_state&limit=1",
+      institutionToken,
+    );
+    expect(response.status).toBe(200);
+  });
+
+  userTest("a learner cannot invoke the catalogue staleness function", async () => {
+    const response = await rest("rpc/mark_stale_catalogue_records", userAToken, {
+      method: "POST",
+      body: "{}",
+    });
+    expect([401, 403, 404]).toContain(response.status);
+  });
+
+  adminTest("testimonial submission stays unapproved until admin moderation", async () => {
+    if (!userAToken || !userAId || !adminToken) throw new Error("Test identities are unavailable.");
+    const marker = `rls-${crypto.randomUUID()}`;
+    const create = await rest("testimonials", userAToken, {
+      method: "POST",
+      headers: { prefer: "return=representation" },
+      body: JSON.stringify({
+        submitter_user_id: userAId,
+        learner_name: "RLS test learner",
+        province: "Gauteng",
+        quote: `Automated moderation proof ${marker}`,
+        role_or_school: "Integration test",
+        language: "en",
+        consent_to_publish: true,
+        approved: false,
+      }),
+    });
+    expect(create.status).toBe(201);
+    const rows = await create.json();
+    const row = rows[0] as { id: string; approved: boolean };
+    expect(row.approved).toBe(false);
+
+    try {
+      const moderate = await rest(`testimonials?id=eq.${row.id}`, adminToken, {
+        method: "PATCH",
+        headers: { prefer: "return=representation" },
+        body: JSON.stringify({ approved: true }),
+      });
+      expect(moderate.status).toBe(200);
+      const moderatedRows = await moderate.json();
+      expect(moderatedRows[0]?.approved).toBe(true);
+    } finally {
+      await rest(`testimonials?id=eq.${row.id}`, adminToken, { method: "DELETE" });
+    }
+  });
+
+  adminTest("an administrator can invoke catalogue staleness maintenance", async () => {
+    const response = await rest("rpc/mark_stale_catalogue_records", adminToken, {
+      method: "POST",
+      body: "{}",
+    });
+    expect(response.status).toBe(200);
   });
 
   adminTest("an administrator can inspect moderation rows", async () => {
