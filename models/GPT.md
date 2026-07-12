@@ -304,3 +304,8 @@ Extended error scrubbing beyond the partner API:
 - enforced the scanner locally and in CI.
 
 Also removed the homepage live-catalogue `unknown` client cast and now use the generated Supabase contract directly.
+
+
+### Renewable RLS test identities
+
+Replaced the CI dependency on expiring stored JWTs with runtime authentication for dedicated test accounts. The harness now supports recommended email/password secrets for two learners, an administrator and an institution-role user, derives learner IDs from authenticated sessions, and retains token/id overrides only for local debugging. Updated the environment template, workflow mappings, CI-contract checks and testing documentation.
