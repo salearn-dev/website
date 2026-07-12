@@ -168,12 +168,14 @@ function InstitutionPortalPage() {
             label="Institution type"
             value={draft.type}
             onChange={(type) => setDraft({ ...draft, type })}
+            maxLength={80}
           />
           <Field
             label="Province"
             value={draft.province}
             onChange={(province) => setDraft({ ...draft, province })}
             autoComplete="address-level1"
+            maxLength={80}
           />
           <Field
             label="Website"
@@ -187,6 +189,7 @@ function InstitutionPortalPage() {
             label="Accreditation note"
             value={draft.accreditationStatus}
             onChange={(accreditationStatus) => setDraft({ ...draft, accreditationStatus })}
+            maxLength={240}
           />
           <Field
             label="Official source URL"
@@ -195,6 +198,7 @@ function InstitutionPortalPage() {
             type="url"
             required
             maxLength={2048}
+            autoComplete="url"
           />
         </div>
 
