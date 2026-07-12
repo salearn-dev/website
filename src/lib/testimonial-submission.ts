@@ -23,7 +23,6 @@ export function prepareTestimonialSubmission(draft: TestimonialDraft) {
       display_name: learnerName.slice(0, 80),
       province: province ? province.slice(0, 80) : null,
       quote: quote.slice(0, 700),
-      role_or_school: "Learner submission",
       consent_to_publish: true,
       moderation_state: "submitted" as const,
     },
