@@ -13,7 +13,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 - [ ] Audit public/server errors for leaked provider, database or secret detail.
 - [x] Audit and correct public API idempotency and collision behavior. ✅
 - [ ] Prove the deployed distributed rate-limit handoff.
-- [ ] Audit auth redirects, provider failures, session state and sign-out behavior.
+- [x] Audit auth redirects, provider failures, session state and sign-out behavior. ✅
 - [ ] Audit sensitive upload MIME, size, path and rollback boundaries.
 - [ ] Keep schema, moderation, sensitive-data and server-only contract scanners enforced.
 
