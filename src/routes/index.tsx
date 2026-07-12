@@ -19,6 +19,7 @@ import { CAREERS, COURSES, FUNDING, OPPORTUNITIES } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n, type LanguageCode } from "@/lib/i18n";
+import { resolveDeadlineFeed, type DeadlineItem } from "@/lib/home-deadlines";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -360,14 +361,6 @@ function SignedInDashboard() {
   );
 }
 
-type DeadlineItem = {
-  title: string;
-  deadline: string;
-  source: string;
-  status: string;
-  href?: string;
-};
-
 type CatalogueOpportunityRow = {
   title: string | null;
   closing_date: string | null;
@@ -440,26 +433,15 @@ function LiveDeadlineFeed() {
             .limit(3),
         ]);
 
-        const liveItems: DeadlineItem[] = [
-          ...(opportunities.data ?? []).map((item) => ({
-            title: item.title ?? "Opportunity deadline",
-            deadline: item.closing_date ?? "Confirm with source",
-            source: item.source_name ?? item.provider ?? "Official source",
-            status: item.verification_status ?? "Provisional",
-            href: item.source_url ?? undefined,
-          })),
-          ...(funding.data ?? []).map((item) => ({
-            title: item.name ?? "Funding deadline",
-            deadline: item.deadline ?? "Confirm with source",
-            source: item.source_name ?? item.provider ?? "Official source",
-            status: item.verification_status ?? "Provisional",
-            href: item.source_url ?? undefined,
-          })),
-        ].filter((item) => item.title);
+        const feed = resolveDeadlineFeed(
+          STATIC_DEADLINES,
+          opportunities.data,
+          funding.data,
+        );
 
-        if (alive && liveItems.length > 0) {
-          setDeadlines(liveItems);
-          setIsLive(true);
+        if (alive) {
+          setDeadlines(feed.items);
+          setIsLive(feed.isLive);
         }
       } catch {
         if (alive) setIsLive(false);
