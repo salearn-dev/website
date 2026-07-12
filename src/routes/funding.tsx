@@ -10,7 +10,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
-import { TrustMetadata } from "@/components/trust-metadata";
+import { hasExternalTrustSource, TrustMetadata } from "@/components/trust-metadata";
 import { supabase } from "@/integrations/supabase/client";
 import { FUNDING } from "@/lib/data";
 import { loadApprovedFunding } from "@/lib/live-catalogue";
@@ -89,12 +89,18 @@ function FundingPage() {
               <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <CalendarClock className="h-3.5 w-3.5" /> {f.deadline}
               </p>
-              <button
-                type="button"
-                className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                Learn more <ArrowRight className="h-3.5 w-3.5" />
-              </button>
+              {hasExternalTrustSource(f.trust) ? (
+                <a
+                  href={f.trust.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  Learn more <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              ) : (
+                <span className="text-xs text-muted-foreground">Official link unavailable</span>
+              )}
             </div>
           </article>
         ))}
