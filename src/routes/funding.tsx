@@ -18,6 +18,7 @@ import { evaluateNsfasAnswers, getFundingMatchReasons } from "@/lib/funding-guid
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n } from "@/lib/i18n";
 import { learnerDocumentPath, validateLearnerDocument } from "@/lib/learner-document";
+import { reminderDateFromDeadline } from "@/lib/catalogue-filters";
 
 type FundingItem = (typeof FUNDING)[number];
 
@@ -269,7 +270,7 @@ function DeadlineReminderHelper({
         return;
       }
 
-      const remindAt = fundingReminderDateFromDeadline(funding.deadline);
+      const remindAt = reminderDateFromDeadline(funding.deadline);
       const { error } = await supabase.from("deadline_reminders").upsert(
         {
           user_id: user.id,
@@ -383,19 +384,6 @@ function DeadlineReminderHelper({
       </div>
     </section>
   );
-}
-
-function fundingReminderDateFromDeadline(deadline: string) {
-  const parsed = Date.parse(deadline);
-  if (Number.isNaN(parsed)) {
-    const fallback = new Date();
-    fallback.setDate(fallback.getDate() + 30);
-    return fallback;
-  }
-
-  const date = new Date(parsed);
-  date.setDate(date.getDate() - 7);
-  return date;
 }
 
 const STUDY_AREAS = ["Any", "Teaching", "Engineering", "Science", "Business", "Trades"];
