@@ -204,3 +204,8 @@ Added direct Supabase REST integration tests for anonymous catalogue access, ano
 **Files added or updated:** `src/lib/catalogue-filters.ts`, `src/lib/funding-guidance.ts`, `src/lib/guide-detail.ts`, `src/lib/seo-schema.ts`, `src/lib/i18n.tsx`, route consumers, and their corresponding tests.
 
 **Evidence boundary:** The GitHub connector reports no workflow run for commit `75d3be0de6428e3191a0a02655b46c0d24b6ba89`. T21 is implemented but not represented as fully complete until CI evidence exists.
+
+
+### Homepage fallback coverage
+
+T15 implementation prepared: extracted the homepage deadline-feed selection policy into `src/lib/home-deadlines.ts`, covered empty/null live-query results, fallback preservation, live-row selection and missing-field normalisation, and wired the landing route to the tested policy. It remains unchecked until the clean-checkout workflow proves the suite.
