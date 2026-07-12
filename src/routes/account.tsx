@@ -14,11 +14,18 @@ import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { buildSeoHead } from "@/lib/seo";
+import {
+  accountRedirectUrl,
+  enabledAuthProviders,
+  type AuthProvider,
+} from "@/lib/auth-policy";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type LearnerDetails = Database["public"]["Tables"]["learner_details"]["Row"];
 type SavedItem = Database["public"]["Tables"]["saved_items"]["Row"];
 type Role = Database["public"]["Tables"]["user_roles"]["Row"];
+
+const AUTH_PROVIDERS = enabledAuthProviders(import.meta.env.VITE_ENABLE_APPLE_AUTH === "true");
 
 export const Route = createFileRoute("/account")({
   head: () =>
@@ -56,7 +63,7 @@ function AccountPage() {
       if (!mounted) return;
 
       if (sessionError) {
-        setError(sessionError.message);
+        setError("The account session could not be checked. Please refresh and try again.");
         setLoading(false);
         return;
       }
@@ -120,7 +127,7 @@ function AccountPage() {
       profileResult.error ?? learnerResult.error ?? savedResult.error ?? rolesResult.error;
 
     if (firstError) {
-      setError(firstError.message);
+      setError("Some account information could not be loaded. Please refresh and try again.");
     }
   }
 
@@ -133,7 +140,7 @@ function AccountPage() {
     const { error: signInError } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/account`,
+        emailRedirectTo: accountRedirectUrl(window.location.origin),
       },
     });
 
@@ -148,7 +155,7 @@ function AccountPage() {
 
   // Codex: OAuth provider entry points
   // Google routes through the Lovable broker (iframe-safe web_message flow).
-  async function signInWithProvider(provider: "google" | "apple") {
+  async function signInWithProvider(provider: AuthProvider) {
     setAuthLoading(true);
     setNotice(null);
     setError(null);
@@ -167,7 +174,7 @@ function AccountPage() {
 
     const { error: providerError } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/account` },
+      options: { redirectTo: accountRedirectUrl(window.location.origin) },
     });
 
     if (providerError) {
@@ -277,8 +284,7 @@ function AccountPage() {
                 </dl>
               ) : (
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  No learner detail row has been saved yet. Match-profile writes stay disabled until
-                  Phase 2 catalogue data is stable.
+                  No learner detail row has been saved yet. Use Match or Funding to save a learner-owned profile after reviewing the consent notice.
                 </p>
               )}
             </section>
@@ -296,8 +302,7 @@ function AccountPage() {
                 </ul>
               ) : (
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Nothing saved yet. Save buttons will be safer after verified catalogue records
-                  exist, so saved slugs do not point at changing unverified data.
+                  Nothing saved yet. Saved catalogue actions will appear here when you use an available save control.
                 </p>
               )}
             </section>
@@ -348,15 +353,14 @@ function AccountPage() {
               Send sign-in link
             </button>
             <p id="account-auth-help" className="text-xs leading-relaxed text-muted-foreground">
-              Saved match/profile editing remains intentionally limited until verified catalogue
-              tables land in Phase 2.
+              Sign-in links return only to the SA Learn account route. Profile data remains protected by row-level security.
             </p>
             <div className="border-t border-border pt-3">
               <p className="mb-2 text-xs font-medium text-muted-foreground">
                 Or continue with a configured provider
               </p>
               <div className="flex flex-wrap gap-2">
-                {(["google", "apple"] as const).map((provider) => (
+                {AUTH_PROVIDERS.map((provider) => (
                   <button
                     key={provider}
                     type="button"
@@ -375,9 +379,7 @@ function AccountPage() {
       )}
 
       <div className="mt-8 rounded-2xl border border-border bg-muted/35 p-5 text-sm text-muted-foreground">
-        <span className="font-medium text-foreground">Next backend dependency:</span> verified
-        catalogue tables for courses, institutions, opportunities and funding windows. After that,
-        account saves can point to stable live records.{" "}
+        <span className="font-medium text-foreground">Account safety:</span> authentication returns to this route, private rows remain learner-owned, and catalogue records retain their verification labels.{" "}
         <Link to="/prod-readiness" className="font-medium text-foreground hover:underline">
           View readiness
         </Link>
