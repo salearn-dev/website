@@ -41,7 +41,7 @@ const DICTIONARIES: Record<LanguageCode, Dictionary> = {
     "route.careers.description": "Start from a career you want, and see the subjects, study routes and skills that get you there.",
     "route.institutions.eyebrow": "Where can I study?",
     "route.institutions.title": "Institutions",
-    "route.institutions.description": "Verified universities, universities of technology, TVET colleges and private institutions across South Africa.",
+    "route.institutions.description": "Universities, universities of technology, TVET colleges and private institutions with visible source and verification status.",
     "route.funding.eyebrow": "How will I pay?",
     "route.funding.title": "Funding your studies",
     "route.funding.description": "Clear, calm information about NSFAS, bursaries, scholarships and learnership funding - so cost is never the reason you don't apply.",
