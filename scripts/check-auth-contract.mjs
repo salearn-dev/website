@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-const [account, policy, environment, skills, opportunities, institutionPortal, adminData] = await Promise.all([
+const [account, policy, environment, skills, opportunities, institutionPortal, adminData, funding, homepage, match] = await Promise.all([
   readFile("src/routes/account.tsx", "utf8"),
   readFile("src/lib/auth-policy.ts", "utf8"),
   readFile(".env.example", "utf8"),
@@ -8,6 +8,9 @@ const [account, policy, environment, skills, opportunities, institutionPortal, a
   readFile("src/routes/opportunities.tsx", "utf8"),
   readFile("src/routes/institutions.portal.tsx", "utf8"),
   readFile("src/routes/admin.data.tsx", "utf8"),
+  readFile("src/routes/funding.tsx", "utf8"),
+  readFile("src/routes/index.tsx", "utf8"),
+  readFile("src/routes/match.tsx", "utf8"),
 ]);
 
 const failures = [];
@@ -32,6 +35,9 @@ for (const [label, source] of [
   ["opportunities", opportunities],
   ["institution portal", institutionPortal],
   ["admin data", adminData],
+  ["funding", funding],
+  ["homepage", homepage],
+  ["match", match],
 ]) {
   if (!source.includes("error: sessionError") || !source.includes("if (sessionError) throw sessionError")) {
     failures.push(`${label} route ignores returned session errors`);
