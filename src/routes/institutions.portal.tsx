@@ -158,6 +158,8 @@ function InstitutionPortalPage() {
             label="Institution name"
             value={draft.name}
             onChange={(name) => setDraft({ ...draft, name })}
+            required
+            maxLength={160}
           />
           <Field
             label="Institution type"
@@ -173,6 +175,8 @@ function InstitutionPortalPage() {
             label="Website"
             value={draft.website}
             onChange={(website) => setDraft({ ...draft, website })}
+            type="url"
+            maxLength={2048}
           />
           <Field
             label="Accreditation note"
@@ -183,6 +187,9 @@ function InstitutionPortalPage() {
             label="Official source URL"
             value={draft.sourceUrl}
             onChange={(sourceUrl) => setDraft({ ...draft, sourceUrl })}
+            type="url"
+            required
+            maxLength={2048}
           />
         </div>
 
@@ -212,17 +219,26 @@ function Field({
   label,
   value,
   onChange,
+  type = "text",
+  required = false,
+  maxLength,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  type?: "text" | "url";
+  required?: boolean;
+  maxLength?: number;
 }) {
   return (
     <label className="block text-sm">
       <span className="mb-1.5 block font-medium text-muted-foreground">{label}</span>
       <input
+        type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        required={required}
+        maxLength={maxLength}
         className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       />
     </label>
