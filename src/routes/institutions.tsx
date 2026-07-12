@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { InstitutionHeroMedia } from "@/components/institution-hero-media";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS, type Institution } from "@/lib/data";
 import { loadApprovedInstitutions } from "@/lib/live-catalogue";
@@ -76,7 +77,7 @@ function InstitutionsPage() {
       </div>
       <p className="mb-4 text-sm text-muted-foreground" aria-live="polite">
         Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
-        {institutions.length} {catalogueSource === "live" ? "approved live" : "prototype"} institutions.
+        {institutions.length} {catalogueSource === "live" ? "approved live" : "curated"} institutions.
       </p>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -85,15 +86,11 @@ function InstitutionsPage() {
             key={i.slug}
             className="overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-[var(--shadow-card-hover)]"
           >
-            {i.heroImage ? (
-              <img
-                src={i.heroImage.url}
-                alt={i.heroImage.alt}
-                className="h-44 w-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            ) : null}
+            <InstitutionHeroMedia
+              image={i.heroImage}
+              institutionName={i.name}
+              variant="card"
+            />
             <div className="p-6">
               <div className="flex items-start justify-between gap-4">
                 <div>

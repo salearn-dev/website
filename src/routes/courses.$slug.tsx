@@ -82,7 +82,7 @@ function CourseDetailPage() {
 
           <h2 className="mt-6 text-xl font-semibold tracking-tight text-foreground">What this pathway is for</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            This course page uses SA Learn's fixed prototype detail template. It helps learners compare the
+            This course page uses SA Learn's consistent detail template. It helps learners compare the
             pathway without pretending that every official admission rule has been verified yet.
           </p>
 
@@ -139,7 +139,7 @@ function CourseDetailPage() {
             <h2 className="text-base font-semibold text-foreground">Missing data warning</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Application deadline, detailed fees, campus availability and subject-specific requirements are
-              not verified in this prototype record.
+              not verified in this record.
             </p>
           </div>
         </aside>

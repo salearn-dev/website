@@ -295,7 +295,7 @@ function SkillsPage() {
               <LinkGroup
                 icon={BookOpen}
                 title="Related courses"
-                empty="No linked prototype course yet."
+                empty="No linked course yet."
                 items={relatedCourses.slice(0, 3).map((course) => ({
                   label: course.title,
                   to: "/courses/$slug",

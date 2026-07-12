@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { InstitutionHeroMedia } from "@/components/institution-hero-media";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
@@ -79,28 +80,11 @@ function InstitutionDetailPage() {
         </Link>
       </div>
 
-      {institution.heroImage ? (
-        <figure className="mb-6 overflow-hidden rounded-2xl border border-border bg-card">
-          <img
-            src={institution.heroImage.url}
-            alt={institution.heroImage.alt}
-            className="aspect-[16/7] w-full object-cover"
-            loading="eager"
-            decoding="async"
-          />
-          <figcaption className="border-t border-border px-4 py-3 text-xs text-muted-foreground">
-            Image source:{" "}
-            <a
-              href={institution.heroImage.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-foreground hover:underline"
-            >
-              {institution.heroImage.sourceName}
-            </a>
-          </figcaption>
-        </figure>
-      ) : null}
+      <InstitutionHeroMedia
+        image={institution.heroImage}
+        institutionName={institution.name}
+        variant="detail"
+      />
 
       <section className="grid gap-6 lg:grid-cols-[1.35fr_0.85fr]">
         <article className="rounded-2xl border border-border bg-card p-6 md:p-8">

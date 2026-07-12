@@ -174,7 +174,7 @@ function CoursesPage() {
 
       <p className="mb-4 text-sm text-muted-foreground" aria-live="polite">
         Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
-        {courses.length} {catalogueSource === "live" ? "approved live" : "prototype"} courses.
+        {courses.length} {catalogueSource === "live" ? "approved live" : "curated"} courses.
       </p>
       <div className="grid gap-4 lg:grid-cols-2">
         {filtered.map((c) => (
@@ -216,7 +216,7 @@ function CoursesPage() {
         ))}
         {filtered.length === 0 && (
           <p className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
-            No prototype courses match those filters yet. Clear filters or broaden your search.
+            No courses match those filters yet. Clear filters or broaden your search.
           </p>
         )}
       </div>

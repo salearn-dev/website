@@ -218,7 +218,7 @@ function Landing() {
             },
             {
               q: "Is the information verified?",
-              a: "This is a prototype. Live deployment shows each page's Last Verified Date and source.",
+              a: "Every education record shows its source, verification status and Last Verified Date where available.",
             },
             {
               q: "I didn't pass matric. Can I still study?",
@@ -485,7 +485,7 @@ function LiveDeadlineFeed() {
         </div>
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
           <BookmarkCheck className="h-3.5 w-3.5" />
-          {isLive ? "Live catalogue feed" : "Prototype fallback"}
+          {isLive ? "Live catalogue feed" : "Curated catalogue fallback"}
         </span>
       </div>
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">

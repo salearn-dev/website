@@ -59,7 +59,7 @@ function CareerDetailPage() {
     estimatedSalary: [
       {
         "@type": "MonetaryAmountDistribution",
-        name: "Prototype monthly salary range",
+        name: "Estimated monthly salary range",
         currency: "ZAR",
         duration: "P1M",
       },
@@ -100,7 +100,7 @@ function CareerDetailPage() {
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             This career page uses one fixed SA Learn template so learners can compare pathways
-            consistently. Salary and demand are prototype planning signals, not verified
+            consistently. Salary and demand are planning signals, not verified
             labour-market guarantees.
           </p>
 
@@ -153,7 +153,7 @@ function CareerDetailPage() {
               <SalaryBand label="Senior" value={career.salaryBands.senior} />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Prototype estimate only. SA Learn still needs verified salary sources before these
+              Estimate only. SA Learn still needs verified salary sources before these
               ranges can be treated as production labour-market data.
             </p>
           </section>
@@ -197,7 +197,7 @@ function RelatedCourses({ courses }: { courses: typeof COURSES }) {
         </div>
       ) : (
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          No linked prototype course yet. This career still needs verified course mapping.
+          No linked course yet. This career still needs verified course mapping.
         </p>
       )}
     </div>

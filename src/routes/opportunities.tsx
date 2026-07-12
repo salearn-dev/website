@@ -167,7 +167,7 @@ function OpportunitiesPage() {
         </div>
         <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">
           Showing <span className="font-medium text-foreground">{filtered.length}</span> of{" "}
-          {opportunities.length} {catalogueSource === "live" ? "approved live" : "prototype"} opportunities.{" "}
+          {opportunities.length} {catalogueSource === "live" ? "approved live" : "curated"} opportunities.{" "}
           {saveMessage || "Signed-in learners can save reminder intent for deadlines."}
         </p>
       </div>
@@ -223,7 +223,7 @@ function OpportunitiesPage() {
         ))}
         {filtered.length === 0 && (
           <div className="p-6 text-sm text-muted-foreground">
-            No prototype opportunities match these filters yet. Clear filters or try a broader
+            No opportunities match these filters yet. Clear filters or try a broader
             option.
           </div>
         )}

@@ -9,6 +9,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const CLOUD_NAME = "csntwfsm";
 const UPLOAD_PRESET = "salearn";
+const PUBLIC_ID_REVISION = "hero-20260712";
 const DATA_FILE = new URL("../src/lib/data.ts", import.meta.url);
 const TARGET_FILE = new URL("../src/lib/institution-images.ts", import.meta.url);
 const EDGE_PATH = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
@@ -24,6 +25,12 @@ const headers = {
   "user-agent":
     "SA Learn institution image collector (+https://salearn.online; educational catalogue)",
   accept: "text/html,application/xhtml+xml",
+};
+
+const browserImageHeaders = {
+  "user-agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+  accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
 };
 
 function decodeHtml(value) {
@@ -56,7 +63,7 @@ function parseSeeds(content) {
     });
   }
 
-  return seeds.filter((seed) => !onlySlugs || onlySlugs.has(seed.slug));
+  return seeds;
 }
 
 function absoluteUrl(raw, base) {
@@ -227,7 +234,13 @@ async function collectCandidates(seed) {
 async function uploadCandidate(seed, candidate) {
   const imageResponse = await fetchWithTimeout(
     candidate.url,
-    { headers: { "user-agent": headers["user-agent"], accept: "image/*,*/*" } },
+    {
+      headers: {
+        ...browserImageHeaders,
+        referer: candidate.sourcePage,
+      },
+      redirect: "follow",
+    },
     45000,
   );
 
@@ -260,6 +273,44 @@ async function uploadCandidate(seed, candidate) {
   });
 }
 
+async function uploadRemoteCandidate(seed, candidate) {
+  const form = new FormData();
+  form.set("upload_preset", UPLOAD_PRESET);
+  form.set("file", candidate.url);
+  form.set("public_id", `salearn/institutions/${seed.slug}-${PUBLIC_ID_REVISION}`);
+  form.set("context", `caption=${seed.name}|source=${candidate.sourcePage}`);
+
+  const response = await fetchWithTimeout(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+    { method: "POST", body: form },
+    60000,
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Cloudinary remote fetch ${response.status}: ${body.slice(0, 220)}`);
+  }
+
+  const result = await response.json();
+  if (result.width < 320 || result.height < 120) {
+    throw new Error(`Remote image too small: ${result.width}x${result.height}`);
+  }
+
+  return {
+    slug: seed.slug,
+    name: seed.name,
+    url: result.secure_url,
+    sourceUrl: candidate.sourcePage,
+    sourceName: candidate.sourceName,
+    cloudinaryPublicId: result.public_id,
+    width: result.width,
+    height: result.height,
+    sourceType: candidate.sourceType ?? "remote source link",
+    verificationStatus: candidate.verificationStatus ?? "manual_link",
+    notes: candidate.notes ?? "",
+  };
+}
+
 async function uploadBlob({
   seed,
   blob,
@@ -280,7 +331,8 @@ async function uploadBlob({
   const form = new FormData();
   form.set("upload_preset", UPLOAD_PRESET);
   form.set("file", new File([blob], `${seed.slug}.${extension}`, { type: effectiveType }));
-  form.set("public_id", `salearn/institutions/${seed.slug}`);
+  // Codex: Versioned final image IDs avoid collisions with rejected unsigned uploads.
+  form.set("public_id", `salearn/institutions/${seed.slug}-${PUBLIC_ID_REVISION}`);
   form.set("context", `caption=${seed.name}|source=${sourcePage}`);
 
   const response = await fetchWithTimeout(
@@ -481,6 +533,7 @@ ${entries}
 
 const data = await readFile(DATA_FILE, "utf8");
 const seeds = parseSeeds(data);
+const targetSeeds = onlySlugs ? seeds.filter((seed) => onlySlugs.has(seed.slug)) : seeds;
 const uploaded = await readExistingImages(seeds);
 const existingSlugs = new Set(uploaded.map((image) => image.slug));
 
@@ -515,7 +568,7 @@ if (linksArg) {
 
     console.log(`Uploading linked image ${seed.slug} - ${seed.name}`);
     try {
-      const image = await uploadCandidate(seed, {
+      const candidate = {
         url: record.image_url,
         sourcePage: record.source_page_url,
         sourceName: record.institution_name ?? seed.name,
@@ -524,7 +577,14 @@ if (linksArg) {
         sourceType: record.fallback_type ?? "manual source link",
         verificationStatus: record.verification ?? "manual_link",
         notes: record.notes ?? "",
-      });
+      };
+      let image;
+      try {
+        image = await uploadCandidate(seed, candidate);
+      } catch (directError) {
+        console.warn(`${seed.slug}: direct fetch failed; trying Cloudinary remote fetch (${String(directError)})`);
+        image = await uploadRemoteCandidate(seed, candidate);
+      }
       uploaded.push(image);
       existingSlugs.add(image.slug);
       await writeFile(TARGET_FILE, renderMap(uploaded), "utf8");
@@ -538,7 +598,7 @@ if (linksArg) {
   process.exit(0);
 }
 
-for (const seed of seeds) {
+for (const seed of targetSeeds) {
   if (existingSlugs.has(seed.slug)) {
     console.log(`Skipping ${seed.slug} - already uploaded`);
     continue;

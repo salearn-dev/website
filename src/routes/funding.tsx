@@ -463,7 +463,7 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
             Bursary and funding matcher
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Choose broad study and funding needs to see which prototype funding cards may be worth
+            Choose broad study and funding needs to see which funding options may be worth
             checking. Signed-in learners can save these broad preferences to their learner profile.
           </p>
 
@@ -618,8 +618,8 @@ function NsfasWizard() {
         body: "Your answers fit the broad public NSFAS pathway. This is not approval - confirm the current official rules and apply through NSFAS only.",
         checks: [
           "Public institution route selected.",
-          "Income band appears within the prototype NSFAS threshold.",
-          "No information is saved by this prototype wizard.",
+          "Income band appears within the planning NSFAS threshold.",
+          "No information is saved by this eligibility guide.",
         ],
       };
     }
@@ -630,14 +630,14 @@ function NsfasWizard() {
       body: "One or more answers may fall outside the broad NSFAS route. You may still have other funding options, but confirm official NSFAS rules before deciding.",
       checks: [
         isCitizen
-          ? "Citizenship answer does not block this prototype check."
+          ? "Citizenship answer does not block this initial check."
           : "NSFAS usually focuses on South African citizens.",
         isPublic
           ? "Institution type appears public."
           : "NSFAS usually funds public universities and TVET colleges.",
         incomeLikely
           ? "Income band may fit the broad threshold."
-          : "Income band may be above the broad prototype threshold.",
+          : "Income band may be above the broad planning threshold.",
         isFundableLevel
           ? "Qualification answer may be fundable."
           : "Private provider routes usually need different funding checks.",

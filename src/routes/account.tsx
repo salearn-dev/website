@@ -297,7 +297,7 @@ function AccountPage() {
               ) : (
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   Nothing saved yet. Save buttons will be safer after verified catalogue records
-                  exist, so saved slugs do not point at moving prototype data.
+                  exist, so saved slugs do not point at changing unverified data.
                 </p>
               )}
             </section>

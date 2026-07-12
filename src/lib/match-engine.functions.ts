@@ -44,14 +44,14 @@ function buildMatchGroups({
           institution: "Walter Sisulu University",
           confidence: "Partial match",
           reason:
-            "Your marks meet the current server-side prototype APS and English thresholds for this pathway.",
+            "Your marks meet the current estimated APS and English thresholds for this pathway.",
           requirementsMet: [
-            `Estimated APS is ${aps}, above the prototype minimum of 20.`,
-            `English mark is ${englishMark}%, above the prototype minimum of 50%.`,
+            `Estimated APS is ${aps}, above the planning minimum of 20.`,
+            `English mark is ${englishMark}%, above the planning minimum of 50%.`,
           ],
           requirementsMissing: ["Official faculty requirements still need source verification."],
           additionalChecks: [
-            "NBT status: Not flagged in this prototype route.",
+            "NBT status: Not flagged in this guidance route.",
             "Additional tests: No additional-test rule is known yet; confirm with the institution.",
           ],
           nextStep:
@@ -62,10 +62,10 @@ function buildMatchGroups({
           institution: "False Bay TVET College",
           confidence: "Partial match",
           reason:
-            "Your APS and Mathematics result fit the current server-side prototype rule for this technical route.",
+            "Your APS and Mathematics result fit the current estimated rule for this technical route.",
           requirementsMet: [
-            `Estimated APS is ${aps}, above the prototype minimum of 22.`,
-            `Mathematics-related mark is ${mathsMark}%, above the prototype minimum of 50%.`,
+            `Estimated APS is ${aps}, above the planning minimum of 22.`,
+            `Mathematics-related mark is ${mathsMark}%, above the planning minimum of 50%.`,
           ],
           requirementsMissing: ["Campus-specific intake and subject rules are not verified yet."],
           additionalChecks: [
@@ -85,12 +85,12 @@ function buildMatchGroups({
           title: "Diploma in Nursing",
           institution: "University of Limpopo",
           confidence: "Needs confirmation",
-          reason: "You are close, but one listed prototype subject threshold is not met.",
+          reason: "You are close, but one listed planning threshold is not met.",
           requirementsMet: [
             `Estimated APS is ${aps}, which may be competitive for some diploma routes.`,
           ],
           requirementsMissing: [
-            `Life Sciences prototype minimum is 60%; your mark is ${lifeSciencesMark}%.`,
+            `Life Sciences planning minimum is 60%; your mark is ${lifeSciencesMark}%.`,
           ],
           additionalChecks: [
             "NBT status: Health programmes may require additional selection steps; no verified NBT rule is stored yet.",
@@ -110,12 +110,12 @@ function buildMatchGroups({
           institution: "University of Cape Town",
           confidence: "Needs confirmation",
           reason:
-            "This path usually has higher Mathematics requirements than your current prototype profile shows.",
+            "This path usually has higher Mathematics requirements than your current profile shows.",
           requirementsMet: [
             `Estimated APS is ${aps}; some engineering alternatives may still be worth checking.`,
           ],
           requirementsMissing: [
-            `Mathematics prototype minimum is 70%; your Mathematics-related mark is ${mathsMark}%.`,
+            `Mathematics planning minimum is 70%; your Mathematics-related mark is ${mathsMark}%.`,
           ],
           additionalChecks: [
             "NBT status: NBTs may be required or recommended for some university engineering routes.",
@@ -137,14 +137,14 @@ function buildMatchGroups({
           reason:
             "This alternative is shown because learnership routes may rely less on APS and more on provider requirements.",
           requirementsMet: [
-            "APS is not used in this prototype alternative-path rule.",
+            "APS is not used in this alternative-path rule.",
             `Interest selected: ${interest}.`,
           ],
           requirementsMissing: [
             "Open provider, age, location, and closing-date requirements still need verification.",
           ],
           additionalChecks: [
-            "NBT status: Not applicable in this prototype learnership route.",
+            "NBT status: Not applicable in this learnership route.",
             "Additional tests: Provider screening, interviews or workplace checks may apply.",
           ],
           nextStep:
@@ -183,6 +183,6 @@ export const evaluateMatch = createServerFn({ method: "POST" })
     }) => data,
   )
   .handler(async ({ data }) => ({
-    engineVersion: "prototype-server-v1",
+    engineVersion: "server-rules-v1",
     groups: buildMatchGroups(data),
   }));

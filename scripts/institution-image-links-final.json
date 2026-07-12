@@ -1,0 +1,130 @@
+{
+  "institutions": [
+    {
+      "slug": "spu",
+      "institution_name": "Sol Plaatje University",
+      "image_url": "https://www.spu.ac.za/wp-content/uploads/2025/07/Off-Campus-Housing_2559px-by-804px.jpg",
+      "source_page_url": "https://www.spu.ac.za/",
+      "fallback_type": "official website asset",
+      "verification": "official_source",
+      "notes": "Full-width image published in the official SPU media library."
+    },
+    {
+      "slug": "ukzn",
+      "institution_name": "University of KwaZulu-Natal",
+      "image_url": "https://ukzn.ac.za/wp-content/uploads/2020/03/Haward.jpg",
+      "source_page_url": "https://ukzn.ac.za/campuses/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Howard College campus image; the source filename uses Haward."
+    },
+    {
+      "slug": "univen",
+      "institution_name": "University of Venda",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/University_of_Venda_main_entrance.jpg",
+      "source_page_url": "https://commons.wikimedia.org/wiki/File:University_of_Venda_main_entrance.jpg",
+      "fallback_type": "licensed campus image",
+      "verification": "cc_by_4_0",
+      "notes": "University main entrance photographed in 2025 and licensed CC BY 4.0."
+    },
+    {
+      "slug": "coastal-tvet",
+      "institution_name": "Coastal KZN TVET College",
+      "image_url": "https://coastalkzn.co.za/images/camp_durban_image.jpg",
+      "source_page_url": "https://coastalkzn.co.za/campus_durban.html",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Durban Campus image from the official campus page."
+    },
+    {
+      "slug": "ekurhuleni-east-tvet",
+      "institution_name": "Ekurhuleni East TVET College",
+      "image_url": "https://eec.edu.za/wp-content/uploads/2021/06/Springs-Campus-scaled.jpg",
+      "source_page_url": "https://eec.edu.za/campuses/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Springs Campus image from the official college media library."
+    },
+    {
+      "slug": "elangeni-tvet",
+      "institution_name": "Elangeni TVET College",
+      "image_url": "https://www.elangeni.edu.za/wp-content/uploads/2024/08/Mpumalanga-Campus-Green-House-.jpg",
+      "source_page_url": "https://www.elangeni.edu.za/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Mpumalanga Campus greenhouse image from the official media library."
+    },
+    {
+      "slug": "mopani-south-east-tvet",
+      "institution_name": "Mopani South East TVET College",
+      "image_url": "https://mopanicollege.edu.za/wp-content/uploads/2026/03/campus-1.jpg",
+      "source_page_url": "https://mopanicollege.edu.za/about-mopani/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Campus image published by the official college website."
+    },
+    {
+      "slug": "northlink-tvet",
+      "institution_name": "Northlink TVET College",
+      "image_url": "https://www.northlink.co.za/wp-content/uploads/2024/06/DSC_0767-scaled.jpg",
+      "source_page_url": "https://www.northlink.co.za/campus/bellville/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Image published on the official Bellville Campus page."
+    },
+    {
+      "slug": "orbit-tvet",
+      "institution_name": "Orbit TVET College",
+      "image_url": "https://www.orbitcollege.co.za/wpimages/wpb1770205_05_06.jpg",
+      "source_page_url": "https://www.orbitcollege.co.za/sites_rustenburg_campus.html",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Rustenburg Campus image from the official campus page."
+    },
+    {
+      "slug": "port-elizabeth-tvet",
+      "institution_name": "Port Elizabeth TVET College",
+      "image_url": "https://www.pecollege.edu.za/wp-content/uploads/2020/08/PEcollege_banner_Russel_Road.jpg",
+      "source_page_url": "https://www.pecollege.edu.za/russell-road-campus/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Russell Road Campus banner from the official campus page."
+    },
+    {
+      "slug": "sekhukhune-tvet",
+      "institution_name": "Sekhukhune TVET College",
+      "image_url": "https://www.sekhukhunetvet.edu.za/uploads/_CGSmartImage/img-0d9c7bde414ba98f1ddfffcec229ead4.jpg",
+      "source_page_url": "https://www.sekhukhunetvet.edu.za/",
+      "fallback_type": "official website asset",
+      "verification": "official_source",
+      "notes": "Image published by the official college homepage."
+    },
+    {
+      "slug": "south-cape-tvet",
+      "institution_name": "South Cape TVET College",
+      "image_url": "https://sccollege.co.za/wp-content/uploads/2020/10/Beaufort-West-Campus.jpg",
+      "source_page_url": "https://sccollege.co.za/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Beaufort West Campus image from the official college media library."
+    },
+    {
+      "slug": "taletso-tvet",
+      "institution_name": "Taletso TVET College",
+      "image_url": "https://taletso.edu.za/wp-content/uploads/2022/08/20220701_092050-500x290.jpg",
+      "source_page_url": "https://taletso.edu.za/campuses/",
+      "fallback_type": "official campus image",
+      "verification": "official_source",
+      "notes": "Full-resolution image published on the official campuses page."
+    },
+    {
+      "slug": "thekwini-tvet",
+      "institution_name": "Thekwini TVET College",
+      "image_url": "https://collegesportal.co.za/wp-content/uploads/2024/01/Si_bYEiLwlOdd-m0SDb6gw1024-h960-p-k-nodummy.jpg",
+      "source_page_url": "https://collegesportal.co.za/places/thekwini-tvet-college-melbourne-campus/",
+      "fallback_type": "campus directory image",
+      "verification": "secondary_source",
+      "notes": "Melbourne Campus photograph used because the official site blocks non-browser asset discovery."
+    }
+  ]
+}

@@ -589,7 +589,7 @@ function DataManagerPage() {
       <div className="mt-8 rounded-2xl border border-border bg-muted/35 p-5 text-sm text-muted-foreground">
         <p className="font-medium text-foreground">Bolt Data Aggregation Model</p>
         <p className="mt-2">
-          Verified catalogue tables seeded from prototype data in{" "}
+          Verified catalogue tables seeded from curated baseline data in{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">src/lib/data.ts</code>.
           All records include source tracking and verification status. Admin write access gated by{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">user_roles</code>{" "}

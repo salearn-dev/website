@@ -15,6 +15,51 @@ All Codex updates for SA Learn should be recorded here so other assigned AI mode
 
 Corrective production-readiness rebuild after review reset. Current posture: improve readiness only when backed by code, migrations, sourced data, enabled providers, or audit artifacts.
 
+## Complete Public Institution Image Coverage
+
+**Date/Time:** 2026-07-12 15:51 +02:00
+
+**Files Modified:**
+
+- `scripts/collect-institution-images.mjs`
+- `scripts/institution-image-links-final.json`
+- `src/components/institution-hero-media.tsx`
+- `src/components/sa-flag-logo.tsx`
+- `src/lib/institution-images.ts`
+- `src/routes/institutions.tsx`
+- `src/routes/institutions.$slug.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Completed Cloudinary image coverage for all 76 public institutions, including the user-supplied University of Venda campus photograph. Hardened the collector so targeted runs preserve existing mappings, browser-style requests handle anti-hotlinking, remote Cloudinary fetch is available as a transport fallback, and rejected unsigned-upload collisions use versioned public IDs. Added a shared institution media component that tries the sourced institution image, then the bundled South African flag, and finally removes the media region if both fail. Verified 76 catalogue seeds against 76 image mappings with zero missing and passed `bun run typecheck`. `/prod-readiness` remains unchanged until Kuzi approves the final readiness implementation phase.
+
+## Public-Facing Language and Image Readiness
+
+**Date/Time:** 2026-07-12 16:19 +02:00
+
+**Files Modified:**
+
+- `src/components/site-footer.tsx`
+- `src/lib/data.ts`
+- `src/lib/i18n.tsx`
+- `src/lib/match-engine.functions.ts`
+- `src/routes/account.tsx`
+- `src/routes/admin.data.tsx`
+- `src/routes/careers.$slug.tsx`
+- `src/routes/courses.tsx`
+- `src/routes/courses.$slug.tsx`
+- `src/routes/funding.tsx`
+- `src/routes/index.tsx`
+- `src/routes/institutions.tsx`
+- `src/routes/match.tsx`
+- `src/routes/opportunities.tsx`
+- `src/routes/prod-readiness.tsx`
+- `src/routes/skills.tsx`
+- `models/codex.md`
+
+**Short Plain English Description:**
+Removed the word "prototype" from learner-facing UI, generated match explanations and reports, catalogue counters, empty states, trust metadata, footer translations and the readiness dashboard. Replaced it with specific language such as curated, estimated, planning threshold, current data and needs verification so public development remains honest without presenting itself as a disposable demo. Marked complete 76-of-76 institution image coverage on `/prod-readiness`, moving implementation progress to 76 of 91. Verified live on localhost that the Wits institution page and readiness page contain no visible occurrence, confirmed the Wits Cloudinary hero renders at 2200 by 800, and passed TypeScript. Production build execution was blocked by the current sandbox's native subprocess restriction, not by a reported code error.
+
 ## Checkout - Institution Images and Readiness State
 
 **Date/Time:** 2026-07-11 19:05 +02:00

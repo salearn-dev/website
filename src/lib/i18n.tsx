@@ -85,7 +85,7 @@ const DICTIONARIES: Record<LanguageCode, Dictionary> = {
     "footer.discover": "Discover",
     "footer.plan": "Plan",
     "footer.learn": "Learn",
-    "footer.prototype": "Prototype - information not yet verified.",
+    "footer.verification": "Information may require verification.",
     "footer.sources": "Sources: SAQA, DHET, NSFAS, SETAs and institutional publications.",
   },
   zu: {
@@ -158,7 +158,7 @@ const DICTIONARIES: Record<LanguageCode, Dictionary> = {
     "footer.discover": "Thola",
     "footer.plan": "Hlela",
     "footer.learn": "Funda",
-    "footer.prototype": "I-prototype - ulwazi alukaqinisekiswa ngokuphelele.",
+    "footer.verification": "Ulwazi lungadinga ukuqinisekiswa.",
     "footer.sources": "Imithombo: SAQA, DHET, NSFAS, SETAs nezikhungo.",
   },
   af: {
@@ -231,7 +231,7 @@ const DICTIONARIES: Record<LanguageCode, Dictionary> = {
     "footer.discover": "Ontdek",
     "footer.plan": "Beplan",
     "footer.learn": "Leer",
-    "footer.prototype": "Prototipe - inligting nog nie volledig geverifieer nie.",
+    "footer.verification": "Inligting moet moontlik geverifieer word.",
     "footer.sources": "Bronne: SAQA, DHET, NSFAS, SETAs en instellingspublikasies.",
   },
   xh: {
@@ -304,7 +304,7 @@ const DICTIONARIES: Record<LanguageCode, Dictionary> = {
     "footer.discover": "Fumana",
     "footer.plan": "Cwangcisa",
     "footer.learn": "Funda",
-    "footer.prototype": "Iprototype - ulwazi alukaqinisekiswa ngokupheleleyo.",
+    "footer.verification": "Ulwazi lusenokufuna ukuqinisekiswa.",
     "footer.sources": "Imithombo: SAQA, DHET, NSFAS, SETAs namaziko.",
   },
   st: {
@@ -377,7 +377,7 @@ const DICTIONARIES: Record<LanguageCode, Dictionary> = {
     "footer.discover": "Fumana",
     "footer.plan": "Rera",
     "footer.learn": "Ithute",
-    "footer.prototype": "Prototype - tlhahisoleseding ha e so netefatswe ka botlalo.",
+    "footer.verification": "Tlhahisoleseding e ka hloka netefatso.",
     "footer.sources": "Mehlodi: SAQA, DHET, NSFAS, SETAs le diphatlalatso tsa ditheo.",
   },
 };

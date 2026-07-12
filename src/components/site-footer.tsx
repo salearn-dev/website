@@ -55,7 +55,7 @@ export function SiteFooter() {
           </nav>
         </div>
         <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} SA Learn. {t("footer.prototype")}</p>
+          <p>© {new Date().getFullYear()} SA Learn. {t("footer.verification")}</p>
           <p>{t("footer.sources")}</p>
         </div>
       </div>

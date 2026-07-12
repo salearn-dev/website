@@ -10,7 +10,7 @@ export type TrustMeta = {
   sourceName: string;
   sourceUrl: string;
   lastVerifiedAt: string;
-  verificationStatus: "Prototype data" | "Needs confirmation" | "Verified";
+  verificationStatus: "Curated baseline" | "Needs confirmation" | "Verified";
 };
 
 export type Course = {
@@ -94,7 +94,7 @@ export const COURSES: Course[] = [
     category: "universities",
     accreditation: "DHET registered",
     trust: {
-      sourceName: "Prototype seed data",
+      sourceName: "SA Learn curated baseline",
       sourceUrl: "https://www.wsu.ac.za/",
       lastVerifiedAt: LAST_VERIFIED,
       verificationStatus: "Needs confirmation",
@@ -116,7 +116,7 @@ export const COURSES: Course[] = [
     category: "universities",
     accreditation: "SANC accredited",
     trust: {
-      sourceName: "Prototype seed data",
+      sourceName: "SA Learn curated baseline",
       sourceUrl: "https://www.ul.ac.za/",
       lastVerifiedAt: LAST_VERIFIED,
       verificationStatus: "Needs confirmation",
@@ -138,7 +138,7 @@ export const COURSES: Course[] = [
     category: "tvet",
     accreditation: "DHET / QCTO",
     trust: {
-      sourceName: "Prototype seed data",
+      sourceName: "SA Learn curated baseline",
       sourceUrl: "https://www.falsebaycollege.co.za/",
       lastVerifiedAt: LAST_VERIFIED,
       verificationStatus: "Needs confirmation",
@@ -160,7 +160,7 @@ export const COURSES: Course[] = [
     category: "universities",
     accreditation: "SAICA accredited",
     trust: {
-      sourceName: "Prototype seed data",
+      sourceName: "SA Learn curated baseline",
       sourceUrl: "https://www.up.ac.za/",
       lastVerifiedAt: LAST_VERIFIED,
       verificationStatus: "Needs confirmation",
@@ -182,7 +182,7 @@ export const COURSES: Course[] = [
     category: "short-courses",
     accreditation: "Google Certificate",
     trust: {
-      sourceName: "Prototype seed data",
+      sourceName: "SA Learn curated baseline",
       sourceUrl: "https://grow.google/",
       lastVerifiedAt: LAST_VERIFIED,
       verificationStatus: "Needs confirmation",
@@ -204,7 +204,7 @@ export const COURSES: Course[] = [
     category: "learnerships",
     accreditation: "QCTO registered",
     trust: {
-      sourceName: "Prototype seed data",
+      sourceName: "SA Learn curated baseline",
       sourceUrl: "https://www.merseta.org.za/",
       lastVerifiedAt: LAST_VERIFIED,
       verificationStatus: "Needs confirmation",
@@ -757,7 +757,7 @@ export const FUNDING: Array<{
       sourceName: "Provider websites",
       sourceUrl: "https://www.gov.za/services/education-and-training",
       lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Prototype data",
+      verificationStatus: "Curated baseline",
     },
   },
 ];

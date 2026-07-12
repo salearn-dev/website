@@ -20,7 +20,7 @@ type Feature = { label: string; done: boolean };
 type Group = { route: string; title: string; features: Feature[] };
 type EvidenceLevel =
   | "Implemented"
-  | "Implemented - prototype data"
+  | "Implemented - baseline data"
   | "Documented audit"
   | "Needs data verification"
   | "Needs runtime proof"
@@ -56,7 +56,7 @@ const GROUPS: Group[] = [
       { label: "Grouped results: Qualify, Almost, Do not qualify, Alternatives", done: true },
       { label: "Explanations for every result (why / why not)", done: true },
       { label: "Non-matric qualification and NQF career guidance path", done: true },
-      { label: "Server-side rules engine per institution and faculty (real rules, not prototype)", done: false },
+      { label: "Server-side rules engine per institution and faculty (verified rules)", done: false },
       { label: "Saved learner profiles with subjects and marks (write UI)", done: true },
       { label: "Downloadable PDF match report", done: true },
       { label: "NBT flags and additional-test awareness (real dataset)", done: false },
@@ -85,7 +85,7 @@ const GROUPS: Group[] = [
       { label: "Mapping careers to required subjects and study routes", done: true },
       { label: "O*NET-style detail pages", done: true },
       { label: "Salary bands per experience level", done: true },
-      { label: "Demand and growth-outlook signals (prototype copy)", done: true },
+      { label: "Demand and growth-outlook signals (planning copy)", done: true },
       { label: "Links from career to matching courses and skills", done: true },
       { label: "Sourced salary/demand data with citations", done: false },
     ],
@@ -97,10 +97,10 @@ const GROUPS: Group[] = [
       { label: "Static institution list", done: true },
       { label: "Comprehensive public institution fallback: 26 universities and 50 TVET colleges", done: true },
       { label: "Supabase public institution seed script", done: true },
-      { label: "Cloudinary institution hero images with graceful no-image fallback (62 of 76 sourced)", done: true },
+      { label: "Cloudinary institution hero images with flag and no-image fallbacks", done: true },
       { label: "Institution self-serve portal shell (gated by role)", done: true },
       { label: "Admin moderation workflow (moderation_state schema)", done: true },
-      { label: "Complete institution image coverage for all 76 public institutions", done: false },
+      { label: "Complete institution image coverage for all 76 public institutions", done: true },
       { label: "Verified institution profiles with sourced data", done: false },
       { label: "Accreditation status pulled from register", done: false },
       { label: "Application windows sourced from official calendars", done: false },
@@ -207,7 +207,7 @@ function getFeatureMeta(group: Group, feature: Feature): FeatureMeta {
   if (feature.done) {
     if (
       label.includes("static") ||
-      label.includes("prototype") ||
+      label.includes("baseline") ||
       label.includes("fallback") ||
       label.includes("ui only")
     ) {
@@ -215,7 +215,7 @@ function getFeatureMeta(group: Group, feature: Feature): FeatureMeta {
         owner: "Team",
         priority: "P1",
         status: "Implemented with learner-facing caveats",
-        evidence: "Implemented - prototype data",
+        evidence: "Implemented - baseline data",
       };
     }
 
@@ -379,8 +379,8 @@ function ProdReadinessPage() {
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               This page now treats 100% readiness as 100% accountability, not a claim that every
               production risk is resolved. The next patch series should focus on verification:
-              package-manager policy, typecheck/test scripts, RLS/API proof, and source-backed
-              catalogue data.
+              automated quality gates, RLS/API runtime proof, source-backed catalogue data,
+              verified admission rules, provider confirmation and multilingual page coverage.
             </p>
           </div>
         </div>
