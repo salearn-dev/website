@@ -402,3 +402,12 @@ Audited authenticated route calls for Supabase's returned-error contract. Skills
 ### Accessibility form rescan
 
 Completed the repository form-semantic pass. Institution submissions now expose browser autocomplete purposes and mirror backend length limits in native controls. The restricted unlock form now marks its credential required, exposes invalid state and error association, announces failures as alerts and announces pending validation through a polite status region. Both contracts are enforced by the accessibility source gate. Manual assistive-technology evidence remains open.
+
+
+### Dead-control and source-action corrections
+
+- Replaced the inert desktop search button with a crawlable, keyboard-accessible link to Ask SA Learn.
+- Replaced inert Funding “Learn more” buttons with real external links only when the shared trust policy identifies genuine source evidence.
+- Funding rows without source evidence now render honest non-interactive “Official link unavailable” text.
+- Exported and tested the shared external-source predicate so trust presentation and route actions cannot diverge.
+- Extended the accessibility source gate to enforce mobile menu expansion, focus return and the functional search route.
