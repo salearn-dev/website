@@ -526,7 +526,7 @@ function LiveDeadlineFeed() {
 
 type LearnerTestimonial = {
   id: string;
-  learner_name: string;
+  display_name: string;
   province: string | null;
   quote: string;
   language: LanguageCode;
@@ -545,17 +545,17 @@ type TestimonialSelectBuilder = {
 };
 
 type TestimonialClient = {
-  from: (table: "testimonials") => {
+  from: (table: "learner_testimonials") => {
     select: (columns: string) => TestimonialSelectBuilder;
     insert: (row: {
-      submitter_user_id: string;
-      learner_name: string;
+      user_id: string;
+      display_name: string;
       province: string | null;
       quote: string;
       role_or_school: string;
       language: LanguageCode;
       consent_to_publish: boolean;
-      approved: false;
+      moderation_state: "submitted";
     }) => Promise<{ error: Error | null }>;
   };
 };
@@ -576,9 +576,9 @@ function LearnerTestimonials() {
     async function loadTestimonials() {
       try {
         const { data } = await testimonialClient
-          .from("testimonials")
-          .select("id,learner_name,province,quote,language,role_or_school,created_at")
-          .eq("approved", true)
+          .from("learner_testimonials")
+          .select("id,display_name,province,quote,language,created_at")
+          .eq("moderation_state", "approved")
           .eq("consent_to_publish", true)
           .order("created_at", { ascending: false })
           .limit(6);
@@ -616,7 +616,7 @@ function LearnerTestimonials() {
 
       const { error } = await testimonialClient.from("testimonials").insert({
         ...submission.data,
-        submitter_user_id: user.id,
+        user_id: user.id,
         language,
       });
 
@@ -642,7 +642,7 @@ function LearnerTestimonials() {
                   "{item.quote}"
                 </blockquote>
                 <figcaption className="mt-4 text-xs text-muted-foreground">
-                  {item.learner_name}
+                  {item.display_name}
                   {item.province ? `, ${item.province}` : ""} · {item.language.toUpperCase()}
                 </figcaption>
               </figure>
