@@ -1,6 +1,7 @@
 import { getRobotsDirective } from "@/lib/seo-policy";
 
 const SITE_URL = "https://salearn.online";
+const DEFAULT_SOCIAL_IMAGE = `${SITE_URL}/flag-south-africa.webp`;
 
 export function getCanonicalUrl(pathname: string) {
   const normalizedPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
@@ -34,9 +35,13 @@ export function buildSeoHead({
       { property: "og:type", content: ogType },
       { property: "og:url", content: canonicalUrl },
       { property: "og:site_name", content: "SA Learn" },
+      { property: "og:image", content: DEFAULT_SOCIAL_IMAGE },
+      { property: "og:image:alt", content: "SA Learn South African education guidance" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
+      { name: "twitter:image", content: DEFAULT_SOCIAL_IMAGE },
+      { name: "twitter:image:alt", content: "SA Learn South African education guidance" },
       { name: "robots", content: robotsDirective },
       ...extraMeta,
     ],
@@ -55,4 +60,17 @@ export function getLastModified(value?: string) {
   }
 
   return parsed.toISOString();
+}
+
+export function buildBreadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: getCanonicalUrl(item.path),
+    })),
+  };
 }
