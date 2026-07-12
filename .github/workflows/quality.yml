@@ -40,7 +40,11 @@ jobs:
         run: bun run seo:check
       - name: Accessibility policy
         run: bun run accessibility:check
+      - name: Server-only boundaries
+        run: bun run security:boundaries
       - name: Dependency audit
         run: bun run audit:dependencies
       - name: Production build
         run: bun run build
+      - name: Bundle budget
+        run: bun run performance:budget
