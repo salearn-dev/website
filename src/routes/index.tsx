@@ -18,7 +18,7 @@ import {
 import { CAREERS, COURSES, FUNDING, OPPORTUNITIES } from "@/lib/data";
 import { supabase } from "@/integrations/supabase/client";
 import { buildSeoHead } from "@/lib/seo";
-import { useI18n, type LanguageCode } from "@/lib/i18n";
+import { isLanguageCode, useI18n, type LanguageCode } from "@/lib/i18n";
 import { resolveDeadlineFeed, type DeadlineItem } from "@/lib/home-deadlines";
 import { prepareTestimonialSubmission } from "@/lib/testimonial-submission";
 
@@ -555,7 +555,12 @@ function LearnerTestimonials() {
           .order("created_at", { ascending: false })
           .limit(6);
 
-        if (alive) setItems(data ?? []);
+        if (alive) {
+          setItems((data ?? []).map((item) => ({
+            ...item,
+            language: isLanguageCode(item.language) ? item.language : "en",
+          })));
+        }
       } catch {
         if (alive) setItems([]);
       }
