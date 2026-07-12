@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   isPaidOpportunity,
+  normaliseCatalogueTrust,
   normaliseDeliveryMode,
 } from "@/lib/catalogue-normalization";
 
@@ -25,4 +26,29 @@ describe("live catalogue normalization", () => {
     expect(normaliseDeliveryMode("Hybrid-ish")).toBe("Contact");
     expect(normaliseDeliveryMode(null)).toBe("Contact");
   });
+
+  test("only keeps verified trust when source and date evidence are complete", () => {
+    const verified = normaliseCatalogueTrust({
+      source_name: "Official institution",
+      source_url: "https://example.edu/programme",
+      last_verified_at: "2026-07-01T00:00:00Z",
+      verification_status: "verified",
+    });
+    expect(verified.verificationStatus).toBe("Verified");
+    expect(verified.sourceName).toBe("Official institution");
+
+    for (const incomplete of [
+      { source_url: null, last_verified_at: "2026-07-01T00:00:00Z" },
+      { source_url: "http://example.edu", last_verified_at: "2026-07-01T00:00:00Z" },
+      { source_url: "https://example.edu", last_verified_at: null },
+      { source_url: "https://example.edu", last_verified_at: "not-a-date" },
+    ]) {
+      expect(normaliseCatalogueTrust({
+        source_name: null,
+        verification_status: "verified",
+        ...incomplete,
+      }).verificationStatus).toBe("Needs confirmation");
+    }
+  });
+
 });
