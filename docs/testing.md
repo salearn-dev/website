@@ -12,7 +12,7 @@ The combined gate runs TypeScript, lint, unit tests with coverage, SEO checks, a
 ## Unit tests
 
 ```bash
-bun run test
+bun run test:unit
 bun run test:coverage
 ```
 
@@ -24,14 +24,14 @@ Use a dedicated test project or isolated test users. Never use production learne
 
 1. Copy `.env.test.example` into an untracked local environment.
 2. Supply the test project URL, publishable key and short-lived tokens for two learner accounts plus one administrator.
-3. Run `bun test tests/integration/rls.test.ts`.
+3. Run `bun run test:integration:rls`.
 
 The harness validates anonymous catalogue access, anonymous private-table denial, learner ownership isolation, cross-learner denial, role-escalation denial and administrator moderation access.
 
-When credentials are absent, integration cases are explicitly skipped. A skipped test is not production proof.
+A direct `bun test` may skip integration cases when credentials are absent. The dedicated `test:integration:rls` command sets `REQUIRE_RLS_TESTS=1` and fails immediately when any credential is missing, so it is the only acceptable proof command.
 
 ## CI
 
 The `Quality Gate` workflow runs on pushes to `main` and pull requests. Repository administrators must require it through branch protection.
 
-CI publishes coverage evidence and blocks changes that violate lint, tests, source policies, dependency audit, build or bundle budgets.
+CI publishes coverage evidence and blocks changes that violate lint, unit tests, source policies, dependency audit, build or bundle budgets.\n\nThe separate `rls-integration` job runs only after an administrator sets the repository variable `RLS_TESTS_REQUIRED=true` and configures every `SUPABASE_TEST_*` Actions secret listed in `.env.test.example`. Once enabled, missing credentials fail the job rather than silently skipping RLS proof. Branch protection must require both `verify` and `rls-integration` before RLS tasks can be marked complete.
