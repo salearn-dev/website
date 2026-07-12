@@ -33,15 +33,41 @@ export type OpportunityFilters = {
   province?: string;
   sector?: string;
   type?: string;
+  asOf?: Date;
 };
 
 export function filterOpportunities<
-  T extends { province: string; sector: string; type: string },
+  T extends { province: string; sector: string; type: string; closes?: string },
 >(opportunities: T[], filters: OpportunityFilters) {
+  const asOf = filters.asOf ?? new Date();
   return opportunities.filter(
     (opportunity) =>
+      !isOpportunityExpired(opportunity.closes, asOf) &&
       (!filters.province || filters.province === "All" || opportunity.province === filters.province) &&
       (!filters.sector || filters.sector === "All" || opportunity.sector === filters.sector) &&
       (!filters.type || filters.type === "All" || opportunity.type === filters.type),
   );
+}
+
+
+export function isOpportunityExpired(deadline: string | undefined, asOf = new Date()) {
+  if (!deadline) return false;
+  const timestamp = Date.parse(deadline);
+  if (Number.isNaN(timestamp)) return false;
+  const endOfDeadline = new Date(timestamp);
+  endOfDeadline.setHours(23, 59, 59, 999);
+  return endOfDeadline.getTime() < asOf.getTime();
+}
+
+export function reminderDateFromDeadline(deadline: string, now = new Date()) {
+  const timestamp = Date.parse(deadline);
+  if (Number.isNaN(timestamp)) {
+    const fallback = new Date(now);
+    fallback.setDate(fallback.getDate() + 30);
+    return fallback;
+  }
+
+  const reminder = new Date(timestamp);
+  reminder.setDate(reminder.getDate() - 7);
+  return reminder;
 }
