@@ -19,7 +19,7 @@ Rule: Continue through this queue without waiting for another “go.” Do not m
 
 ## Queue B — Deterministic tests
 
-- [ ] Extract remaining route-local business rules into environment-independent modules.
+- [x] Extract identified route-local business rules into environment-independent modules with regression coverage. ✅
 - [x] Test homepage, Ask, Match, course, career, institution, funding, opportunity and guide edge cases. ✅
 - [x] Test empty, invalid, stale, missing-source and fallback states. ✅
 - [x] Test report generation, long content, sanitization and deterministic ordering. ✅
