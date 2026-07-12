@@ -274,3 +274,21 @@ This was a production-affecting cross-model contract defect. T39 remains evidenc
 ### Homepage state completion preparation
 
 Added and tested explicit `loading`, `live` and `fallback` states for the homepage deadline feed. The status now begins with “Checking live catalogue…”, resolves to the live or curated label after the query, and announces the state change through a polite status region. T15 remains unchecked pending the clean workflow run.
+
+
+### Learner document security correction
+
+Funding uploads contained an undocumented `document_consents` client cast, accepted files without an application-level byte/MIME boundary, exposed raw backend errors and could leave an orphaned sensitive object when consent recording failed.
+
+Corrected the flow to:
+
+- validate PDF/PNG/JPEG/WebP files with a 5 MB maximum;
+- sanitise filenames and preserve owner-scoped object paths;
+- write consent through the typed `consent_records` table with document metadata in JSON context;
+- remove the uploaded object if consent persistence fails;
+- return a stable public error instead of storage/database details;
+- test upload validation and deterministic paths;
+- exercise user-A/user-B storage isolation with cleanup in the credentialed RLS suite;
+- enforce the contract locally and in CI.
+
+T38 is implemented in source and its direct proof is prepared, but remains unchecked until the credentialed RLS job passes.
