@@ -44,7 +44,7 @@ const GROUPS: Group[] = [
       { label: "Dynamic dark mode (light / dark / system) with anti-flash script", done: true },
       { label: "Personalised dashboard when signed in", done: true },
       { label: "Live application deadlines feed (approved rows fallback to static)", done: true },
-      { label: "Testimonials from real learners", done: false },
+      { label: "Testimonials from real learners (consent + moderation pipeline)", done: true },
     ],
   },
   {
