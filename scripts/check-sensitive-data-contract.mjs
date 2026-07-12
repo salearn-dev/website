@@ -15,6 +15,9 @@ if (!funding.includes('.from("consent_records")')) {
 if (funding.includes("document_consents") || funding.includes("supabase as unknown")) {
   failures.push("funding route contains an undocumented schema cast");
 }
+if (funding.includes("error instanceof Error ? error.message")) {
+  failures.push("funding route exposes raw backend errors");
+}
 if (!funding.includes('storage.from("learner-documents").remove([path])')) {
   failures.push("failed consent writes do not roll back uploaded objects");
 }
