@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { askTokens, detectAskIntent } from "@/lib/ask-intent";
+import { askTokens, detectAskIntent, hasAskQuerySignal } from "@/lib/ask-intent";
 
 describe("Ask SA Learn intent routing", () => {
   test("routes personal eligibility questions to the rules-aware matcher", () => {
@@ -27,4 +27,11 @@ describe("Ask SA Learn intent routing", () => {
       "business",
     ]);
   });
+
+  test("treats blank and stop-word-only questions as no match signal", () => {
+    expect(hasAskQuerySignal("")).toBe(false);
+    expect(hasAskQuerySignal("what can I do")).toBe(false);
+    expect(hasAskQuerySignal("funding")).toBe(true);
+  });
+
 });
