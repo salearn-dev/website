@@ -249,3 +249,14 @@ The production Actions runner remains externally unavailable through the connect
 - Aligned README and the combined local gate with the explicit unit/RLS lanes.
 
 T39 remains unchecked because repository tests now prove the submission policy, but live learner RLS insertion and administrator moderation still require the credentialed integration lane.
+
+
+### Expanded credentialed authorization proof
+
+The isolated RLS suite now additionally covers:
+
+- institution-role catalogue/moderation visibility (T35 preparation);
+- learner testimonial insertion with `approved: false`, administrator approval and cleanup (T39 preparation);
+- learner denial and administrator success for `mark_stale_catalogue_records` (T40 preparation).
+
+Added the dedicated institution test token to the environment template, Actions secret mapping and CI-contract regression check. T35, T39 and T40 remain unchecked until the configured test project executes these cases successfully.
