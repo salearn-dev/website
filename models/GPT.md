@@ -419,3 +419,14 @@ Completed the repository form-semantic pass. Institution submissions now expose 
 - Course accreditation claims no longer receive a green success treatment unless the record’s verification status is explicitly `Verified`; provisional claims are labelled as claims and rendered neutrally.
 - Removed unsupported “Verified institutions” language from institution route metadata and English learner-facing copy.
 - Extended the SEO/trust gate to enforce evidence-aware funding, opportunity and accreditation presentation.
+
+
+## Checkout — Repository Scope Exhausted, External Evidence Pending
+
+**Date:** 2026-07-12
+
+Completed the remaining repository-scoped queue pass: skill completion integrity, partner API idempotency, returned Supabase error handling, accessibility form/navigation semantics, dead-control repair, evidence-aware external actions/accreditation wording, and route schema-cast enforcement. The persistent queue is reconciled in `models/GPT-TASKS.md`.
+
+Current head evidence check returned zero commit statuses and zero workflow runs. Therefore clean CI, coverage, lint/build, browser journeys, axe, credentialed RLS cases, branch protection and distributed production rate limiting remain explicitly unproven. The attempted failure-diagnostics artifact step was rejected because preview logs could export sensitive runtime data; no workaround was attempted. These are external/approval-dependent blockers, not completed work.
+
+Under Kuzi's standing orders, GitHub remains the source of truth, no real environment values were read or committed, no failing evidence was hidden, and no checklist item was promoted on absent runtime proof.
