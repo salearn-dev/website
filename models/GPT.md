@@ -228,3 +228,13 @@ Both tasks remain unchecked in the shared completion document until the quality 
 - Updated `docs/testing.md` with the enablement and branch-protection contract.
 
 T51 and T53 remain unchecked until repository administrators configure the variable/secrets, require the job and a clean workflow run passes.
+
+
+### CI contract and learner-trust corrections
+
+- Added `scripts/check-rls-ci-contract.mjs` and enforced it locally and in Actions so the RLS lane cannot silently lose its fail-closed command or required secret mappings.
+- Corrected the unit-test command to use Bun's documented exact-path discovery instead of an unsupported ignore flag.
+- Corrected homepage headings that described unverified catalogue records as “Verified pathways” and “Verified information.”
+- Expanded content-health enforcement to funding and opportunity slugs, sources, HTTPS links, verification states and verification dates.
+
+The production Actions runner remains externally unavailable through the connector; no evidence-pending checklist item was promoted to ✅.
