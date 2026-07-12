@@ -342,3 +342,8 @@ Admin moderation can no longer mark a catalogue row verified unless it has a val
 ### Partner API rate-limit handoff
 
 Added `docs/partner-api-security.md` defining the distributed/edge rate-limit baseline, 429 and `Retry-After` behavior, multi-instance proof, monitoring, safe logging and key rotation. T45 remains unchecked because repository documentation cannot prove that the production hosting layer enforces the rule.
+
+
+### Match report clipping correction
+
+Replaced the single-page PDF writer with a byte-accurate multipage generator (48 lines per page), preserving valid page/content references and xref offsets. Added long-report coverage proving later results remain present, plus control-character, smart-punctuation and font-safe text normalization tests.
