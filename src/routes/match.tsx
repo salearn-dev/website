@@ -132,7 +132,7 @@ function MatchPage() {
         {
           user_id: user.id,
           aps: isSubjectPath ? aps : null,
-          subjects: profileSubjects as unknown as Json,
+          subjects: profileSubjects as Json,
           maths_mark: mathsMark,
           english_mark: englishMark,
           life_sciences_mark: lifeSciencesMark,
