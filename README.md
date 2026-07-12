@@ -40,10 +40,12 @@ Run local quality checks:
 ```bash
 bun run typecheck
 bun run lint
+bun run test
+bun run test:coverage
 bun run check
 ```
 
-`bun run check` currently enforces TypeScript and production build. `bun run test` currently runs the TypeScript check as the minimum automated test gate. `bun run lint` is configured but currently fails on existing Prettier CRLF line-ending debt; clean lint, real unit tests, integration tests, RLS/API tests and browser tests are still required before unrestricted production reliance.
+`bun run check` enforces TypeScript, lint, unit tests with coverage, SEO and accessibility source policies, service-role import boundaries, catalogue content health, the production build and bundle budgets. `bun run test` uses Bun’s test runner. Direct RLS integration tests are included but skip unless dedicated test credentials are configured; browser tests and successful CI evidence are still required before unrestricted production reliance.
 
 ## Environment Variables
 
