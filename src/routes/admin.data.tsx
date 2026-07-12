@@ -160,7 +160,7 @@ function DataManagerPage() {
     try {
       const stats = await Promise.all(CATALOGUE_TABLES.map((table) => fetchTableStats(table)));
       setTables(stats);
-    } catch (err) {
+    } catch {
       setError("Table statistics could not be loaded. Please retry.");
     }
 
