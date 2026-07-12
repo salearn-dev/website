@@ -381,3 +381,14 @@ Featured career cards now open their career detail routes, and featured course c
 - Corrected stale route copy that claimed progress could not be saved.
 
 The record remains clearly described as learner-reported progress, not an accredited qualification or formal certificate.
+
+
+### Partner API retry and collision correction
+
+- Added deterministic partner-submission slugs derived from provider/title plus a stable source-URL hash.
+- Made repeated submissions return the existing provisional record instead of failing on the unique slug.
+- Added explicit 409 handling for identity conflicts and recovery for concurrent unique-key races.
+- Added unit coverage for stable identity, source separation and duplicate classification.
+- Added a source contract gate and enforced it in the local and GitHub quality workflows.
+
+This completes the repository-side idempotency/collision control. T45 remains open because distributed production rate limiting still requires hosting-layer evidence.
