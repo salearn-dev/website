@@ -130,7 +130,8 @@ function DocumentUploadConsent() {
 
     setState("uploading");
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setState("error");
@@ -263,7 +264,8 @@ function DeadlineReminderHelper({
     setMessage("");
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setMessage("Sign in from Account to save funding deadline reminders.");
@@ -421,7 +423,8 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
     setProfileMessage("");
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setProfileState("error");
