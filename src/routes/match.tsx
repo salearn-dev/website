@@ -14,6 +14,7 @@ import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import { CAREERS, COURSES, SKILLS } from "@/lib/data";
+import { calculateAps } from "@/lib/aps";
 import { evaluateMatch, type MatchGroup, type MatchResult } from "@/lib/match-engine.functions";
 import { buildSeoHead } from "@/lib/seo";
 import { useI18n } from "@/lib/i18n";
@@ -51,16 +52,6 @@ const SUBJECT_OPTIONS = [
   "Business Studies",
   "Life Orientation",
 ];
-
-function apsPoints(mark: number) {
-  if (mark >= 80) return 7;
-  if (mark >= 70) return 6;
-  if (mark >= 60) return 5;
-  if (mark >= 50) return 4;
-  if (mark >= 40) return 3;
-  if (mark >= 30) return 2;
-  return 1;
-}
 
 function makePdfBlob(text: string) {
   const lines = text.split("\n").flatMap((line) => {
@@ -142,14 +133,7 @@ function MatchPage() {
   const [saveMessage, setSaveMessage] = useState<string>("");
   const [profileConsent, setProfileConsent] = useState(false);
 
-  const aps = useMemo(
-    () =>
-      subjects
-        .filter((s) => s.name !== "Life Orientation")
-        .slice(0, 6)
-        .reduce((sum, s) => sum + apsPoints(s.mark), 0),
-    [subjects],
-  );
+  const aps = useMemo(() => calculateAps(subjects), [subjects]);
 
   const markFor = (name: string) => subjects.find((subject) => subject.name === name)?.mark;
 
