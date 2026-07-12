@@ -126,6 +126,12 @@ describe("Supabase RLS integration", () => {
     const row = rows[0] as { id: string; moderation_state: string };
     expect(row.moderation_state).toBe("submitted");
 
+    const anonymousRead = await rest(
+      `learner_testimonials?id=eq.${row.id}&select=id,moderation_state`,
+    );
+    expect(anonymousRead.status).toBe(200);
+    expect(await anonymousRead.json()).toEqual([]);
+
     try {
       const moderate = await rest(`learner_testimonials?id=eq.${row.id}`, adminToken, {
         method: "PATCH",
