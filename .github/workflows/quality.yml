@@ -27,5 +27,7 @@ jobs:
         run: bun run typecheck
       - name: SEO policy
         run: bun run seo:check
+      - name: Accessibility policy
+        run: bun run accessibility:check
       - name: Production build
         run: bun run build
