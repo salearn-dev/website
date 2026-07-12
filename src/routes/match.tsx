@@ -103,7 +103,8 @@ function MatchPage() {
     setSaveMessage("");
 
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setSaveState("error");
