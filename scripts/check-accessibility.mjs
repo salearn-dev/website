@@ -6,6 +6,7 @@ const files = {
   i18n: await readFile(new URL("../src/lib/i18n.tsx", import.meta.url), "utf8"),
   account: await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8"),
   match: await readFile(new URL("../src/routes/match.tsx", import.meta.url), "utf8"),
+  home: await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8"),
 };
 
 const failures = [];
@@ -29,6 +30,17 @@ if (!files.account.includes('autoComplete="email"') || !files.account.includes('
 }
 if (!files.match.includes("<fieldset") || !files.match.includes("<legend")) {
   failures.push("Subject mark rows lack fieldset/legend grouping.");
+}
+for (const semantic of [
+  'autoComplete="name"',
+  'autoComplete="address-level1"',
+  'minLength={20}',
+  'maxLength={700}',
+  'aria-describedby="testimonial-quote-help"',
+]) {
+  if (!files.home.includes(semantic)) {
+    failures.push(`Testimonial form semantic missing: ${semantic}`);
+  }
 }
 
 if (failures.length) {
