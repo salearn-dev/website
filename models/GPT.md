@@ -357,3 +357,8 @@ Trust metadata no longer renders the SA Learn fallback URL as if it were externa
 ### Ask SA Learn routing corrections
 
 Made the previously unreachable `match` intent operational. Personal questions about qualifying, marks, subjects, APS or “check my options” now return the rules-aware Match workflow instead of generic course cards. Blank or stop-word-only input no longer claims arbitrary zero-score matches and falls back honestly. Added deterministic intent and tokenization tests.
+
+
+### Homepage discovery links
+
+Featured career cards now open their career detail routes, and featured course cards are crawlable links to course details instead of inert containers. The SEO source gate now requires both detail-link templates on the homepage.
