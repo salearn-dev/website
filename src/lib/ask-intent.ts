@@ -62,3 +62,8 @@ export function askTokens(query: string) {
     .split(/[^a-z0-9]+/)
     .filter((token) => token.length > 1 && !STOP_WORDS.has(token));
 }
+
+
+export function hasAskQuerySignal(query: string) {
+  return askTokens(query).length > 0;
+}
