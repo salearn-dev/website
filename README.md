@@ -40,12 +40,13 @@ Run local quality checks:
 ```bash
 bun run typecheck
 bun run lint
-bun run test
+bun run test:unit
 bun run test:coverage
+bun run test:integration:rls
 bun run check
 ```
 
-`bun run check` enforces TypeScript, lint, unit tests with coverage, SEO and accessibility source policies, service-role import boundaries, catalogue content health, the production build and bundle budgets. `bun run test` uses Bun’s test runner. Direct RLS integration tests are included but skip unless dedicated test credentials are configured; browser tests and successful CI evidence are still required before unrestricted production reliance.
+`bun run check` enforces TypeScript, lint, the explicit unit-test lane, SEO and accessibility source policies, service-role and CI-contract boundaries, catalogue content health, the production build and bundle budgets. `bun run test:coverage` produces unit coverage. `bun run test:integration:rls` is a separate fail-closed command that requires every dedicated test credential in `.env.test.example`; missing credentials are an error, not a pass. Browser tests and successful CI evidence are still required before unrestricted production reliance.
 
 ## Environment Variables
 
@@ -149,7 +150,7 @@ Use the evidence labels on `/prod-readiness` to decide what still needs proof.
 
 ## Collaboration Rules
 
-- Update `models/codex.md` for Codex changes.
+- Update the contributing model’s dedicated log; ChatGPT review-model changes belong in `models/GPT.md`.
 - Use descriptive commits.
 - Keep generated noise out of commits, especially transient `routeTree.gen.ts` changes.
 - Coordinate shared backend contracts with Lovable or Kuzi.
