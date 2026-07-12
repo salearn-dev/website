@@ -20,12 +20,12 @@ export function prepareTestimonialSubmission(draft: TestimonialDraft) {
   return {
     ok: true as const,
     data: {
-      learner_name: learnerName.slice(0, 80),
+      display_name: learnerName.slice(0, 80),
       province: province ? province.slice(0, 80) : null,
       quote: quote.slice(0, 700),
       role_or_school: "Learner submission",
       consent_to_publish: true,
-      approved: false as const,
+      moderation_state: "submitted" as const,
     },
   };
 }
