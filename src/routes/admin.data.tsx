@@ -14,6 +14,7 @@ import {
 import { PageShell } from "@/components/page-shell";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  canMarkVerified,
   CATALOGUE_TABLES,
   moderationSelectColumns,
   type CatalogueTable,
@@ -242,6 +243,11 @@ function DataManagerPage() {
 
   async function updateVerificationStatus(row: ModerationRow, status: "verified" | "stale") {
     setModerationMessage("");
+
+    if (status === "verified" && !canMarkVerified(row.sourceUrl)) {
+      setModerationMessage("Add a valid HTTPS source URL before marking this record verified.");
+      return;
+    }
 
     try {
       const { error: updateError } = await catalogueClient
@@ -548,7 +554,9 @@ function DataManagerPage() {
                       <button
                         type="button"
                         onClick={() => updateVerificationStatus(row, "verified")}
-                        className="h-9 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        disabled={!canMarkVerified(row.sourceUrl)}
+                        title={!canMarkVerified(row.sourceUrl) ? "A valid HTTPS source URL is required" : undefined}
+                        className="h-9 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         Mark verified
                       </button>
