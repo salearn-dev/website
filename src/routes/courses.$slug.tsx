@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, BookOpen, BriefcaseBusiness, GraduationCap } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { StructuredData } from "@/components/structured-data";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { COURSES } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
@@ -63,7 +64,7 @@ function CourseDetailPage() {
       title={course.title}
       description={`${course.institution} - ${course.qualification}. Review the route, funding fit and verification status before taking your next step.`}
     >
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <StructuredData data={jsonLd} />
 
       <div className="mb-6">
         <Link to="/courses" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
