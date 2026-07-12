@@ -352,3 +352,8 @@ Replaced the single-page PDF writer with a byte-accurate multipage generator (48
 ### Trust presentation correction
 
 Trust metadata no longer renders the SA Learn fallback URL as if it were external source evidence. Real HTTPS sources remain linked; unavailable evidence renders as plain “Source unavailable.” Added SSR coverage for both states. Funding reminders now reuse the single tested deadline rule instead of an untested route-local copy.
+
+
+### Ask SA Learn routing corrections
+
+Made the previously unreachable `match` intent operational. Personal questions about qualifying, marks, subjects, APS or “check my options” now return the rules-aware Match workflow instead of generic course cards. Blank or stop-word-only input no longer claims arbitrary zero-score matches and falls back honestly. Added deterministic intent and tokenization tests.
