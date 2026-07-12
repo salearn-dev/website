@@ -50,3 +50,14 @@ export function resolveDeadlineFeed(
     ? { items: liveItems, isLive: true }
     : { items: fallback, isLive: false };
 }
+
+
+export type DeadlineFeedState = "loading" | "live" | "fallback";
+
+export function deadlineFeedStatusLabel(state: DeadlineFeedState) {
+  return {
+    loading: "Checking live catalogue…",
+    live: "Live catalogue feed",
+    fallback: "Curated catalogue fallback",
+  }[state];
+}
