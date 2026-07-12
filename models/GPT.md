@@ -260,3 +260,12 @@ The isolated RLS suite now additionally covers:
 - learner denial and administrator success for `mark_stale_catalogue_records` (T40 preparation).
 
 Added the dedicated institution test token to the environment template, Actions secret mapping and CI-contract regression check. T35, T39 and T40 remain unchecked until the configured test project executes these cases successfully.
+
+
+### Material testimonial schema correction
+
+Repository review found the homepage using the legacy `testimonials` table with fields that do not exist in its committed Supabase type contract, while migration `20260708121200_learner_testimonials.sql` defines the intended consent-aware `learner_testimonials` table.
+
+Corrected the homepage, submission policy, unit tests and RLS integration suite to use `learner_testimonials`, `user_id`, `display_name` and `moderation_state`. Reconciled the committed Supabase types, removed the unsafe custom client cast, validated stored language values, and added a local/CI schema-contract check preventing regression to the legacy table.
+
+This was a production-affecting cross-model contract defect. T39 remains evidence-pending until the credentialed RLS job passes against the deployed test schema.
