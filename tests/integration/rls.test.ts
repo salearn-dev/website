@@ -121,11 +121,12 @@ describe("Supabase RLS integration", () => {
       );
       expect([400, 401, 403, 404]).toContain(otherRead.status);
     } finally {
-      await storage("object/learner-documents", userAToken, {
+      const cleanup = await storage("object/learner-documents", userAToken, {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ prefixes: [objectPath] }),
       });
+      expect(cleanup.status).toBe(200);
     }
   });
 
