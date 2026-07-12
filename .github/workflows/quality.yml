@@ -44,6 +44,8 @@ jobs:
         run: bun run content:health
       - name: Server-only boundaries
         run: bun run security:boundaries
+      - name: Public error boundaries
+        run: bun run security:public-errors
       - name: CI contract
         run: bun run ci:contract
       - name: Schema contract
