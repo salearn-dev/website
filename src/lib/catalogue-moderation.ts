@@ -25,3 +25,13 @@ export const TABLE_LABEL_COLUMN: Record<CatalogueTable, "name" | "title"> = {
 export function moderationSelectColumns(table: CatalogueTable) {
   return `id,${TABLE_LABEL_COLUMN[table]},source_url,verification_status`;
 }
+
+
+export function canMarkVerified(sourceUrl: string | null) {
+  if (!sourceUrl) return false;
+  try {
+    return new URL(sourceUrl).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
