@@ -7,6 +7,7 @@ const files = {
   account: await readFile(new URL("../src/routes/account.tsx", import.meta.url), "utf8"),
   match: await readFile(new URL("../src/routes/match.tsx", import.meta.url), "utf8"),
   home: await readFile(new URL("../src/routes/index.tsx", import.meta.url), "utf8"),
+  institutionPortal: await readFile(new URL("../src/routes/institutions.portal.tsx", import.meta.url), "utf8"),
 };
 
 const failures = [];
@@ -40,6 +41,17 @@ for (const semantic of [
 ]) {
   if (!files.home.includes(semantic)) {
     failures.push(`Testimonial form semantic missing: ${semantic}`);
+  }
+}
+
+for (const semantic of [
+  'autoComplete="organization"',
+  'autoComplete="address-level1"',
+  'autoComplete="url"',
+  'maxLength={240}',
+]) {
+  if (!files.institutionPortal.includes(semantic)) {
+    failures.push(`Institution form semantic missing: ${semantic}`);
   }
 }
 
