@@ -4,7 +4,7 @@ import { CalendarClock, CheckCircle2, Coins, MapPin, Save } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { supabase } from "@/integrations/supabase/client";
-import { filterOpportunities } from "@/lib/catalogue-filters";
+import { filterOpportunities, reminderDateFromDeadline } from "@/lib/catalogue-filters";
 import { OPPORTUNITIES } from "@/lib/data";
 import { loadApprovedOpportunities } from "@/lib/live-catalogue";
 import { buildSeoHead } from "@/lib/seo";
@@ -223,19 +223,6 @@ function OpportunitiesPage() {
       </div>
     </PageShell>
   );
-}
-
-function reminderDateFromDeadline(deadline: string) {
-  const parsed = Date.parse(deadline);
-  if (Number.isNaN(parsed)) {
-    const fallback = new Date();
-    fallback.setDate(fallback.getDate() + 30);
-    return fallback;
-  }
-
-  const date = new Date(parsed);
-  date.setDate(date.getDate() - 7);
-  return date;
 }
 
 function unique(values: string[]) {
