@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
+import { StructuredData } from "@/components/structured-data";
 import { InstitutionHeroMedia } from "@/components/institution-hero-media";
 import { TrustMetadata } from "@/components/trust-metadata";
 import { INSTITUTIONS } from "@/lib/data";
@@ -66,10 +67,7 @@ function InstitutionDetailPage() {
       title={institution.name}
       description={`${institution.type} in ${institution.province}. Review registration notes, application windows and official source links before choosing where to study.`}
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <StructuredData data={jsonLd} />
 
       <div className="mb-6">
         <Link
