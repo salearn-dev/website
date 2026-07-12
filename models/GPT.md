@@ -362,3 +362,12 @@ Made the previously unreachable `match` intent operational. Personal questions a
 ### Homepage discovery links
 
 Featured career cards now open their career detail routes, and featured course cards are crawlable links to course details instead of inert containers. The SEO source gate now requires both detail-link templates on the homepage.
+
+
+### Account authentication correction
+
+- Scrubbed remaining session and account-data Supabase errors.
+- Centralised same-origin account callback construction.
+- Hid Apple sign-in unless `VITE_ENABLE_APPLE_AUTH=true`; Google remains the default configured provider.
+- Updated stale Phase 1 copy that contradicted active Match/Funding profile writes.
+- Added provider/callback unit tests, environment documentation and a local/CI auth-contract guard.
