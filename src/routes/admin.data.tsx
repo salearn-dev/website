@@ -117,7 +117,8 @@ function DataManagerPage() {
 
   async function checkAccessAndLoad() {
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
       const user = sessionData.session?.user;
       if (!user) {
         setAccessState("signed-out");
@@ -125,12 +126,13 @@ function DataManagerPage() {
         return;
       }
 
-      const { data: roles } = await supabase
+      const { data: roles, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
         .eq("role", "admin");
 
+      if (roleError) throw roleError;
       if (!roles || roles.length === 0) {
         setAccessState("forbidden");
         setLoading(false);
