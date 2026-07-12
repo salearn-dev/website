@@ -28,6 +28,8 @@ export function InstitutionHeroMedia({
     source === "primary" && image
       ? image.alt
       : `South African flag fallback for ${institutionName}`;
+  const width = source === "primary" && image ? image.width : 1200;
+  const height = source === "primary" && image ? image.height : 800;
   const handleError = () => setSource((current) => (current === "primary" ? "flag" : null));
 
   if (variant === "card") {
@@ -35,6 +37,9 @@ export function InstitutionHeroMedia({
       <img
         src={src}
         alt={alt}
+        width={width}
+        height={height}
+        sizes="(min-width: 768px) 50vw, 100vw"
         className="h-44 w-full object-cover"
         loading="lazy"
         decoding="async"
@@ -48,6 +53,10 @@ export function InstitutionHeroMedia({
       <img
         src={src}
         alt={alt}
+        width={width}
+        height={height}
+        sizes="(min-width: 1024px) 896px, 100vw"
+        fetchPriority="high"
         className="aspect-[16/7] w-full object-cover"
         loading="eager"
         decoding="async"
