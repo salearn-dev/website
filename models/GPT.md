@@ -269,3 +269,8 @@ Repository review found the homepage using the legacy `testimonials` table with 
 Corrected the homepage, submission policy, unit tests and RLS integration suite to use `learner_testimonials`, `user_id`, `display_name` and `moderation_state`. Reconciled the committed Supabase types, removed the unsafe custom client cast, validated stored language values, and added a local/CI schema-contract check preventing regression to the legacy table.
 
 This was a production-affecting cross-model contract defect. T39 remains evidence-pending until the credentialed RLS job passes against the deployed test schema.
+
+
+### Homepage state completion preparation
+
+Added and tested explicit `loading`, `live` and `fallback` states for the homepage deadline feed. The status now begins with “Checking live catalogue…”, resolves to the live or curated label after the query, and announces the state change through a polite status region. T15 remains unchecked pending the clean workflow run.
