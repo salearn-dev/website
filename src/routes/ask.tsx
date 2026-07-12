@@ -24,6 +24,7 @@ import {
   type TrustMeta,
 } from "@/lib/data";
 import { buildSeoHead } from "@/lib/seo";
+import { askTokens, detectAskIntent, type AskIntent } from "@/lib/ask-intent";
 
 export const Route = createFileRoute("/ask")({
   head: () =>
@@ -46,17 +47,6 @@ type AskKind =
   | "Skill"
   | "Institution"
   | "Workflow";
-
-type AskIntent =
-  | "courses"
-  | "careers"
-  | "funding"
-  | "opportunities"
-  | "guides"
-  | "skills"
-  | "institutions"
-  | "match"
-  | "general";
 
 type AskResult = {
   id: string;
@@ -83,27 +73,6 @@ const SUGGESTIONS = [
   "Courses I can study online",
   "What can I apply for now?",
 ];
-
-const STOP_WORDS = new Set([
-  "a",
-  "an",
-  "and",
-  "are",
-  "can",
-  "do",
-  "for",
-  "how",
-  "i",
-  "in",
-  "is",
-  "me",
-  "my",
-  "of",
-  "the",
-  "to",
-  "what",
-  "with",
-]);
 
 function AskPage() {
   const [query, setQuery] = useState("What can I study online with NSFAS or bursary support?");
@@ -213,7 +182,7 @@ function AskPage() {
 // Status: Deterministic local matching renders SA Learn cards; Groq summaries can attach after grounding.
 function buildAnswer(rawQuery: string): AskAnswer {
   const query = rawQuery.trim();
-  const intent = detectIntent(query);
+  const intent = detectAskIntent(query);
   const results = selectResults(intent, query);
   const label = intentLabel(intent);
 
@@ -229,24 +198,6 @@ function buildAnswer(rawQuery: string): AskAnswer {
         : "Confirm requirements, deadlines, accreditation and funding rules with the official source links before applying or paying.",
     results: results.length > 0 ? results : workflowResults(),
   };
-}
-
-function detectIntent(query: string): AskIntent {
-  const text = query.toLowerCase();
-
-  if (hasAny(text, ["fund", "nsfas", "bursary", "scholarship", "pay", "fees"])) return "funding";
-  if (hasAny(text, ["career", "job", "work", "salary", "earn", "do with"])) return "careers";
-  if (hasAny(text, ["apply", "deadline", "open", "internship", "learnership", "apprenticeship"])) {
-    return "opportunities";
-  }
-  if (hasAny(text, ["fake", "aps", "saqa", "dhet", "glossary", "explain", "avoid"])) return "guides";
-  if (hasAny(text, ["skill", "certificate", "learn today", "short skill"])) return "skills";
-  if (hasAny(text, ["course", "study", "online", "tvet"])) return "courses";
-  if (hasAny(text, ["institution", "university", "college", "campus", "registered"])) return "institutions";
-  if (hasAny(text, ["qualify", "marks", "subjects", "matric", "nqf", "diploma", "degree", "higher certificate"])) {
-    return "courses";
-  }
-  return "general";
 }
 
 function selectResults(intent: AskIntent, query: string): AskResult[] {
@@ -394,18 +345,7 @@ function rankResults(results: AskResult[], query: string) {
 
 function scoreResult(result: AskResult, query: string) {
   const haystack = `${result.title} ${result.description} ${result.meta.join(" ")}`.toLowerCase();
-  return tokens(query).reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
-}
-
-function tokens(query: string) {
-  return query
-    .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((token) => token.length > 1 && !STOP_WORDS.has(token));
-}
-
-function hasAny(text: string, needles: string[]) {
-  return needles.some((needle) => text.includes(needle));
+  return askTokens(query).reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
 }
 
 function intentLabel(intent: AskIntent) {
