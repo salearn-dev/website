@@ -289,8 +289,8 @@ function DeadlineReminderHelper({
         [key]: `${channel} reminder saved for ${remindAt.toLocaleDateString("en-ZA")}`,
       }));
       setMessage(`Saved ${channel} reminder for ${funding.name}.`);
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Reminder could not be saved.");
+    } catch {
+      setMessage("Reminder could not be saved. Please try again later.");
     } finally {
       setSavingKey(null);
     }
@@ -457,9 +457,9 @@ function BursaryMatcher({ fundingItems }: { fundingItems: FundingItem[] }) {
       if (error) throw error;
       setProfileState("saved");
       setProfileMessage("Saved broad funding preferences to your learner profile.");
-    } catch (error) {
+    } catch {
       setProfileState("error");
-      setProfileMessage(error instanceof Error ? error.message : "Funding profile could not be saved.");
+      setProfileMessage("Funding profile could not be saved. Please try again later.");
     }
   }
 
