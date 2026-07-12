@@ -337,3 +337,8 @@ Corrected the portal to use a typed, tested submission contract with bounded fie
 ### Verification evidence invariant
 
 Admin moderation can no longer mark a catalogue row verified unless it has a valid HTTPS source URL. The action is blocked in UI and guarded again in the update handler. Added unit coverage and a local/CI moderation wiring contract to prevent regression of the institution submission schema, heterogeneous admin columns or source requirement.
+
+
+### Partner API rate-limit handoff
+
+Added `docs/partner-api-security.md` defining the distributed/edge rate-limit baseline, 429 and `Retry-After` behavior, multi-instance proof, monitoring, safe logging and key rotation. T45 remains unchecked because repository documentation cannot prove that the production hosting layer enforces the rule.
