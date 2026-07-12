@@ -108,36 +108,35 @@ describe("Supabase RLS integration", () => {
   adminTest("testimonial submission stays unapproved until admin moderation", async () => {
     if (!userAToken || !userAId || !adminToken) throw new Error("Test identities are unavailable.");
     const marker = `rls-${crypto.randomUUID()}`;
-    const create = await rest("testimonials", userAToken, {
+    const create = await rest("learner_testimonials", userAToken, {
       method: "POST",
       headers: { prefer: "return=representation" },
       body: JSON.stringify({
-        submitter_user_id: userAId,
-        learner_name: "RLS test learner",
+        user_id: userAId,
+        display_name: "RLS test learner",
         province: "Gauteng",
         quote: `Automated moderation proof ${marker}`,
-        role_or_school: "Integration test",
         language: "en",
         consent_to_publish: true,
-        approved: false,
+        moderation_state: "submitted",
       }),
     });
     expect(create.status).toBe(201);
     const rows = await create.json();
-    const row = rows[0] as { id: string; approved: boolean };
-    expect(row.approved).toBe(false);
+    const row = rows[0] as { id: string; moderation_state: string };
+    expect(row.moderation_state).toBe("submitted");
 
     try {
-      const moderate = await rest(`testimonials?id=eq.${row.id}`, adminToken, {
+      const moderate = await rest(`learner_testimonials?id=eq.${row.id}`, adminToken, {
         method: "PATCH",
         headers: { prefer: "return=representation" },
-        body: JSON.stringify({ approved: true }),
+        body: JSON.stringify({ moderation_state: "approved", reviewed_at: new Date().toISOString() }),
       });
       expect(moderate.status).toBe(200);
       const moderatedRows = await moderate.json();
-      expect(moderatedRows[0]?.approved).toBe(true);
+      expect(moderatedRows[0]?.moderation_state).toBe("approved");
     } finally {
-      await rest(`testimonials?id=eq.${row.id}`, adminToken, { method: "DELETE" });
+      await rest(`learner_testimonials?id=eq.${row.id}`, adminToken, { method: "DELETE" });
     }
   });
 
