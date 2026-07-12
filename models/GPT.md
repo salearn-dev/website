@@ -217,3 +217,14 @@ T15 implementation prepared: extracted the homepage deadline-feed selection poli
 - T26 implementation prepared — moved match PDF generation into `src/lib/match-report.ts`; added tests for PDF structure, control-character escaping, long-line wrapping and byte-accurate xref offsets. The byte-offset correction prevents malformed reports when learner content contains multibyte characters.
 
 Both tasks remain unchecked in the shared completion document until the quality workflow produces clean-checkout evidence.
+
+
+### Explicit RLS CI lane
+
+- Separated unit coverage from credential-dependent RLS integration proof.
+- Added `test:unit` and fail-closed `test:integration:rls` commands.
+- Added an `rls-integration` Actions job, gated by `RLS_TESTS_REQUIRED=true`, with dedicated test-project secrets.
+- Updated the RLS harness to throw when required credentials are absent instead of reporting skipped cases as proof.
+- Updated `docs/testing.md` with the enablement and branch-protection contract.
+
+T51 and T53 remain unchecked until repository administrators configure the variable/secrets, require the job and a clean workflow run passes.
