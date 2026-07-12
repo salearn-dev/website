@@ -9,6 +9,7 @@ import {
   type TrustMeta,
 } from "@/lib/data";
 import { INSTITUTION_IMAGES } from "@/lib/institution-images";
+import { isPaidOpportunity, normaliseDeliveryMode } from "@/lib/catalogue-normalization";
 
 type Funding = (typeof FUNDING)[number];
 type Opportunity = (typeof OPPORTUNITIES)[number];
@@ -19,23 +20,6 @@ export type CatalogueResult<T> = {
   items: T[];
   source: CatalogueSource;
 };
-
-const DELIVERY_MODES = new Set<Course["deliveryMode"]>([
-  "Contact",
-  "Online",
-  "Blended",
-  "Workplace",
-]);
-
-export function normaliseDeliveryMode(value: string | null): Course["deliveryMode"] {
-  return value && DELIVERY_MODES.has(value as Course["deliveryMode"])
-    ? value as Course["deliveryMode"]
-    : "Contact";
-}
-
-export function isPaidOpportunity(value: string | null) {
-  return ["yes", "paid", "true"].includes(value?.trim().toLowerCase() ?? "");
-}
 
 function trustFromCatalogue(row: {
   source_name: string | null;
