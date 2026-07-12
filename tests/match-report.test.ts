@@ -8,6 +8,12 @@ describe("match report PDF", () => {
     );
   });
 
+  test("normalises unsupported PDF text safely", () => {
+    expect(escapePdfText("“Résumé” — ready\u0000")).toBe(
+      '"Resume" - ready',
+    );
+  });
+
   test("creates a complete PDF document with the expected MIME type", async () => {
     const blob = makePdfBlob("SA Learn Match Report\nEstimated APS: 31");
     const bytes = new Uint8Array(await blob.arrayBuffer());
