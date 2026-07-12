@@ -82,3 +82,35 @@ SEO changes must not fabricate or strengthen unverified admission rules, deadlin
 2. Review new work from all models against shared production and data-trust requirements.
 3. Continue unfinished SEO work when it does not displace higher-priority review findings.
 4. Refresh `seo-report.md`, then address route policy, structured-data standardisation, image SEO, internal linking, performance evidence and CI enforcement incrementally.
+
+
+## SEO Checklist Completion — 2026-07-12
+
+**Files and controls added or updated:**
+
+- `src/lib/seo-policy.ts`
+- `src/lib/seo.ts`
+- `src/components/structured-data.tsx`
+- `src/components/institution-hero-media.tsx`
+- `src/components/sa-flag-logo.tsx`
+- `src/routes/__root.tsx`
+- `src/routes/courses.$slug.tsx`
+- `src/routes/careers.$slug.tsx`
+- `src/routes/institutions.$slug.tsx`
+- `src/routes/guides.$slug.tsx`
+- `src/routes/whatsapp.tsx`
+- `scripts/check-seo.mjs`
+- `package.json`
+- `.github/workflows/quality.yml`
+- `.github/pull_request_template.md`
+- `docs/seo-operations.md`
+- `docs/redirects.md`
+- `docs/seo-authority-plan.md`
+- `roles/seo-checklist.md`
+- `seo-report.md`
+
+**Summary:**
+
+Completed all currently repository-controllable SEO checklist work. Centralised route index policy, made shared robots directives policy-aware, hardened JSON-LD serialization, added breadcrumb plus global Organization/WebSite schemas, completed shared canonical/social metadata for WhatsApp, improved image dimensions and loading hints, added executable SEO regression checks, introduced a GitHub quality workflow and PR definition of done, and documented redirect, webmaster and authority operations.
+
+Items requiring production crawling, runtime metrics, webmaster ownership, human source/licence review or completion of the new external CI run remain explicitly evidence-pending rather than falsely marked complete.
