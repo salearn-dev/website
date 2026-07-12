@@ -7,6 +7,23 @@ const userBToken = process.env.SUPABASE_TEST_USER_B_TOKEN;
 const userAId = process.env.SUPABASE_TEST_USER_A_ID;
 const userBId = process.env.SUPABASE_TEST_USER_B_ID;
 const adminToken = process.env.SUPABASE_TEST_ADMIN_TOKEN;
+const requireRlsTests = process.env.REQUIRE_RLS_TESTS === "1";
+const requiredEnvironment = {
+  SUPABASE_TEST_URL: url,
+  SUPABASE_TEST_PUBLISHABLE_KEY: key,
+  SUPABASE_TEST_USER_A_TOKEN: userAToken,
+  SUPABASE_TEST_USER_B_TOKEN: userBToken,
+  SUPABASE_TEST_USER_A_ID: userAId,
+  SUPABASE_TEST_USER_B_ID: userBId,
+  SUPABASE_TEST_ADMIN_TOKEN: adminToken,
+};
+const missingEnvironment = Object.entries(requiredEnvironment)
+  .filter(([, value]) => !value)
+  .map(([name]) => name);
+
+if (requireRlsTests && missingEnvironment.length > 0) {
+  throw new Error(`RLS integration tests require: ${missingEnvironment.join(", ")}`);
+}
 
 const hasBase = Boolean(url && key);
 const hasUsers = Boolean(hasBase && userAToken && userBToken && userAId && userBId);
