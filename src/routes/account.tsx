@@ -318,12 +318,17 @@ function AccountPage() {
             </p>
           </div>
 
-          <form onSubmit={sendMagicLink} className="space-y-3">
-            <label className="block text-sm">
+          <form onSubmit={sendMagicLink} className="space-y-3" aria-describedby="account-auth-help account-auth-status">
+            <label htmlFor="account-email" className="block text-sm">
               <span className="mb-1.5 block font-medium text-foreground">Email address</span>
               <input
+                id="account-email"
+                name="email"
                 type="email"
                 required
+                aria-required="true"
+                autoComplete="email"
+                inputMode="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@example.com"
@@ -342,7 +347,7 @@ function AccountPage() {
               )}
               Send sign-in link
             </button>
-            <p className="text-xs leading-relaxed text-muted-foreground">
+            <p id="account-auth-help" className="text-xs leading-relaxed text-muted-foreground">
               Saved match/profile editing remains intentionally limited until verified catalogue
               tables land in Phase 2.
             </p>
@@ -384,6 +389,9 @@ function AccountPage() {
 function Alert({ tone, message }: { tone: "success" | "warning"; message: string }) {
   return (
     <div
+      id="account-auth-status"
+      role={tone === "warning" ? "alert" : "status"}
+      aria-live={tone === "warning" ? "assertive" : "polite"}
       className={`mb-6 rounded-2xl border p-4 text-sm ${
         tone === "success"
           ? "border-success/30 bg-success-soft text-success"
