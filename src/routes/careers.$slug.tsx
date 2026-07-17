@@ -7,10 +7,11 @@ import {
   GraduationCap,
   LineChart,
   Sparkles,
+  ExternalLink,
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { StructuredData } from "@/components/structured-data";
-import { CAREERS, COURSES, SKILLS } from "@/lib/data";
+import { CAREERS, CAREER_EVIDENCE, COURSES, SKILLS } from "@/lib/data";
 import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/careers/$slug")({
@@ -49,7 +50,7 @@ function CareerDetailPage() {
   const { career, relatedCourses, relatedSkills } = Route.useLoaderData();
 
   // Codex: Career detail page template
-  // Status: Static-dynamic pages expose career pathways; verified labour-market data remains pending.
+  // Status: Pages expose career pathways with cited national demand and earnings context.
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
     { name: "Careers", path: "/careers" },
@@ -104,8 +105,8 @@ function CareerDetailPage() {
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             This career page uses one fixed SA Learn template so learners can compare pathways
-            consistently. Salary and demand are planning signals, not verified
-            labour-market guarantees.
+            consistently. Salary bands are indicative; the evidence below separates national
+            labour-market context from an individual salary promise.
           </p>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -157,9 +158,24 @@ function CareerDetailPage() {
               <SalaryBand label="Senior" value={career.salaryBands.senior} />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Estimate only. SA Learn still needs verified salary sources before these
-              ranges can be treated as production labour-market data.
+              Indicative monthly gross ranges. Actual pay varies by employer, province,
+              qualification and experience; occupational salary verification remains open.
             </p>
+          </section>
+
+          <section className="mt-8">
+            <h3 className="text-base font-semibold text-foreground">Labour-market sources</h3>
+            <div className="mt-3 grid gap-3">
+              {CAREER_EVIDENCE.map((source) => (
+                <a key={source.url} href={source.url} target="_blank" rel="noreferrer" className="flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-4 hover:bg-muted/50">
+                  <span>
+                    <span className="block text-sm font-medium text-foreground">{source.label}</span>
+                    <span className="mt-1 block text-xs text-muted-foreground">{source.supports}</span>
+                  </span>
+                  <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
+                </a>
+              ))}
+            </div>
           </section>
         </article>
 

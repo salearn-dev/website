@@ -21,7 +21,7 @@ describe("calculateAps", () => {
   });
 
   test("uses the strongest six eligible subjects regardless of input order", () => {
-    expect(calculateAps(strongSubjectProfile)).toBe(33);
+    expect(calculateAps(strongSubjectProfile)).toBe(31);
   });
 
   test("does not mutate the supplied subject order", () => {

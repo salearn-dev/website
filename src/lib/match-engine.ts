@@ -1,3 +1,5 @@
+import { ADMISSION_RULES, evaluateAdmissionRule } from "./admission-rules";
+
 export type MatchSubject = { name: string; mark: number };
 export type MatchResult = {
   title: string;
@@ -38,7 +40,7 @@ export function buildMatchGroups({
   const englishMark = markFor(subjects, "English HL", "English FAL");
   const lifeSciencesMark = markFor(subjects, "Life Sciences");
 
-  return [
+  const groups: MatchGroup[] = [
     {
       tone: "success",
       title: "You qualify",
@@ -147,4 +149,27 @@ export function buildMatchGroups({
       ],
     },
   ];
+
+  for (const rule of ADMISSION_RULES.filter((item) => item.interests.includes(safeInterest))) {
+    const evaluation = evaluateAdmissionRule(rule, safeAps, subjects);
+    if (evaluation.met.length === 0 && evaluation.missing.length === 0) {
+      evaluation.met.push(`Interest selected: ${safeInterest}.`);
+    }
+    const target = evaluation.eligible ? groups[0] : groups[1];
+    target.results.unshift({
+      title: rule.programme,
+      institution: rule.institution,
+      confidence: "Verified match",
+      reason: `Compared with the published ${rule.intakeYear} ${rule.faculty} rule, verified ${rule.verifiedAt}.`,
+      requirementsMet: evaluation.met,
+      requirementsMissing: evaluation.missing,
+      additionalChecks: rule.tests.map(
+        (test) =>
+          `${test.name}: ${test.required ? "Required" : "Not listed as required"}. ${test.note}`,
+      ),
+      nextStep: `Recheck the current rule at ${rule.sourceName} before applying: ${rule.sourceUrl}`,
+    });
+  }
+
+  return groups;
 }

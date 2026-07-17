@@ -72,6 +72,8 @@ export function makePdfBlob(text: string) {
 
 export function escapePdfText(value: string) {
   const safe = value
+    // PDF text streams must strip ASCII control bytes before serialization.
+    // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, "")
     .replace(/[–—]/g, "-")
     .replace(/[‘’]/g, "'")

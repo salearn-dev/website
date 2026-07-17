@@ -235,6 +235,21 @@ export type Career = {
   relatedSkillSlugs: string[];
 };
 
+// Codex: South African labour-market evidence
+// Status: Demand uses DHET's occupation list; salary context uses Stats SA formal-sector earnings.
+export const CAREER_EVIDENCE = [
+  {
+    label: "DHET 2024 National List of Occupations in High Demand",
+    url: "https://www.gov.za/sites/default/files/gcis_document/202404/50510gen2414.pdf",
+    supports: "Occupation demand signals",
+  },
+  {
+    label: "Stats SA Quarterly Employment Statistics, Q4 2025",
+    url: "https://www.statssa.gov.za/?p=19387",
+    supports: "Formal-sector monthly earnings benchmark; career bands remain indicative",
+  },
+] as const;
+
 export const CAREERS: Career[] = [
   {
     slug: "software-developer",
@@ -524,8 +539,8 @@ type InstitutionSeed = {
   campuses: string[];
 };
 
-const PUBLIC_UNIVERSITY_SOURCE = "https://www.usaf.ac.za/";
-const TVET_SOURCE = "https://www.dhet.gov.za/SitePages/TVETColleges.aspx";
+const PUBLIC_UNIVERSITY_SOURCE = "https://www.dhet.gov.za/SitePages/UniversitiesinSA.aspx";
+const TVET_SOURCE = "https://www.dhet.gov.za/RegionalOffices/educational-institutions/technical-vocational-education-and-training-colleges-tvet-colleges.html";
 
 export const PUBLIC_UNIVERSITY_SEEDS: InstitutionSeed[] = [
   { slug: "cput", name: "Cape Peninsula University of Technology", type: "University of Technology", province: "Western Cape", website: "cput.ac.za", campuses: ["Cape Town", "Bellville"] },
@@ -623,12 +638,12 @@ function publicInstitution(seed: InstitutionSeed): Institution {
     website: seed.website,
     campuses: seed.campuses,
     accreditationStatus: isTvet
-      ? "Public TVET college - registration and programme details require official confirmation"
-      : "Public university - registration and programme details require official confirmation",
+      ? "Listed in the DHET public TVET college directory; verify each programme separately"
+      : "Listed in the DHET public university directory; verify each programme separately",
     registerLinks: [
       { label: "Official website", url: `https://${seed.website}/` },
       {
-        label: isTvet ? "DHET TVET colleges" : "Universities South Africa",
+        label: isTvet ? "DHET public TVET directory" : "DHET public universities directory",
         url: nationalSource,
       },
     ],
@@ -646,10 +661,10 @@ function publicInstitution(seed: InstitutionSeed): Institution {
     ],
     heroImage: INSTITUTION_IMAGES[seed.slug],
     trust: {
-      sourceName: isTvet ? "DHET TVET branch reference" : "Universities South Africa member reference",
+      sourceName: isTvet ? "DHET public TVET directory" : "DHET public universities directory",
       sourceUrl: nationalSource,
-      lastVerifiedAt: LAST_VERIFIED,
-      verificationStatus: "Needs confirmation",
+      lastVerifiedAt: "17 July 2026",
+      verificationStatus: "Verified",
     },
   };
 }

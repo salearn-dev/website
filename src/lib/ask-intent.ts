@@ -41,10 +41,10 @@ export function detectAskIntent(query: string): AskIntent {
     return "match";
   }
   if (hasAny(text, ["fund", "nsfas", "bursary", "scholarship", "pay", "fees"])) return "funding";
-  if (hasAny(text, ["career", "job", "work", "salary", "earn", "do with"])) return "careers";
   if (hasAny(text, ["apply", "deadline", "open", "internship", "learnership", "apprenticeship"])) {
     return "opportunities";
   }
+  if (hasAny(text, ["career", "job", "work", "salary", "earn", "do with"])) return "careers";
   if (hasAny(text, ["fake", "aps", "saqa", "dhet", "glossary", "explain", "avoid"])) return "guides";
   if (hasAny(text, ["skill", "certificate", "learn today", "short skill"])) return "skills";
   if (hasAny(text, ["course", "study", "online", "tvet", "nqf", "diploma", "degree", "higher certificate"])) {

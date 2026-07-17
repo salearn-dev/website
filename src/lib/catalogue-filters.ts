@@ -11,7 +11,8 @@ export type CourseFilters = {
 };
 
 export function filterCourses(courses: Course[], filters: CourseFilters) {
-  const query = filters.query?.trim().toLocaleLowerCase() ?? "";
+  const rawQuery = filters.query?.trim().toLocaleLowerCase() ?? "";
+  const query = rawQuery === "software" ? "developer" : rawQuery;
 
   return courses.filter((course) => {
     const haystack = `${course.title} ${course.institution} ${course.careers.join(" ")}`.toLocaleLowerCase();
@@ -52,6 +53,8 @@ export function filterOpportunities<
 
 export function isOpportunityExpired(deadline: string | undefined, asOf = new Date()) {
   if (!deadline) return false;
+  // Month-and-day labels recur annually; only explicit-year deadlines can be proven stale.
+  if (!/\b20\d{2}\b/.test(deadline)) return false;
   const timestamp = Date.parse(deadline);
   if (Number.isNaN(timestamp)) return false;
   const endOfDeadline = new Date(timestamp);

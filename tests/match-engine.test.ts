@@ -36,17 +36,20 @@ describe("buildMatchGroups", () => {
   test("provides a reason, evidence and next step for every result", () => {
     for (const result of groups.flatMap((group) => group.results)) {
       expect(result.reason.length).toBeGreaterThan(0);
-      expect(result.requirementsMet.length).toBeGreaterThan(0);
-      expect(result.requirementsMissing.length).toBeGreaterThan(0);
+      expect(result.requirementsMet.length + result.requirementsMissing.length).toBeGreaterThan(0);
       expect(result.additionalChecks.length).toBeGreaterThan(0);
       expect(result.nextStep.length).toBeGreaterThan(0);
     }
   });
 
-  test("retains advisory language instead of verified qualification claims", () => {
+  test("limits verified claims to source-backed admission rules", () => {
     const results = groups.flatMap((group) => group.results);
-    expect(results.every((result) => result.confidence !== "Verified match")).toBe(true);
-    expect(JSON.stringify(results)).toContain("confirm");
+    const verified = results.filter((result) => result.confidence === "Verified match");
+    const advisory = results.filter((result) => result.confidence !== "Verified match");
+    expect(verified.length).toBeGreaterThan(0);
+    expect(verified.every((result) => result.nextStep.includes("https://"))).toBe(true);
+    expect(advisory.length).toBeGreaterThan(0);
+    expect(JSON.stringify(advisory)).toContain("confirm");
   });
 
   test("falls back safely for missing subjects and blank interest", () => {

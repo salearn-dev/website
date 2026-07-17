@@ -113,3 +113,15 @@ jobs:
           SUPABASE_TEST_ADMIN_PASSWORD: ${{ secrets.SUPABASE_TEST_ADMIN_PASSWORD }}
           SUPABASE_TEST_INSTITUTION_EMAIL: ${{ secrets.SUPABASE_TEST_INSTITUTION_EMAIL }}
           SUPABASE_TEST_INSTITUTION_PASSWORD: ${{ secrets.SUPABASE_TEST_INSTITUTION_PASSWORD }}
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run test:browser

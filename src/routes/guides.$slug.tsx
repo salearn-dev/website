@@ -3,6 +3,8 @@ import { ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { StructuredData } from "@/components/structured-data";
 import { buildGuideSchemas, getGuideDetail } from "@/lib/guide-detail";
+import { GLOSSARY_ZU, GUIDE_ZU } from "@/lib/guide-translations";
+import { useI18n } from "@/lib/i18n";
 import { buildBreadcrumbJsonLd, buildSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/$slug")({
@@ -32,6 +34,32 @@ export const Route = createFileRoute("/guides/$slug")({
 
 function GuideDetailPage() {
   const { guide, glossary } = Route.useLoaderData();
+  const { language } = useI18n();
+  const isiZulu = language === "zu";
+  const body = isiZulu ? GUIDE_ZU[guide.slug] : guide;
+  const labels = isiZulu
+    ? {
+        eyebrow: "Umhlahlandlela",
+        back: "Buyela emihlahlandleleni",
+        explanation: "Incazelo elula",
+        remember: "Okufanele ukukhumbule",
+        steps: "Izinyathelo",
+        terms: "Amagama ahlobene",
+        source: "Isikhumbuzo ngomthombo",
+        sourceBody:
+          "Qinisekisa imininingwane ebalulekile yezicelo, uxhaso, ukugunyazwa noma ukungena emithonjeni esemthethweni.",
+      }
+    : {
+        eyebrow: `${guide.category} guide`,
+        back: "Back to guides",
+        explanation: "Plain-English explanation",
+        remember: "What to remember",
+        steps: "Steps",
+        terms: "Related glossary terms",
+        source: "Source reminder",
+        sourceBody:
+          "Critical application, funding, accreditation or admission details still need confirmation from official sources.",
+      };
 
   const schemas = buildGuideSchemas(guide.slug);
 
@@ -46,7 +74,7 @@ function GuideDetailPage() {
   ]);
 
   return (
-    <PageShell eyebrow={`${guide.category} guide`} title={guide.title} description={guide.summary}>
+    <PageShell eyebrow={labels.eyebrow} title={body.title} description={body.summary}>
       <StructuredData data={[schemas.article, breadcrumbJsonLd]} />
       {schemas.howTo && <StructuredData data={schemas.howTo} />}
 
@@ -55,7 +83,7 @@ function GuideDetailPage() {
           to="/guides"
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to guides
+          <ArrowLeft className="h-4 w-4" /> {labels.back}
         </Link>
       </div>
 
@@ -63,16 +91,16 @@ function GuideDetailPage() {
         <article className="rounded-2xl border border-border bg-card p-6 md:p-8">
           <BookOpen className="h-5 w-5 text-muted-foreground" />
           <h2 className="mt-4 text-xl font-semibold tracking-tight text-foreground">
-            Plain-English explanation
+            {labels.explanation}
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            {guide.plainLanguage}
+            {body.plainLanguage}
           </p>
 
           <section className="mt-8">
-            <h3 className="text-base font-semibold text-foreground">What to remember</h3>
+            <h3 className="text-base font-semibold text-foreground">{labels.remember}</h3>
             <div className="mt-3 grid gap-2">
-              {guide.keyPoints.map((point: string) => (
+              {body.keyPoints.map((point: string) => (
                 <div
                   key={point}
                   className="flex gap-3 rounded-xl border border-border bg-background p-4"
@@ -84,11 +112,11 @@ function GuideDetailPage() {
             </div>
           </section>
 
-          {guide.steps && (
+          {body.steps && (
             <section className="mt-8">
-              <h3 className="text-base font-semibold text-foreground">Steps</h3>
+              <h3 className="text-base font-semibold text-foreground">{labels.steps}</h3>
               <ol className="mt-3 space-y-3">
-                {guide.steps.map((step: string, index: number) => (
+                {body.steps.map((step: string, index: number) => (
                   <li
                     key={step}
                     className="flex gap-3 rounded-xl border border-border bg-background p-4"
@@ -106,13 +134,13 @@ function GuideDetailPage() {
 
         <aside className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="text-base font-semibold text-foreground">Related glossary terms</h2>
+            <h2 className="text-base font-semibold text-foreground">{labels.terms}</h2>
             <div className="mt-4 space-y-3">
               {glossary.map((item: { term: string; meaning: string }) => (
                 <div key={item.term} className="rounded-xl border border-border bg-background p-4">
                   <p className="text-sm font-semibold text-foreground">{item.term}</p>
                   <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                    {item.meaning}
+                    {isiZulu ? GLOSSARY_ZU[item.term] : item.meaning}
                   </p>
                 </div>
               ))}
@@ -120,10 +148,9 @@ function GuideDetailPage() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="text-base font-semibold text-foreground">Source reminder</h2>
+            <h2 className="text-base font-semibold text-foreground">{labels.source}</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              This guide explains concepts in plain language. Critical application, funding,
-              accreditation or admission details still need confirmation from official sources.
+              {labels.sourceBody}
             </p>
           </div>
         </aside>

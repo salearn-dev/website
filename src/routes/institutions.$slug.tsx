@@ -47,7 +47,7 @@ function InstitutionDetailPage() {
   const { institution } = Route.useLoaderData();
 
   // Codex: Institution profile template
-  // Status: Static-dynamic profiles expose accreditation and windows; official verification remains backend/data-owned.
+  // Status: Public-institution identity and type are checked against DHET directories.
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", path: "/" },
     { name: "Institutions", path: "/institutions" },
@@ -103,8 +103,8 @@ function InstitutionDetailPage() {
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             This profile gives learners one place to compare the institution, listed campuses,
-            registration notes and application timing. It is a planning view, not a replacement for
-            official admissions or accreditation registers.
+            registration notes and application timing. Institution identity is sourced from DHET;
+            programme accreditation and current admissions must still be checked separately.
           </p>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -176,10 +176,10 @@ function InstitutionDetailPage() {
           <TrustMetadata trust={institution.trust} />
 
           <div className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="text-base font-semibold text-foreground">Missing data warning</h2>
+            <h2 className="text-base font-semibold text-foreground">Verification boundary</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              SA Learn still needs official source verification for current application windows,
-              campus-specific programmes, fees, and accreditation references.
+              DHET directory evidence confirms this public institution listing. It does not verify
+              current application windows, campus programmes, fees or professional accreditation.
             </p>
           </div>
         </aside>

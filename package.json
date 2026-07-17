@@ -9,8 +9,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "bun test",
+    "test": "bun test ./tests/*.test.ts ./tests/*.test.tsx ./tests/unit ./tests/integration/catalogue.test.ts",
     "test:coverage": "bun test ./tests/*.test.ts ./tests/*.test.tsx --coverage --coverage-reporter=lcov",
+    "test:browser": "playwright test",
+    "test:runtime": "bun run tests/runtime/supabase-runtime.ts",
     "check": "bun run typecheck && bun run lint && bun run test:unit && bun run seo:check && bun run accessibility:check && bun run security:boundaries && bun run security:public-errors && bun run ci:contract && bun run schema:contract && bun run sensitive-data:contract && bun run moderation:contract && bun run auth:contract && bun run partner-api:contract && bun run route-schema:contract && bun run content:health && bun run build && bun run performance:budget",
     "seo:check": "node scripts/check-seo.mjs",
     "accessibility:check": "node scripts/check-accessibility.mjs",
@@ -19,6 +21,7 @@
     "performance:budget": "node scripts/check-bundle-size.mjs",
     "content:health": "bun run scripts/check-content-health.ts",
     "seed:institutions": "bun run scripts/seed-public-institutions.ts",
+    "seed:verified": "bun run scripts/seed-verified-catalogue.ts",
     "collect:institution-images": "node scripts/collect-institution-images.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -91,6 +94,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "2.7.1",
     "@types/node": "^22.16.5",

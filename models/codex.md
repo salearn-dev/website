@@ -658,3 +658,26 @@ Added static-dynamic course detail pages at `/courses/:slug` using one fixed tem
 
 **Short Plain English Description:**
 Added visible trust metadata to education records, including source, source URL, verification status, and last-verified state. Improved the match results so learners see why a result appears, what requirements are met, what is missing or unverified, and what next step to take. Updated the production-readiness page with priority, owner, status, and the next incomplete item for each route. The production build passes after these changes.
+
+## Production Readiness 86/91 Quality and Evidence Sprint
+
+**Date/Time:** 2026-07-17 12:00:00 +02:00
+
+**Files Modified:**
+
+- `.github/workflows/quality.yml`
+- `eslint.config.js`
+- `package.json`, `bun.lock`, `playwright.config.ts`
+- `src/lib/aps.ts`, `src/lib/admission-rules.ts`, `src/lib/guide-translations.ts`
+- `src/lib/data.ts`, `src/lib/match-engine.functions.ts`, `src/lib/match-engine.ts`
+- `src/lib/ask-intent.ts`, `src/lib/catalogue-filters.ts`, `src/lib/skill-progress.ts`
+- `src/routes/match.tsx`, `src/routes/careers.$slug.tsx`, `src/routes/guides.$slug.tsx`
+- `src/routes/institutions.$slug.tsx`, `src/routes/prod-readiness.tsx`
+- `scripts/seed-verified-catalogue.ts`
+- `tests/unit/*`, `tests/integration/*`, `tests/browser/*`, `tests/runtime/*`
+- `models/messages.md`, `models/codex.md`
+
+**Short Plain English Description:**
+Integrated the parallel quality/security branch and moved the merged evidence-aware checklist to exactly 86/91. Added source-backed 2026/2027 faculty and NBT rules used by the server match engine, cited DHET and Stats SA career context, DHET verification evidence for all 76 public institution profiles, and complete English/isiZulu guide bodies including page labels and glossary meanings. Added Playwright browser automation and a deployed-backend Supabase RLS/runtime probe. Also corrected APS expectations, Ask intent priority, recurring deadline filtering, skill progress persistence, and PDF lint handling uncovered by the merged suite. Lint, typecheck, 126 deterministic tests, 119 coverage tests, five Chromium route tests, and the full production build pass.
+
+The runtime probe correctly found that the configured backend does not currently expose `public.institutions`. A guarded, idempotent verified catalogue seeder is ready, but the live seed remains unchecked until Lovable applies the catalogue migration and provisions a server-only service-role key. This blocker is documented in `models/messages.md`; no false deployment claim was made.
